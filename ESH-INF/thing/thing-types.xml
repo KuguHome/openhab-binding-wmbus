@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="wmbus"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <!-- Generic thing for  -->
+    <thing-type id="techem_hkv">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Techem HKV</label>
+        <description>A heat cost allocator of Techem</description>
+
+        <channels>
+            <channel id="room_temperature" typeId="room_temperature" />
+        </channels>
+
+        <config-description>
+            <parameter name="hkvId" type="text">
+                <label>HKV ID</label>
+                <description>The HKV identifier identifies one certain heat cost allocator.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+    
+    <channel-type id="room_temperature">
+        <item-type>Number</item-type>
+        <label>Temperature</label>
+        <description>Current temperature in degrees celsius</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.1f °C">
+        </state>
+    </channel-type>
+</thing:thing-descriptions>
