@@ -30,6 +30,8 @@ import org.openmuc.jmbus.WMBusMode;
 import org.openmuc.jmbus.WMBusSap;
 import org.openmuc.jmbus.WMBusSapAmber;
 
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
+
 /**
  *
  * @author
@@ -38,7 +40,13 @@ import org.openmuc.jmbus.WMBusSapAmber;
 public class TechemReceiver implements WMBusListener {
     int[] filterIDs = new int[] {};
 
+    private WMBusBridgeHandler wmBusBridgeHandler;
+
     public static String VENDOR_TECHEM = "TCH";
+
+    public TechemReceiver(WMBusBridgeHandler wmBusBridgeHandler) {
+        this.wmBusBridgeHandler = wmBusBridgeHandler;
+    }
 
     public int[] getFilterIDs() {
         return filterIDs;
@@ -92,6 +100,7 @@ public class TechemReceiver implements WMBusListener {
             message.decodeDeep();
             if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
                 System.out.println(message.toString());
+                wmBusBridgeHandler.processMessage(message);
             }
         } catch (DecodingException e) {
             byte[] messageBytes = message.asBytes();

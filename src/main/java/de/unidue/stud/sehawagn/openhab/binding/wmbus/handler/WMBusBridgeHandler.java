@@ -1,13 +1,18 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openmuc.jmbus.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -20,9 +25,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     private TechemReceiver wmbusReceiver = null;
 
-    // private ScheduledFuture<?> pollingJob;
-
-    // private Runnable pollingRunnable = null;
+    private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -31,8 +34,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     @Override
     public Collection<ConfigStatusMessage> getConfigStatus() {
-        // TODO Auto-generated method stub
-        return null;
+        return Collections.emptyList(); // all good, otherwise add some messages
     }
 
     @Override
@@ -43,86 +45,88 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     @Override
     public void initialize() {
         logger.debug("Initializing WMBus bridge handler.");
-        // if (getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) != null) {
-        if (wmbusReceiver == null) {
-            wmbusReceiver = new TechemReceiver();
+        if (getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) != null) {
+            if (wmbusReceiver == null) {
+                wmbusReceiver = new TechemReceiver(this);
 
-            wmbusReceiver.setFilterIDs(new int[] { 92313948, 92363681, 92363684, 92363682, 92363688, 92363734 });
+                wmbusReceiver.setFilterIDs(new int[] { 92313948, 92363681, 92363684, 92363682, 92363688, 92363734 });
 
-            // System.out.println("FOOBAR=");
+                // System.out.println("FOOBAR=");
 
-            // for (String configKey : getConfig().getProperties().keySet()) {
-            // System.out.println("config key=" + configKey + "value=" + getConfig().getProperties().get(configKey));
-            //
-            // }
+                // for (String configKey : getConfig().getProperties().keySet()) {
+                // System.out.println("config key=" + configKey + "value=" +
+                // getConfig().getProperties().get(configKey));
+                //
+                // }
 
-            String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
+                String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
 
-            // logger.debug("Interface name=" + interfaceName);
+                // logger.debug("Interface name=" + interfaceName);
 
-            System.out.println("Interface name=" + interfaceName);
+                System.out.println("Interface name=" + interfaceName);
 
-            wmbusReceiver.init(interfaceName);
+                wmbusReceiver.init(interfaceName);
 
-            updateStatus(ThingStatus.ONLINE);
+                updateStatus(ThingStatus.ONLINE);
 
-            // wmbusReceiver.setTimeout(5000);
-            /*
-             * pollingRunnable = new Runnable() {
-             *
-             * @Override
-             * public void run() {
-             * try {
-             * // TODO get the WMBus messages from the receiver?
-             * } catch (Throwable t) {
-             * logger.error("An unexpected error occurred: {}", t.getMessage(), t);
-             * }
-             * }
-             * };
-             */
+                // wmbusReceiver.setTimeout(5000);
+                /*
+                 * pollingRunnable = new Runnable() {
+                 *
+                 * @Override
+                 * public void run() {
+                 * try {
+                 * // TODO get the WMBus messages from the receiver?
+                 * } catch (Throwable t) {
+                 * logger.error("An unexpected error occurred: {}", t.getMessage(), t);
+                 * }
+                 * }
+                 * };
+                 */
+            }
+        } else {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                    "Cannot open WMBus device. Serial device name not given.");
         }
-        onUpdate();
-        // } else {
-        // updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-        // "Cannot open WMBus device. Serial device name not given.");
-        // }
+    }
+
+    public boolean registerWMBusMessageListener(WMBusMessageListener wmBusMessageListener) {
+        if (wmBusMessageListener == null) {
+            throw new NullPointerException("It's not allowed to pass a null WMBusMessageListener.");
+        }
+        boolean result = wmBusMessageListeners.add(wmBusMessageListener);
+
+        return result;
+    }
+
+    /**
+     * Iterate through wmBusMessageListeners and notify them about a newly received message.
+     *
+     * @param message
+     */
+    private void notifyWMBusMessageListeners(final WMBusMessage message) {
+        for (WMBusMessageListener wmBusMessageListener : wmBusMessageListeners) {
+            try {
+                wmBusMessageListener.onWMBusMessageReceived(message);
+                break;
+            } catch (Exception e) {
+                logger.error("An exception occurred while notifying the WMBusMessageListener", e);
+            }
+        }
     }
 
     @Override
     public void dispose() {
         logger.debug("WMBus bridge Handler disposed.");
-        /*
-         * if (pollingJob != null && !pollingJob.isCancelled()) {
-         * pollingJob.cancel(true);
-         * pollingJob = null;
-         * }
-         */
+
         if (wmbusReceiver != null) {
             wmbusReceiver = null;
         }
     }
 
-    private synchronized void onUpdate() {
-        if (wmbusReceiver != null) {
-            /*
-             * if (pollingJob == null || pollingJob.isCancelled()) {
-             * int pollingInterval = WMBusBindingConstants.DEFAULT_POLLING_INTERVAL;
-             * try {
-             * Object pollingIntervalConfig = getConfig().get(WMBusBindingConstants.CONFKEY_POLLING_INTERVAL);
-             * if (pollingIntervalConfig != null) {
-             * pollingInterval = ((BigDecimal) pollingIntervalConfig).intValue();
-             * } else {
-             * logger.info("Polling interval not configured for this wmbus bridge. Using default value: {}s",
-             * pollingInterval);
-             * }
-             * } catch (NumberFormatException ex) {
-             * logger.info("Wrong configuration value for polling interval. Using default value: {}s",
-             * pollingInterval);
-             * }
-             * pollingJob = scheduler.scheduleAtFixedRate(pollingRunnable, 1, pollingInterval, TimeUnit.SECONDS);
-             *
-             * }
-             */
-        }
+    public void processMessage(WMBusMessage message) {
+        System.out.println("processMessage(WMBusMessage message)");
+        notifyWMBusMessageListeners(message);
     }
+
 }

@@ -25,6 +25,9 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";
     // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
 
+    // HKV config properties
+    public static final String HKV_ID = "hkvId";
+
     // defaults
     public static final int DEFAULT_POLLING_INTERVAL = 10; // in seconds
 
