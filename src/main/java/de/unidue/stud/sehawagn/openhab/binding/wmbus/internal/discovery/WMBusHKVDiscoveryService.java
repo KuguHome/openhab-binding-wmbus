@@ -19,6 +19,7 @@ import com.google.common.collect.ImmutableMap;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusMessageListener;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 
 public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implements WMBusMessageListener {
 
@@ -28,7 +29,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     // @formatter:off
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
-            .put("techem_hkv", "0100").build();
+            .put("68TCH105255", "techem_hkv").build();
     // @formatter:on
 
     private WMBusBridgeHandler bridgeHandler;
@@ -42,6 +43,11 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             boolean backgroundDiscoveryEnabledByDefault) throws IllegalArgumentException {
         super(supportedThingTypes, timeout, backgroundDiscoveryEnabledByDefault);
         // TODO Auto-generated constructor stub
+    }
+
+    @Override
+    public Set<ThingTypeUID> getSupportedThingTypes() {
+        return WMBusTechemHKVHandler.SUPPORTED_THING_TYPES;
     }
 
     @Override
@@ -81,10 +87,15 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     private ThingTypeUID getThingTypeUID(WMBusMessage wmBusDevice) {
-        String thingTypeId = TYPE_TO_WMBUS_ID_MAP.get(wmBusDevice.getSecondaryAddress().getManufacturerId()
-                + wmBusDevice.getSecondaryAddress().getDeviceType().getId());
-        System.out.println("thingTypeId" + thingTypeId);
+        String typeIdString = wmBusDevice.getControlField() + "" + wmBusDevice.getSecondaryAddress().getManufacturerId()
+                + "" + wmBusDevice.getSecondaryAddress().getVersion() + ""
+                + wmBusDevice.getSecondaryAddress().getDeviceType().getId();
+        String thingTypeId = TYPE_TO_WMBUS_ID_MAP.get(typeIdString);
         return thingTypeId != null ? new ThingTypeUID(BINDING_ID, thingTypeId) : null;
+    }
+
+    public void activate() {
+        bridgeHandler.registerWMBusMessageListener(this);
     }
 
 }

@@ -19,7 +19,8 @@ public class WMBusBindingConstants {
     public static final String CHANNEL_RADIATORTEMPERATURE = "radiator_temperature";
     public static final String CHANNEL_COSTCOUNTER = "costcounter";
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_WMBUS_BRIDGE);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_WMBUS_BRIDGE,
+            THING_TYPE_WMBUS_TECHEM_HKV);
 
     // Bridge config properties
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";

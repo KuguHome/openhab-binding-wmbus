@@ -1,8 +1,11 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
+import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants.*;
+
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
+import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
@@ -10,16 +13,18 @@ import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
+import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openmuc.jmbus.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemReceiver;
 
 public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
+
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_WMBUS_BRIDGE);
 
     private Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
 
@@ -45,11 +50,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     @Override
     public void initialize() {
         logger.debug("Initializing WMBus bridge handler.");
-        if (getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) != null) {
+        if (getConfig().get(CONFKEY_INTERFACE_NAME) != null) {
             if (wmbusReceiver == null) {
                 wmbusReceiver = new TechemReceiver(this);
 
-                wmbusReceiver.setFilterIDs(new int[] { 92313948, 92363681, 92363684, 92363682, 92363688, 92363734 });
+                // wmbusReceiver.setFilterIDs(new int[] { 92313948, 92363681, 92363684, 92363682, 92363688, 92363734 });
 
                 // System.out.println("FOOBAR=");
 
@@ -59,11 +64,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 //
                 // }
 
-                String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
+                String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
 
                 // logger.debug("Interface name=" + interfaceName);
 
-                System.out.println("Interface name=" + interfaceName);
+                // System.out.println("Interface name=" + interfaceName);
 
                 wmbusReceiver.init(interfaceName);
 
@@ -125,7 +130,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     }
 
     public void processMessage(WMBusMessage message) {
-        System.out.println("processMessage(WMBusMessage message)");
         notifyWMBusMessageListeners(message);
     }
 

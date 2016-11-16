@@ -1,11 +1,15 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
+import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants.*;
+
 import java.util.Collection;
+import java.util.Set;
 
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
@@ -13,10 +17,11 @@ import org.eclipse.smarthome.core.types.State;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
+import com.google.common.collect.Sets;
 
 public class WMBusTechemHKVHandler extends ConfigStatusThingHandler {
 
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_WMBUS_TECHEM_HKV);
     private final Logger logger = LoggerFactory.getLogger(WMBusTechemHKVHandler.class);
 
     public WMBusTechemHKVHandler(Thing thing) {
@@ -35,7 +40,7 @@ public class WMBusTechemHKVHandler extends ConfigStatusThingHandler {
         logger.debug("Initializing WMBus handler.");
 
         Configuration config = getThing().getConfiguration();
-        config.get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
+        config.get(CONFKEY_INTERFACE_NAME);
         getThing().getProperties();
     }
 
@@ -51,13 +56,13 @@ public class WMBusTechemHKVHandler extends ConfigStatusThingHandler {
         if (command instanceof RefreshType) {
 
             switch (channelUID.getId()) {
-                case WMBusBindingConstants.CHANNEL_ROOMTEMPERATURE:
+                case CHANNEL_ROOMTEMPERATURE:
                     updateState(channelUID, getRoomTemperature());
                     break;
-                case WMBusBindingConstants.CHANNEL_RADIATORTEMPERATURE:
+                case CHANNEL_RADIATORTEMPERATURE:
                     updateState(channelUID, getRadiatorTemperature());
                     break;
-                case WMBusBindingConstants.CHANNEL_COSTCOUNTER:
+                case CHANNEL_COSTCOUNTER:
                     updateState(channelUID, getCoscounter());
                     break;
                 default:
