@@ -27,7 +27,8 @@ public class WMBusBindingConstants {
     // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
 
     // HKV config properties
-    public static final String HKV_ID = "hkvId";
+    public static final String PROPERTY_HKV_ID = "hkvId";
+    public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
 
     // defaults
     public static final int DEFAULT_POLLING_INTERVAL = 10; // in seconds

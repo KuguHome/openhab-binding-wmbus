@@ -23,6 +23,7 @@ public class WMBusTechemHKVHandler extends ConfigStatusThingHandler {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_WMBUS_TECHEM_HKV);
     private final Logger logger = LoggerFactory.getLogger(WMBusTechemHKVHandler.class);
+    private String wmBusMessage;
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
@@ -40,8 +41,8 @@ public class WMBusTechemHKVHandler extends ConfigStatusThingHandler {
         logger.debug("Initializing WMBus handler.");
 
         Configuration config = getThing().getConfiguration();
-        config.get(CONFKEY_INTERFACE_NAME);
-        getThing().getProperties();
+        wmBusMessage = (String) config.get(PROPERTY_WMBUS_MESSAGE);
+        System.out.print(wmBusMessage);
     }
 
     @Override

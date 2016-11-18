@@ -65,9 +65,12 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
         if (thingUID != null) {
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
-            properties.put(HKV_ID, wmBusDevice.getSecondaryAddress().getDeviceId());
+            properties.put(PROPERTY_WMBUS_MESSAGE, wmBusDevice);
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
-                    .withBridge(bridgeUID).withLabel(wmBusDevice.getSecondaryAddress().getDeviceId() + "").build();
+                    .withRepresentationProperty(wmBusDevice.getSecondaryAddress().getDeviceId().toString())
+                    .withBridge(bridgeUID)
+                    .withLabel("Techem Heizkostenverteiler Nr" + wmBusDevice.getSecondaryAddress().getDeviceId())
+                    .build();
             thingDiscovered(discoveryResult);
         } else {
             logger.debug("discovered unsupported WMBus device of type '{}' with id {}",

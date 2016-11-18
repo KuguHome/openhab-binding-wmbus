@@ -6,7 +6,7 @@
 
     <!-- Hue Bridge -->
     <bridge-type id="wmbusbridge">
-        <label>WMBus stick</label>
+        <label>Amber Wireless WMBus Stick</label>
         <description>The WMBus bridge represents the USB stick used to receive WMBus messages.</description>
 
         <properties>
@@ -17,7 +17,7 @@
             <parameter name="serialDevice" type="text">
                 <context>network_address</context>
                 <label>Serial device</label>
-                <description>The name of the serial device (e.g. /dev/usbtty).</description>
+                <description>The name of the serial device (e.g. /dev/ttyUSB0 or COM5).</description>
                 <required>true</required>
             </parameter>
         </config-description>

@@ -1,37 +1,92 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="wmbus"
-    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
-    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+<thing:thing-descriptions bindingId="wmbus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <!-- Generic thing for  -->
-    <thing-type id="techem_hkv">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
+	<!-- Generic thing for -->
+	<thing-type id="techem_hkv">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="wmbusbridge" />
+		</supported-bridge-type-refs>
 
-        <label>Techem HKV</label>
-        <description>A heat cost allocator of Techem</description>
+		<label>Techem HKV</label>
+		<description>A heat cost allocator of Techem</description>
 
-        <channels>
-            <channel id="room_temperature" typeId="room_temperature" />
-        </channels>
+		<channels>
+			<channel id="room_temperature" typeId="room_temperature" />
+			<channel id="radiator_temperature" typeId="radiator_temperature" />
+			<channel id="current_reading" typeId="current_reading" />
+			<channel id="last_reading" typeId="last_reading" />
+			<channel id="reception" typeId="reception" />
+			<channel id="last_date" typeId="last_date" />
+			<channel id="current_date" typeId="current_date" />
+			<channel id="almanac" typeId="almanac" />
+		</channels>
 
-        <config-description>
-            <parameter name="hkvId" type="text">
-                <label>HKV ID</label>
-                <description>The HKV identifier identifies one certain heat cost allocator.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
-    </thing-type>
-    
-    <channel-type id="room_temperature">
-        <item-type>Number</item-type>
-        <label>Temperature</label>
-        <description>Current temperature in degrees celsius</description>
-        <category>Temperature</category>
-        <state readOnly="true" pattern="%.1f °C">
-        </state>
-    </channel-type>
+	</thing-type>
+
+	<channel-type id="room_temperature">
+		<item-type>Number</item-type>
+		<label>Room Temperature</label>
+		<description>Current temperature in the room in degrees celsius</description>
+		<category>Temperature</category>
+		<state readOnly="true" pattern="%.1f °C">
+		</state>
+	</channel-type>
+	<channel-type id="radiator_temperature">
+		<item-type>Number</item-type>
+		<label>Radiator Temperature</label>
+		<description>Current temperature of the radiator in degrees celsius</description>
+		<category>Temperature</category>
+		<state readOnly="true" pattern="%.1f °C">
+		</state>
+	</channel-type>
+	<channel-type id="current_reading">
+		<item-type>Number</item-type>
+		<label>Current Reading</label>
+		<description>Current heat cost allocation reading</description>
+		<category>Energy</category>
+		<state readOnly="true" pattern="%d">
+		</state>
+	</channel-type>
+	<channel-type id="last_reading">
+		<item-type>Number</item-type>
+		<label>Last Reading</label>
+		<description>Heat cost allocation reading of the last peeriod</description>
+		<category>Energy</category>
+		<state readOnly="true" pattern="%d">
+		</state>
+	</channel-type>
+	<channel-type id="reception">
+		<item-type>Number</item-type>
+		<label>Reception Signal Strength</label>
+		<description>The Received Signal Strength Indication, power of the radio signal in dBm (decibel miliwatt)</description>
+		<category>QualityOfService</category>
+		<state readOnly="true" pattern="%d">
+		</state>
+	</channel-type>
+	<channel-type id="last_date">
+		<item-type>Number</item-type>
+		<label>Date of Last Reading</label>
+		<description>The date, when the last reading was taken.</description>
+		<category>QualityOfService</category>
+		<state readOnly="true" pattern="%te. tb tY">
+		</state>
+	</channel-type>
+	<channel-type id="current_date">
+		<item-type>Number</item-type>
+		<label>Date of Current Reading</label>
+		<description>The date, when the current reading was taken.</description>
+		<category>QualityOfService</category>
+		<state readOnly="true" pattern="%te. tb tY">
+		</state>
+	</channel-type>
+	<channel-type id="almanac">
+		<item-type>String</item-type>
+		<label>Monthly Readings</label>
+		<description>The Readings of all last months separately.</description>
+		<category>QualityOfService</category>
+		<state readOnly="true">
+		</state>
+	</channel-type>
 </thing:thing-descriptions>
