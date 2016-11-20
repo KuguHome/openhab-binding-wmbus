@@ -15,3 +15,5 @@ What is already working:
 What is not yet working
 * map the message data to thing channels and display it to the user
 * general smoothness
+
+There is some more information and discussion at https://community.openhab.org/t/new-binding-wireless-m-bus-techem-heat-cost-allocators/16974
