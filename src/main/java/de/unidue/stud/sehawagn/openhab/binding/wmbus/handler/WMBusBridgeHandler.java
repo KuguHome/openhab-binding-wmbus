@@ -4,7 +4,9 @@ import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstant
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
 
@@ -30,11 +32,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     private TechemReceiver wmbusReceiver = null;
 
+    private Map<String, WMBusMessage> knownDevices = new HashMap<>();
+
     private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -54,10 +57,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             if (wmbusReceiver == null) {
                 wmbusReceiver = new TechemReceiver(this);
 
-                // wmbusReceiver.setFilterIDs(new int[] { 92313948, 92363681, 92363684, 92363682, 92363688, 92363734 });
-
-                // System.out.println("FOOBAR=");
-
                 // for (String configKey : getConfig().getProperties().keySet()) {
                 // System.out.println("config key=" + configKey + "value=" +
                 // getConfig().getProperties().get(configKey));
@@ -66,28 +65,9 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
                 String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
 
-                // logger.debug("Interface name=" + interfaceName);
-
-                // System.out.println("Interface name=" + interfaceName);
-
                 wmbusReceiver.init(interfaceName);
 
                 updateStatus(ThingStatus.ONLINE);
-
-                // wmbusReceiver.setTimeout(5000);
-                /*
-                 * pollingRunnable = new Runnable() {
-                 *
-                 * @Override
-                 * public void run() {
-                 * try {
-                 * // TODO get the WMBus messages from the receiver?
-                 * } catch (Throwable t) {
-                 * logger.error("An unexpected error occurred: {}", t.getMessage(), t);
-                 * }
-                 * }
-                 * };
-                 */
             }
         } else {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
@@ -130,7 +110,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     }
 
     public void processMessage(WMBusMessage message) {
+        knownDevices.put(message.getSecondaryAddress().getDeviceId().toString(), message);
         notifyWMBusMessageListeners(message);
+    }
+
+    public WMBusMessage getDeviceById(String deviceId) {
+        return knownDevices.get(deviceId);
     }
 
 }

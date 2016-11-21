@@ -42,7 +42,6 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     public WMBusHKVDiscoveryService(Set<ThingTypeUID> supportedThingTypes, int timeout,
             boolean backgroundDiscoveryEnabledByDefault) throws IllegalArgumentException {
         super(supportedThingTypes, timeout, backgroundDiscoveryEnabledByDefault);
-        // TODO Auto-generated constructor stub
     }
 
     @Override
@@ -65,11 +64,11 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
         if (thingUID != null) {
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
-            properties.put(PROPERTY_WMBUS_MESSAGE, wmBusDevice);
+            properties.put(PROPERTY_HKV_ID, wmBusDevice.getSecondaryAddress().getDeviceId().toString());
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(wmBusDevice.getSecondaryAddress().getDeviceId().toString())
                     .withBridge(bridgeUID)
-                    .withLabel("Techem Heizkostenverteiler Nr" + wmBusDevice.getSecondaryAddress().getDeviceId())
+                    .withLabel("Techem Heizkostenverteiler #" + wmBusDevice.getSecondaryAddress().getDeviceId())
                     .build();
             thingDiscovered(discoveryResult);
         } else {
