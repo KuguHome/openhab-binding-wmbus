@@ -6,9 +6,11 @@ import java.text.SimpleDateFormat;
 import java.util.Set;
 
 import org.eclipse.smarthome.config.core.Configuration;
+import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
+import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
@@ -17,6 +19,7 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
+import org.eclipse.smarthome.core.types.State;
 import org.openmuc.jmbus.TechemHKVMessage;
 import org.openmuc.jmbus.WMBusMessage;
 import org.slf4j.Logger;
@@ -24,7 +27,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-public class WMBusTechemHKVHandler extends BaseThingHandler {
+public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMessageListener {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_WMBUS_TECHEM_HKV);
     private final Logger logger = LoggerFactory.getLogger(WMBusTechemHKVHandler.class);
@@ -32,6 +35,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler {
     private WMBusBridgeHandler bridgeHandler;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+    private TechemHKVMessage techemDeviceMessage;
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
@@ -42,6 +46,10 @@ public class WMBusTechemHKVHandler extends BaseThingHandler {
         logger.debug("Initializing WMBusTechemHKVHandler handler.");
         Configuration config = getConfig();
         deviceId = (String) config.getProperties().get(PROPERTY_HKV_ID);
+        WMBusMessage deviceMessage = getDevice();
+        if (deviceMessage instanceof TechemHKVMessage) {
+            techemDeviceMessage = (TechemHKVMessage) deviceMessage;
+        }
         updateStatus(ThingStatus.ONLINE);
     }
 
@@ -53,23 +61,45 @@ public class WMBusTechemHKVHandler extends BaseThingHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         if (command == RefreshType.REFRESH) {
-            WMBusMessage deviceMessage = getDevice();
-
-            if (deviceMessage instanceof TechemHKVMessage) {
-
-                TechemHKVMessage techemDeviceMessage = (TechemHKVMessage) deviceMessage;
-
-                updateState(CHANNEL_ROOMTEMPERATURE, new DecimalType(techemDeviceMessage.getT1()));
-                updateState(CHANNEL_RADIATORTEMPERATURE, new DecimalType(techemDeviceMessage.getT2()));
-                updateState(CHANNEL_CURRENTREADING, new DecimalType(techemDeviceMessage.getCurVal()));
-                updateState(CHANNEL_LASTREADING, new DecimalType(techemDeviceMessage.getLastVal()));
-                updateState(CHANNEL_RECEPTION, new DecimalType(techemDeviceMessage.getRssi()));
-                updateState(CHANNEL_LASTDATE,
-                        new StringType(dateFormat.format(techemDeviceMessage.getLastDate().getTime())));
-                updateState(CHANNEL_CURRENTDATE,
-                        new StringType(dateFormat.format(techemDeviceMessage.getCurDate().getTime())));
-
-                updateState(CHANNEL_ALMANAC, new StringType(techemDeviceMessage.getHistory()));
+            State newState = null;
+            if (techemDeviceMessage != null) {
+                switch (channelUID.getId()) {
+                    case CHANNEL_ROOMTEMPERATURE: {
+                        newState = new DecimalType(techemDeviceMessage.getT1());
+                        break;
+                    }
+                    case CHANNEL_RADIATORTEMPERATURE: {
+                        newState = new DecimalType(techemDeviceMessage.getT2());
+                        break;
+                    }
+                    case CHANNEL_CURRENTREADING: {
+                        newState = new DecimalType(techemDeviceMessage.getCurVal());
+                        break;
+                    }
+                    case CHANNEL_LASTREADING: {
+                        newState = new DecimalType(techemDeviceMessage.getLastVal());
+                        break;
+                    }
+                    case CHANNEL_RECEPTION: {
+                        newState = new DecimalType(techemDeviceMessage.getRssi());
+                        break;
+                    }
+                    case CHANNEL_LASTDATE: {
+                        newState = new DateTimeType(techemDeviceMessage.getLastDate());
+                        // newState = new StringType(dateFormat.format(techemDeviceMessage.getLastDate().getTime()));
+                        break;
+                    }
+                    case CHANNEL_CURRENTDATE: {
+                        newState = new DateTimeType(techemDeviceMessage.getCurDate());
+                        // newState = new StringType(dateFormat.format(techemDeviceMessage.getCurDate().getTime()));
+                        break;
+                    }
+                    case CHANNEL_ALMANAC: {
+                        newState = new StringType(techemDeviceMessage.getHistory());
+                        break;
+                    }
+                }
+                updateState(channelUID.getId(), newState);
             }
         }
     }
@@ -83,7 +113,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler {
             ThingHandler handler = bridge.getHandler();
             if (handler instanceof WMBusBridgeHandler) {
                 this.bridgeHandler = (WMBusBridgeHandler) handler;
-                // this.bridgeHandler.registerWMBusMessageListener(this); // what for?
+                this.bridgeHandler.registerWMBusMessageListener(this);
             } else {
                 return null;
             }
@@ -97,5 +127,25 @@ public class WMBusTechemHKVHandler extends BaseThingHandler {
             return bridgeHandler.getDeviceById(deviceId);
         }
         return null;
+    }
+
+    @Override
+    public void onNewWMBusDevice(WMBusMessage wmBusDevice) {
+        if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
+            updateStatus(ThingStatus.ONLINE);
+            onChangedWMBusDevice(wmBusDevice);
+        }
+
+    }
+
+    @Override
+    public void onChangedWMBusDevice(WMBusMessage wmBusDevice) {
+        if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
+            techemDeviceMessage = (TechemHKVMessage) wmBusDevice;
+            for (Channel curChan : getThing().getChannels()) {
+                handleCommand(curChan.getUID(), RefreshType.REFRESH);
+            }
+        }
+
     }
 }

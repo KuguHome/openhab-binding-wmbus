@@ -99,7 +99,7 @@ public class TechemReceiver implements WMBusListener {
         try {
             message.decodeDeep();
             if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
-                System.out.println(message.toString());
+                // System.out.println(message.toString());
                 wmBusBridgeHandler.processMessage(message);
             }
         } catch (DecodingException e) {

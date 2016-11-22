@@ -28,6 +28,10 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_WMBUS_BRIDGE);
 
+    private static final String DEVICE_STATE_ADDED = "added";
+
+    private static final String DEVICE_STATE_CHANGED = "changed";
+
     private Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
 
     private TechemReceiver wmbusReceiver = null;
@@ -57,12 +61,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             if (wmbusReceiver == null) {
                 wmbusReceiver = new TechemReceiver(this);
 
-                // for (String configKey : getConfig().getProperties().keySet()) {
-                // System.out.println("config key=" + configKey + "value=" +
-                // getConfig().getProperties().get(configKey));
-                //
-                // }
-
                 String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
 
                 wmbusReceiver.init(interfaceName);
@@ -80,7 +78,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             throw new NullPointerException("It's not allowed to pass a null WMBusMessageListener.");
         }
         boolean result = wmBusMessageListeners.add(wmBusMessageListener);
-
+        if (result) {
+            // inform the listener initially about all devices and their states
+            for (WMBusMessage device : knownDevices.values()) {
+                wmBusMessageListener.onNewWMBusDevice(device);
+            }
+        }
         return result;
     }
 
@@ -89,11 +92,23 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
      *
      * @param message
      */
-    private void notifyWMBusMessageListeners(final WMBusMessage message) {
+    private void notifyWMBusMessageListeners(final WMBusMessage message, final String type) {
         for (WMBusMessageListener wmBusMessageListener : wmBusMessageListeners) {
             try {
-                wmBusMessageListener.onWMBusMessageReceived(message);
-                break;
+                switch (type) {
+                    case DEVICE_STATE_ADDED: {
+                        wmBusMessageListener.onNewWMBusDevice(message);
+                        break;
+                    }
+                    case DEVICE_STATE_CHANGED: {
+                        wmBusMessageListener.onChangedWMBusDevice(message);
+                        break;
+                    }
+                    default: {
+                        throw new IllegalArgumentException(
+                                "Could not notify wmBusMessageListeners for unknown event type " + type);
+                    }
+                }
             } catch (Exception e) {
                 logger.error("An exception occurred while notifying the WMBusMessageListener", e);
             }
@@ -110,8 +125,13 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     }
 
     public void processMessage(WMBusMessage message) {
-        knownDevices.put(message.getSecondaryAddress().getDeviceId().toString(), message);
-        notifyWMBusMessageListeners(message);
+        String deviceId = message.getSecondaryAddress().getDeviceId().toString();
+        String deviceState = DEVICE_STATE_ADDED;
+        if (knownDevices.containsKey(deviceId)) {
+            deviceState = DEVICE_STATE_CHANGED;
+        }
+        knownDevices.put(deviceId, message);
+        notifyWMBusMessageListeners(message, deviceState);
     }
 
     public WMBusMessage getDeviceById(String deviceId) {

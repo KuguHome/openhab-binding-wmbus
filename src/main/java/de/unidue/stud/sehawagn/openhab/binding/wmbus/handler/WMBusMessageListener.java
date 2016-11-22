@@ -8,6 +8,12 @@ public interface WMBusMessageListener {
      *
      * @param wmBusDevice The message which was received.
      */
-    public void onWMBusMessageReceived(WMBusMessage wmBusDevice);
+    public void onNewWMBusDevice(WMBusMessage wmBusDevice);
+
+    /**
+     *
+     * @param wmBusDevice The message which was received.
+     */
+    public void onChangedWMBusDevice(WMBusMessage wmBusDevice);
 
 }

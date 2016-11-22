@@ -38,7 +38,7 @@
 		<label>Room Temperature</label>
 		<description>Current temperature in the room in degrees celsius</description>
 		<category>Temperature</category>
-		<state readOnly="true" pattern="%.1f °C">
+		<state readOnly="true" pattern="%.2f °C">
 		</state>
 	</channel-type>
 	<channel-type id="radiator_temperature">
@@ -46,7 +46,7 @@
 		<label>Radiator Temperature</label>
 		<description>Current temperature of the radiator in degrees celsius</description>
 		<category>Temperature</category>
-		<state readOnly="true" pattern="%.1f °C">
+		<state readOnly="true" pattern="%.2f °C">
 		</state>
 	</channel-type>
 	<channel-type id="current_reading">
@@ -74,15 +74,15 @@
 		</state>
 	</channel-type>
 	<channel-type id="last_date">
-		<item-type>String</item-type>
+		<item-type>DateTime</item-type>
 		<label>Date of Last Reading</label>
 		<description>The date, when the last reading was taken.</description>
-		<category>GarageDoor</category>
+		<category>Date</category>
 		<state readOnly="true">
 		</state>
 	</channel-type>
 	<channel-type id="current_date">
-		<item-type>String</item-type>
+		<item-type>DateTime</item-type>
 		<label>Date of Current Reading</label>
 		<description>The date, when the current reading was taken.</description>
 		<category>GarageDoor</category>
@@ -93,7 +93,7 @@
 		<item-type>String</item-type>
 		<label>Monthly Readings</label>
 		<description>The Readings of all last months separately.</description>
-		<category>GarageDoor</category>
+		<category>Date</category>
 		<state readOnly="true">
 		</state>
 	</channel-type>

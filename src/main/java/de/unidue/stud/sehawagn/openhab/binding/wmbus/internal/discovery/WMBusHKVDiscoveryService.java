@@ -55,7 +55,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     @Override
-    public void onWMBusMessageReceived(WMBusMessage wmBusDevice) {
+    public void onNewWMBusDevice(WMBusMessage wmBusDevice) {
         onWMBusMessageReceivedInternal(wmBusDevice);
     }
 
@@ -98,6 +98,11 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     public void activate() {
         bridgeHandler.registerWMBusMessageListener(this);
+    }
+
+    @Override
+    public void onChangedWMBusDevice(WMBusMessage wmBusDevice) {
+        // nothing to do
     }
 
 }
