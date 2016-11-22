@@ -22,6 +22,14 @@
 			<channel id="current_date" typeId="current_date" />
 			<channel id="almanac" typeId="almanac" />
 		</channels>
+		
+		<config-description>
+            <parameter name="hkvId" type="text">
+                <label>Heat Cost Allocator ID</label>
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
 
 	</thing-type>
 
@@ -52,7 +60,7 @@
 	<channel-type id="last_reading">
 		<item-type>Number</item-type>
 		<label>Last Reading</label>
-		<description>Heat cost allocation reading of the last peeriod</description>
+		<description>Heat cost allocation reading of the last period</description>
 		<category>Energy</category>
 		<state readOnly="true" pattern="%d">
 		</state>
@@ -66,26 +74,26 @@
 		</state>
 	</channel-type>
 	<channel-type id="last_date">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>Date of Last Reading</label>
 		<description>The date, when the last reading was taken.</description>
-		<category>QualityOfService</category>
-		<state readOnly="true" pattern="%te. tb tY">
+		<category>GarageDoor</category>
+		<state readOnly="true">
 		</state>
 	</channel-type>
 	<channel-type id="current_date">
-		<item-type>Number</item-type>
+		<item-type>String</item-type>
 		<label>Date of Current Reading</label>
 		<description>The date, when the current reading was taken.</description>
-		<category>QualityOfService</category>
-		<state readOnly="true" pattern="%te. tb tY">
+		<category>GarageDoor</category>
+		<state readOnly="true">
 		</state>
 	</channel-type>
 	<channel-type id="almanac">
 		<item-type>String</item-type>
 		<label>Monthly Readings</label>
 		<description>The Readings of all last months separately.</description>
-		<category>QualityOfService</category>
+		<category>GarageDoor</category>
 		<state readOnly="true">
 		</state>
 	</channel-type>

@@ -6,7 +6,7 @@ Bundle-Vendor: Eclipse.org/SmartHome
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
- lib/jmbus-2.2.1.jar,
+ lib/jmbus-2.2.2.jar,
  lib/rxtxcomm_api-2.2pre2.jar
 Bundle-NativeCode: lib/librxtxSerial.so; 
   osname="Linux";processor="x86-64",
