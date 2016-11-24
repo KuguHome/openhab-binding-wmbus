@@ -8,12 +8,17 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.7
 Bundle-ClassPath: .,
  lib/jmbus-2.2.2.jar,
  lib/rxtxcomm_api-2.2pre2.jar
-Bundle-NativeCode: lib/librxtxSerial.so; 
-  osname="Linux";processor="x86-64",
-  lib/Windows/i368-mingw32/rxtxSerial.dll;
-  osname="Windows"
+Bundle-NativeCode: lib/rxtx/Linux/arm/librxtxSerial-2.2pre1-armhf.so ; osname=linux ; processor=arm,
+ lib/rxtx/Linux/linux32/librxtxSerial.so ; osname=linux ; processor=x86,
+ lib/rxtx/Linux/linux64/librxtxSerial.so ; osname=linux ; processor=x86_64,
+ lib/rxtx/Linux/linux64/librxtxSerial.so ; osname=linux ; processor=amd64,
+ lib/rxtx/Linux/sh4/librxtxSerial.so ; osname=linux ; processor=sh4,
+ lib/rxtx/Linux/mips/librxtxSerial.so ; osname=linux ; processor=mips,
+ lib/rxtx/Mac/mac64/librxtxSerial.dylib ; osname=MacOSX ; processor=x86_64,
+ lib/rxtx/Mac/mac64/librxtxSerial.dylib ; osname=Mac OS X ; processor=x86_64,
+ lib/rxtx/Windows/win32/rxtxSerial.dll ; osname=Windows; osname=Windows 7; osname=Windows7;osname=Windows Vista; osname=Windows XP; osname=Windows NT; processor=x86,
+ lib/rxtx/Windows/win64/rxtxSerial.dll ; osname=Windows; osname=Windows 7; osname=Windows7;osname=Windows Vista; osname=Windows XP; osname=Windows NT; osname=Windows Server2008 R2; processor=amd64; processor=x86_64
 Import-Package: com.google.common.collect;version="10.0.1",
- gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.smarthome.config.core,
@@ -25,6 +30,6 @@ Import-Package: com.google.common.collect;version="10.0.1",
  org.osgi.framework;version="1.8.0",
  org.slf4j;version="1.7.2"
 Service-Component: OSGI-INF/*.xml
-Export-Package: de.unidue.stud.sehawagn.openhab.binding.wmbus,de.unidue.
- stud.sehawagn.openhab.binding.wmbus.handler, gnu.io
+Export-Package: de.unidue.stud.sehawagn.openhab.binding.wmbus,
+ de.unidue.stud.sehawagn.openhab.binding.wmbus.handler
 Require-Bundle: org.eclipse.smarthome.config.discovery
