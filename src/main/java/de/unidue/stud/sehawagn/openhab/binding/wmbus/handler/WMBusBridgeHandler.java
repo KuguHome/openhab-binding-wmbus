@@ -26,7 +26,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemReceiver;
 
 public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_WMBUS_BRIDGE);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_BRIDGE);
 
     private static final String DEVICE_STATE_ADDED = "added";
 

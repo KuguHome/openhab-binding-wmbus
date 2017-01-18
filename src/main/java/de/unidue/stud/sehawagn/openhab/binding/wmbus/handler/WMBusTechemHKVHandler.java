@@ -29,7 +29,7 @@ import com.google.common.collect.Sets;
 
 public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMessageListener {
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_WMBUS_TECHEM_HKV);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_TECHEM_HKV);
     private final Logger logger = LoggerFactory.getLogger(WMBusTechemHKVHandler.class);
     private String deviceId;
     private WMBusBridgeHandler bridgeHandler;

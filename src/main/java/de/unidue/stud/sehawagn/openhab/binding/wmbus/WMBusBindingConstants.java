@@ -9,10 +9,12 @@ import com.google.common.collect.ImmutableSet;
 public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
+    public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
+    public static final String THING_TYPE_NAME_TECHEM_HKV = "techem_hkv";
 
     // List all Thing Type UIDs, related to the WMBus Binding
-    public final static ThingTypeUID THING_TYPE_WMBUS_BRIDGE = new ThingTypeUID(BINDING_ID, "wmbusbridge");
-    public final static ThingTypeUID THING_TYPE_WMBUS_TECHEM_HKV = new ThingTypeUID(BINDING_ID, "techem_hkv");
+    public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
+    public final static ThingTypeUID THING_TYPE_TECHEM_HKV = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_TECHEM_HKV);
 
     // List all channels
     public static final String CHANNEL_ROOMTEMPERATURE = "room_temperature";
@@ -24,8 +26,8 @@ public class WMBusBindingConstants {
     public static final String CHANNEL_CURRENTDATE = "current_date";
     public static final String CHANNEL_ALMANAC = "almanac";
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_WMBUS_BRIDGE,
-            THING_TYPE_WMBUS_TECHEM_HKV);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
+            THING_TYPE_TECHEM_HKV);
 
     // Bridge config properties
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";

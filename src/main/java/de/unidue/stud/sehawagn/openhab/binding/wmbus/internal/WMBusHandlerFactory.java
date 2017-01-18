@@ -37,7 +37,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     protected ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_WMBUS_BRIDGE)) {
+        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
             if (thing instanceof Bridge) {
                 WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing);
                 registerDiscoveryService(handler);
@@ -45,7 +45,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             } else {
                 return null;
             }
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_WMBUS_TECHEM_HKV)) {
+        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
             return new WMBusTechemHKVHandler(thing);
         } else {
             return null;
