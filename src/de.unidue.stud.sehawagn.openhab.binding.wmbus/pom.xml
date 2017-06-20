@@ -18,4 +18,14 @@
 
   <name>Eclipse SmartHome WMBus binding</name>
 
+	<dependencies>
+
+		<!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
+		<dependency>
+			<groupId>com.neuronrobotics</groupId>
+			<artifactId>nrjavaserial</artifactId>
+			<version>3.13.0</version>
+		</dependency>
+
+	</dependencies>
 </project>
