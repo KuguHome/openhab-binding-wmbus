@@ -23,6 +23,7 @@ package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 import java.io.IOException;
 
 import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.HexConverter;
 import org.openmuc.jmbus.TechemHKVMessage;
 import org.openmuc.jmbus.WMBusListener;
 import org.openmuc.jmbus.WMBusMessage;
@@ -38,6 +39,8 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
  *
  */
 public class TechemReceiver implements WMBusListener {
+    private static boolean debugMode = true;
+
     int[] filterIDs = new int[] {};
 
     private WMBusBridgeHandler wmBusBridgeHandler;
@@ -104,23 +107,34 @@ public class TechemReceiver implements WMBusListener {
             }
         } catch (DecodingException e) {
             byte[] messageBytes = message.asBytes();
-            if (messageBytes.length == 51 && (messageBytes[10] & 0xff) == 0xa0
-                    && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
-                newMessage(new TechemHKVMessage(message));
+            if ((messageBytes.length == 51 || messageBytes.length == 47) && (messageBytes[10] & 0xff) == 0xa0 && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
+                newMessage(new TechemHKVMessage(message)); // standard a0
+            } else if ((messageBytes[10] & 0xff) == 0xa2 && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+                newMessage(new TechemHKVMessage(message)); // at Karl's
+            } else if ((messageBytes[10] & 0xff) == 0x80 && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+                newMessage(new TechemHKVMessage(message)); // at Karl's - warmwater?
             } else {
-                System.out.println("Unable to fully decode received message: " + e.getMessage());
-                System.out.println(message.toString());
+                if (debugMode == true) {
+                    System.out.println("TechemReceiver: Unable to fully decode received message: " + e.getMessage());
+                    System.out.println("messageBytes.length=" + messageBytes.length + " (messageBytes[10] & 0xff)=" + (messageBytes[10] & 0xff) + " message.getSecondaryAddress().getManufacturerId()=" + message.getSecondaryAddress().getManufacturerId());
+                    System.out.println(message.toString());
+                    e.printStackTrace();
+                }
             }
         }
     }
 
     @Override
     public void discardedBytes(byte[] bytes) {
-        // System.out.println("Bytes discarded: " + HexConverter.toShortHexString(bytes));
+        if (debugMode == true) {
+          System.out.println("Bytes discarded: " + HexConverter.toShortHexString(bytes));
+        }
     }
 
     @Override
     public void stoppedListening(IOException e) {
-        // System.out.println("Stopped listening for new messages because: " + e.getMessage());
+        if (debugMode == true) {
+            System.out.println("Stopped listening for new messages because: " + e.getMessage());
+        }
     }
 }
