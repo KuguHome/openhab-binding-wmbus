@@ -32,6 +32,7 @@ public class WMBusBindingConstants {
     // Bridge config properties
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";
     // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
+    public static final String CONFKEY_RADIO_MODE = "radioMode";
 
     // HKV config properties
     public static final String PROPERTY_HKV_ID = "hkvId";
