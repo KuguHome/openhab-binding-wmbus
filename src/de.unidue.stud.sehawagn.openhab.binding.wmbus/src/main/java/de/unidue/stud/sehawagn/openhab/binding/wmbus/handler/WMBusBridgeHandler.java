@@ -72,6 +72,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
         // check serial device name
         if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME)) {
+            logger.error("Cannot open WMBus device. Serial device name not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Serial device name not given.");
             return;
@@ -79,6 +80,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
         // check radio mode
         if (!getConfig().containsKey(CONFKEY_RADIO_MODE)) {
+            logger.error("Cannot open WMBus device. Radio mode not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Radio mode not given.");
             return;
@@ -101,6 +103,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     radioMode = WMBusMode.T;
                     break;
                 default:
+                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+                            + ". Expected 'S' or 'T'.");
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                             "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
                                     + ". Expected 'S' or 'T'.");
@@ -111,6 +115,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             try {
                 wmbusReceiver.init(interfaceName, radioMode);
             } catch (IOException e) {
+                logger.error("Cannot open WMBus device: " + e.getMessage());
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                         "Cannot open WMBus device: " + e.getMessage());
                 return;
