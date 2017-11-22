@@ -73,6 +73,7 @@ public class TechemReceiver implements WMBusListener {
         logger.debug("Opening wmbus serial port {} in mode {}", serialPortName, radioMode.toString());
         final WMBusSap wMBusSap = new WMBusSapAmber(serialPortName, radioMode, this);
         wMBusSap.open(); // this can throw the IOException - will be caught in WMBusBridgeHandler.initialize()
+        logger.debug("Connected to WMBus serial port");
 
         // close WMBus connection on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
