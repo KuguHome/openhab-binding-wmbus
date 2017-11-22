@@ -20,6 +20,11 @@
                 <description>The name of the serial device (e.g. /dev/ttyUSB0 or COM5).</description>
                 <required>true</required>
             </parameter>
+            <parameter name="radioMode" type="text" pattern="S|T">
+                <description>Radio mode to operate the WMBus radio module on (S or T).</description>
+                <label>Radio mode</label>
+                <required>true</required>
+            </parameter>
         </config-description>
     </bridge-type>
 
