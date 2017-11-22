@@ -51,7 +51,8 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     @Override
     protected void startScan() {
-        // do nothing since there is no active scan possible, only receival
+        // do nothing since there is no active scan possible at the moment, only receiving
+        logger.debug("startScan(): unimplemented - devices will be added upon reception of telegrams from them");
     }
 
     @Override
@@ -60,11 +61,16 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     private void onWMBusMessageReceivedInternal(WMBusMessage wmBusDevice) {
+        // try to find this device in the list of supported devices
         ThingUID thingUID = getThingUID(wmBusDevice);
+
         if (thingUID != null) {
+            // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
             properties.put(PROPERTY_HKV_ID, wmBusDevice.getSecondaryAddress().getDeviceId().toString());
+
+            // TODO label according to uid
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(wmBusDevice.getSecondaryAddress().getDeviceId().toString())
                     .withBridge(bridgeUID)
@@ -72,6 +78,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
                     .build();
             thingDiscovered(discoveryResult);
         } else {
+            // device unknown -> log message
             logger.debug("discovered unsupported WMBus device of type '{}' with id {}",
                     wmBusDevice.getSecondaryAddress().getDeviceType(), wmBusDevice.getSecondaryAddress().getDeviceId());
         }
