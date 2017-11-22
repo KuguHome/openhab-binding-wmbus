@@ -55,4 +55,4 @@ There is some more information and discussion [in the forum](https://community.o
 
 1. Install OpenHAB IDE according to their webpage. This is basically Eclipse IDE + Oomph + OpenHAB dev addons via Oomph.
 2. Clone this repository.
-3. File - Import - Maven - Existing Project. Give path to this git repository, add to project set "WMBus" or similar.
+3. File - Import - Maven - Existing Maven Projects. Give path to this git repository, select all three projects, add project to working set "WMBus" or similar.
