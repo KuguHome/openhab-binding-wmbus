@@ -71,7 +71,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         logger.debug("Initializing WMBus bridge handler.");
 
         // check serial device name
-        if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME)) {
+        if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME) || getConfig().get(CONFKEY_INTERFACE_NAME) == null
+                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
             logger.error("Cannot open WMBus device. Serial device name not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Serial device name not given.");
@@ -79,7 +80,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         }
 
         // check radio mode
-        if (!getConfig().containsKey(CONFKEY_RADIO_MODE)) {
+        if (!getConfig().containsKey(CONFKEY_RADIO_MODE) || getConfig().get(CONFKEY_RADIO_MODE) == null
+                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
             logger.error("Cannot open WMBus device. Radio mode not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Radio mode not given.");
@@ -88,8 +90,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
         // set up WMBus receiver = handler for radio telegrams
         if (wmbusReceiver == null) {
-            wmbusReceiver = new TechemReceiver(this);
-
             String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
             String radioModeStr = (String) getConfig().get(CONFKEY_RADIO_MODE);
             WMBusMode radioMode;
@@ -112,12 +112,14 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             }
 
             // connect to the radio module
+            wmbusReceiver = new TechemReceiver(this);
             try {
                 wmbusReceiver.init(interfaceName, radioMode);
             } catch (IOException e) {
                 logger.error("Cannot open WMBus device: " + e.getMessage());
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                         "Cannot open WMBus device: " + e.getMessage());
+                wmbusReceiver = null; // should free serial device if in use
                 return;
             }
 
