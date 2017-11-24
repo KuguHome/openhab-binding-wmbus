@@ -57,8 +57,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         // judging from the hue bridge, this seems to be not needed...?
-        logger.debug("WARNING: Unexpected call of handleCommand(). Parameters are channelUID={} and command={}",
-                channelUID, command);
+        logger.debug("WARNING: Unexpected call of handleCommand(). Parameters are channelUID={} and command={}", channelUID, command);
     }
 
     /**
@@ -71,20 +70,16 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         logger.debug("Initializing WMBus bridge handler.");
 
         // check serial device name
-        if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME) || getConfig().get(CONFKEY_INTERFACE_NAME) == null
-                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
+        if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME) || getConfig().get(CONFKEY_INTERFACE_NAME) == null || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
             logger.error("Cannot open WMBus device. Serial device name not given.");
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                    "Cannot open WMBus device. Serial device name not given.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Serial device name not given.");
             return;
         }
 
         // check radio mode
-        if (!getConfig().containsKey(CONFKEY_RADIO_MODE) || getConfig().get(CONFKEY_RADIO_MODE) == null
-                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
+        if (!getConfig().containsKey(CONFKEY_RADIO_MODE) || getConfig().get(CONFKEY_RADIO_MODE) == null || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
             logger.error("Cannot open WMBus device. Radio mode not given.");
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                    "Cannot open WMBus device. Radio mode not given.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Radio mode not given.");
             return;
         }
 
@@ -103,11 +98,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     radioMode = WMBusMode.T;
                     break;
                 default:
-                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                            + ". Expected 'S' or 'T'.");
-                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                            "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                                    + ". Expected 'S' or 'T'.");
+                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
                     return;
             }
 
@@ -117,8 +109,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 wmbusReceiver.init(interfaceName, radioMode);
             } catch (IOException e) {
                 logger.error("Cannot open WMBus device: " + e.getMessage());
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                        "Cannot open WMBus device: " + e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device: " + e.getMessage());
                 wmbusReceiver = null; // should free serial device if in use
                 return;
             }
@@ -160,8 +151,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                         break;
                     }
                     default: {
-                        throw new IllegalArgumentException(
-                                "Could not notify wmBusMessageListeners for unknown event type " + type);
+                        throw new IllegalArgumentException("Could not notify wmBusMessageListeners for unknown event type " + type);
                     }
                 }
             } catch (Exception e) {

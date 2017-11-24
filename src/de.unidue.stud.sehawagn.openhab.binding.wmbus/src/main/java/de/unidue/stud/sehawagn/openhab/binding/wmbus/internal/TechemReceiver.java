@@ -16,8 +16,9 @@ import org.slf4j.LoggerFactory;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 
 /**
- * Keeps connection with the WMBus radio module and forwards TODO Javadoc class description
+ * Keeps connection with WMBus radio module and forwards received messages to WMBusBridgeHandler for processing
  *
+ * TODO Javadoc class description
  * TODO generalize to be responsible not only for Techem HKV messages, but be the general WMBus message receiver.
  *
  */
@@ -76,12 +77,12 @@ public class TechemReceiver implements WMBusListener {
         return false;
     }
 
-    @Override
     /*
      * Handle incoming WMBus message from radio module.
      *
      * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
      */
+    @Override
     public void newMessage(WMBusMessage message) {
         try {
             message.decodeDeep();
@@ -95,21 +96,16 @@ public class TechemReceiver implements WMBusListener {
             // try harder to decode
             // TODO what is happening here?
             byte[] messageBytes = message.asBytes();
-            if ((messageBytes.length == 51 || messageBytes.length == 47) && (messageBytes[10] & 0xff) == 0xa0
-                    && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
+            if ((messageBytes.length == 51 || messageBytes.length == 47) && (messageBytes[10] & 0xff) == 0xa0 && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
                 newMessage(new TechemHKVMessage(message)); // standard a0
-            } else if ((messageBytes[10] & 0xff) == 0xa2
-                    && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+            } else if ((messageBytes[10] & 0xff) == 0xa2 && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
                 newMessage(new TechemHKVMessage(message)); // at Karl's
-            } else if ((messageBytes[10] & 0xff) == 0x80
-                    && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+            } else if ((messageBytes[10] & 0xff) == 0x80 && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
                 newMessage(new TechemHKVMessage(message)); // at Karl's - warmwater?
             } else {
                 // still could not decode message
                 logger.debug("TechemReceiver: Unable to fully decode received message: " + e.getMessage());
-                logger.debug("messageBytes.length=" + messageBytes.length + " (messageBytes[10] & 0xff)="
-                        + (messageBytes[10] & 0xff) + " message.getSecondaryAddress().getManufacturerId()="
-                        + message.getSecondaryAddress().getManufacturerId());
+                logger.debug("messageBytes.length=" + messageBytes.length + " (messageBytes[10] & 0xff)=" + (messageBytes[10] & 0xff) + " message.getSecondaryAddress().getManufacturerId()=" + message.getSecondaryAddress().getManufacturerId());
                 logger.debug("Message: " + message.toString());
                 logger.debug("Stack trace: " + e.getStackTrace().toString());
             }

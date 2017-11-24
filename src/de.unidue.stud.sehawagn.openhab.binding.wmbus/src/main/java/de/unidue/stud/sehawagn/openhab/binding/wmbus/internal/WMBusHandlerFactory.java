@@ -28,8 +28,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKV
  */
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets
-            .union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
+    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
@@ -72,8 +71,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         logger.debug("Registering discovery service.");
         WMBusHKVDiscoveryService discoveryService = new WMBusHKVDiscoveryService(bridgeHandler);
         discoveryService.activate();
-        this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext
-                .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
+        this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext.registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
     }
 
 }
