@@ -21,11 +21,11 @@ There is some more information and discussion [in the forum](https://community.o
 
 ## Images
 
-![A Techem Heat Cost Allocator on the radiator](techem.jpg)
-![The display, showing radio mode](techem_remote.jpg)
-![Amber Wireless Stick on the RaspberryPi](raspiamber.jpg)
-![The Thing in the Control Screen](control.png)
-![Diagram in HABmin, fed by several HKVs ](diagrams.png)
+![A Techem Heat Cost Allocator on the radiator](doc/techem.jpg)
+![The display, showing radio mode](doc/techem_remote.jpg)
+![Amber Wireless Stick on the RaspberryPi](doc/raspiamber.jpg)
+![The Thing in the Control Screen](doc/control.png)
+![Diagram in HABmin, fed by several HKVs ](doc/diagrams.png)
 
 
 ## Install
