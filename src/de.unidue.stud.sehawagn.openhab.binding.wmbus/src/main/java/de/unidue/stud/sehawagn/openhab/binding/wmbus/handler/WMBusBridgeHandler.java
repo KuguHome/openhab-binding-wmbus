@@ -2,6 +2,7 @@ package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
 import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants.*;
 
+import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -19,11 +20,15 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openmuc.jmbus.WMBusMessage;
+import org.openmuc.jmbus.WMBusMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemReceiver;
 
+/**
+ * This class represents the WMBus bridge and handles general events for the whole group of WMBus devices.
+ */
 public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_BRIDGE);
@@ -52,24 +57,74 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
         // judging from the hue bridge, this seems to be not needed...?
+        logger.debug("WARNING: Unexpected call of handleCommand(). Parameters are channelUID={} and command={}",
+                channelUID, command);
     }
 
+    /**
+     * Connects to the WMBus radio module and updates bridge status.
+     *
+     * @see org.eclipse.smarthome.core.thing.binding.BaseThingHandler#initialize()
+     */
     @Override
     public void initialize() {
         logger.debug("Initializing WMBus bridge handler.");
-        if (getConfig().get(CONFKEY_INTERFACE_NAME) != null) {
-            if (wmbusReceiver == null) {
-                wmbusReceiver = new TechemReceiver(this);
 
-                String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
-
-                wmbusReceiver.init(interfaceName);
-
-                updateStatus(ThingStatus.ONLINE);
-            }
-        } else {
+        // check serial device name
+        if (!getConfig().containsKey(CONFKEY_INTERFACE_NAME) || getConfig().get(CONFKEY_INTERFACE_NAME) == null
+                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
+            logger.error("Cannot open WMBus device. Serial device name not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Serial device name not given.");
+            return;
+        }
+
+        // check radio mode
+        if (!getConfig().containsKey(CONFKEY_RADIO_MODE) || getConfig().get(CONFKEY_RADIO_MODE) == null
+                || ((String) getConfig().get(CONFKEY_RADIO_MODE)).isEmpty()) {
+            logger.error("Cannot open WMBus device. Radio mode not given.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                    "Cannot open WMBus device. Radio mode not given.");
+            return;
+        }
+
+        // set up WMBus receiver = handler for radio telegrams
+        if (wmbusReceiver == null) {
+            String interfaceName = (String) getConfig().get(CONFKEY_INTERFACE_NAME);
+            String radioModeStr = (String) getConfig().get(CONFKEY_RADIO_MODE);
+            WMBusMode radioMode;
+
+            // check and convert radio mode
+            switch (radioModeStr) {
+                case "S":
+                    radioMode = WMBusMode.S;
+                    break;
+                case "T":
+                    radioMode = WMBusMode.T;
+                    break;
+                default:
+                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+                            + ". Expected 'S' or 'T'.");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                            "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+                                    + ". Expected 'S' or 'T'.");
+                    return;
+            }
+
+            // connect to the radio module
+            wmbusReceiver = new TechemReceiver(this);
+            try {
+                wmbusReceiver.init(interfaceName, radioMode);
+            } catch (IOException e) {
+                logger.error("Cannot open WMBus device: " + e.getMessage());
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                        "Cannot open WMBus device: " + e.getMessage());
+                wmbusReceiver = null; // should free serial device if in use
+                return;
+            }
+
+            // success
+            updateStatus(ThingStatus.ONLINE);
         }
     }
 

@@ -30,22 +30,29 @@ import org.openmuc.jmbus.WMBusMessage;
 import org.openmuc.jmbus.WMBusMode;
 import org.openmuc.jmbus.WMBusSap;
 import org.openmuc.jmbus.WMBusSapAmber;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 
 /**
+ * Keeps connection with the WMBus radio module and forwards TODO Javadoc class description
+ *
+ * TODO generalize to be responsible not only for Techem HKV messages, but be the general WMBus message receiver.
  *
  * @author
  *
  */
 public class TechemReceiver implements WMBusListener {
-    private static boolean debugMode = true;
 
     int[] filterIDs = new int[] {};
 
     private WMBusBridgeHandler wmBusBridgeHandler;
 
     public static String VENDOR_TECHEM = "TCH";
+
+    // OpenHAB logger
+    private final Logger logger = LoggerFactory.getLogger(TechemReceiver.class);
 
     public TechemReceiver(WMBusBridgeHandler wmBusBridgeHandler) {
         this.wmBusBridgeHandler = wmBusBridgeHandler;
@@ -59,21 +66,16 @@ public class TechemReceiver implements WMBusListener {
         this.filterIDs = filterIDs;
     }
 
-    public void init(String serialPortName) {
+    public void init(String serialPortName, WMBusMode radioMode) throws IOException {
 
-        WMBusMode mode = null;
+        // open WMBus connection
+        // TODO support the two other radio modules as well (RadioCrafts in v2.2; IMST stick supported since jMBus v3.0)
+        logger.debug("Opening wmbus serial port {} in mode {}", serialPortName, radioMode.toString());
+        final WMBusSap wMBusSap = new WMBusSapAmber(serialPortName, radioMode, this);
+        wMBusSap.open(); // this can throw the IOException - will be caught in WMBusBridgeHandler.initialize()
+        logger.debug("Connected to WMBus serial port");
 
-        mode = WMBusMode.T;
-
-        final WMBusSap wMBusSap = new WMBusSapAmber(serialPortName, mode, this);
-
-        try {
-            wMBusSap.open();
-        } catch (IOException e2) {
-            System.err.println("Failed to open serial port: " + e2.getMessage());
-            System.exit(1);
-        }
-
+        // close WMBus connection on shutdown
         Runtime.getRuntime().addShutdownHook(new Thread() {
             @Override
             public void run() {
@@ -98,43 +100,52 @@ public class TechemReceiver implements WMBusListener {
     }
 
     @Override
+    /*
+     * Handle incoming WMBus message from radio module.
+     *
+     * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
+     */
     public void newMessage(WMBusMessage message) {
         try {
             message.decodeDeep();
             if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
-                // System.out.println(message.toString());
+                logger.debug("Matched message received: " + message.toString());
                 wmBusBridgeHandler.processMessage(message);
+            } else {
+                logger.debug("Unmatched message received: " + message.toString());
             }
         } catch (DecodingException e) {
+            // try harder to decode
+            // TODO what is happening here?
             byte[] messageBytes = message.asBytes();
-            if ((messageBytes.length == 51 || messageBytes.length == 47) && (messageBytes[10] & 0xff) == 0xa0 && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
+            if ((messageBytes.length == 51 || messageBytes.length == 47) && (messageBytes[10] & 0xff) == 0xa0
+                    && message.getSecondaryAddress().getManufacturerId().equals(VENDOR_TECHEM)) {
                 newMessage(new TechemHKVMessage(message)); // standard a0
-            } else if ((messageBytes[10] & 0xff) == 0xa2 && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+            } else if ((messageBytes[10] & 0xff) == 0xa2
+                    && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
                 newMessage(new TechemHKVMessage(message)); // at Karl's
-            } else if ((messageBytes[10] & 0xff) == 0x80 && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
+            } else if ((messageBytes[10] & 0xff) == 0x80
+                    && message.getSecondaryAddress().getManufacturerId().equals("TCH")) {
                 newMessage(new TechemHKVMessage(message)); // at Karl's - warmwater?
             } else {
-                if (debugMode == true) {
-                    System.out.println("TechemReceiver: Unable to fully decode received message: " + e.getMessage());
-                    System.out.println("messageBytes.length=" + messageBytes.length + " (messageBytes[10] & 0xff)=" + (messageBytes[10] & 0xff) + " message.getSecondaryAddress().getManufacturerId()=" + message.getSecondaryAddress().getManufacturerId());
-                    System.out.println(message.toString());
-                    e.printStackTrace();
-                }
+                // still could not decode message
+                logger.debug("TechemReceiver: Unable to fully decode received message: " + e.getMessage());
+                logger.debug("messageBytes.length=" + messageBytes.length + " (messageBytes[10] & 0xff)="
+                        + (messageBytes[10] & 0xff) + " message.getSecondaryAddress().getManufacturerId()="
+                        + message.getSecondaryAddress().getManufacturerId());
+                logger.debug("Message: " + message.toString());
+                logger.debug("Stack trace: " + e.getStackTrace().toString());
             }
         }
     }
 
     @Override
     public void discardedBytes(byte[] bytes) {
-        if (debugMode == true) {
-          System.out.println("Bytes discarded: " + HexConverter.toShortHexString(bytes));
-        }
+        logger.debug("Bytes discarded by radio module: " + HexConverter.toShortHexString(bytes));
     }
 
     @Override
     public void stoppedListening(IOException e) {
-        if (debugMode == true) {
-            System.out.println("Stopped listening for new messages because: " + e.getMessage());
-        }
+        logger.debug("Stopped listening for new messages. Reason: {}", e.getMessage());
     }
 }

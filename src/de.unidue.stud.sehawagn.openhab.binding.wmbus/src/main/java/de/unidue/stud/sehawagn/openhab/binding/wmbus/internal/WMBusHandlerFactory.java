@@ -13,6 +13,8 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.osgi.framework.ServiceRegistration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
@@ -21,12 +23,22 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKVDiscoveryService;
 
+/*
+ * This class is the main entry point of the binding.
+ */
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets
             .union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+
+    // OpenHAB logger
+    private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
+
+    public WMBusHandlerFactory() {
+        logger.debug("WMBusHandlerFactory: wmbus binding starting up.");
+    }
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
@@ -38,6 +50,8 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
         if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
+            // create handler for WMBus bridge
+            logger.debug("Creating (handler for) WMBus bridge.");
             if (thing instanceof Bridge) {
                 WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing);
                 registerDiscoveryService(handler);
@@ -46,6 +60,8 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 return null;
             }
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
+            // create handler for Techem HKV device
+            logger.debug("Creating (handler for) TechemHKV device.");
             return new WMBusTechemHKVHandler(thing);
         } else {
             return null;
@@ -53,6 +69,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     }
 
     private synchronized void registerDiscoveryService(WMBusBridgeHandler bridgeHandler) {
+        logger.debug("Registering discovery service.");
         WMBusHKVDiscoveryService discoveryService = new WMBusHKVDiscoveryService(bridgeHandler);
         discoveryService.activate();
         this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext

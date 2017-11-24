@@ -30,7 +30,7 @@ There is some more information and discussion [in the forum](https://community.o
 
 ## Install
 
-1. Run `mvn package` in the repository root.
+1. Run `mvn package` in the `src` directory..
 2. The compilation result will be at `src/de.unidue.stud.sehawagn.openhab.binding.wmbus/target/de.unidue.stud.sehawagn.openhab.binding.wmbus-2.0.0-SNAPSHOT.jar`.
 3. Drop this .jar into your openHAB2 Karaf deploy directory, e.g. `openhab2/addons`.
 4. It should get automatically picked up and started by Karaf. 
@@ -49,3 +49,10 @@ There is some more information and discussion [in the forum](https://community.o
 16. If a Persistence Add-on is installed, the readings will also be stored into the database.
 17. In HABmin or HABPanel, diagrams/charts/graphs can be configured to have a look at the latest values in comparison.
 18. If any Exceptions or other messages turn up in the logs or console, please let me know and open an issue here.
+
+
+## Development
+
+1. Install OpenHAB IDE according to their webpage. This is basically Eclipse IDE + Oomph + OpenHAB dev addons via Oomph.
+2. Clone this repository.
+3. File - Import - Maven - Existing Maven Projects. Give path to this git repository, select all three projects, add project to working set "WMBus" or similar.
