@@ -20,12 +20,13 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
-import org.openmuc.jmbus.TechemHKVMessage;
-import org.openmuc.jmbus.WMBusMessage;
+import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
+
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemHKVMessage;
 
 public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMessageListener {
 
@@ -39,6 +40,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
+        logger.debug("WMBusThingHandler: new() for Thing" + thing.toString());
     }
 
     @Override
@@ -47,9 +49,12 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         Configuration config = getConfig();
         deviceId = (String) config.getProperties().get(PROPERTY_HKV_ID);
         WMBusMessage deviceMessage = getDevice();
-        if (deviceMessage instanceof TechemHKVMessage) {
-            techemDeviceMessage = (TechemHKVMessage) deviceMessage;
-        }
+        // TODO
+        /*
+         * if (deviceMessage instanceof TechemHKVMessage) {
+         * techemDeviceMessage = (TechemHKVMessage) deviceMessage;
+         * }
+         */
         updateStatus(ThingStatus.ONLINE);
     }
 
@@ -60,51 +65,69 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
+        logger.debug("Thing handler: (1/4) command for channel " + channelUID.toString() + " command: " + command.toString());
         if (command == RefreshType.REFRESH) {
+            logger.debug("Thing handler: handle command(): (2/4) command.refreshtype == REFRESH");
             State newState = null;
             if (techemDeviceMessage != null) {
+                logger.debug("Thing handler: handle Command(): (3/4) deviceMessage != null");
                 switch (channelUID.getId()) {
+                    //TODO wie passiert die Kanalzuordnung - woher kommen diese Kanal-Nummern?
                     case CHANNEL_ROOMTEMPERATURE: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDeviceMessage.getT1());
                         break;
                     }
                     case CHANNEL_RADIATORTEMPERATURE: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDeviceMessage.getT2());
                         break;
                     }
                     case CHANNEL_CURRENTREADING: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDeviceMessage.getCurVal());
                         break;
                     }
                     case CHANNEL_LASTREADING: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDeviceMessage.getLastVal());
                         break;
                     }
                     case CHANNEL_RECEPTION: {
-                        newState = new DecimalType(techemDeviceMessage.getRssi());
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        // TODO
+                        // newState = new DecimalType(techemDeviceMessage.getRssi());
                         break;
                     }
                     case CHANNEL_LASTDATE: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DateTimeType(techemDeviceMessage.getLastDate());
                         // newState = new StringType(dateFormat.format(techemDeviceMessage.getLastDate().getTime()));
                         break;
                     }
                     case CHANNEL_CURRENTDATE: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DateTimeType(techemDeviceMessage.getCurDate());
                         // newState = new StringType(dateFormat.format(techemDeviceMessage.getCurDate().getTime()));
                         break;
                     }
                     case CHANNEL_ALMANAC: {
+                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new StringType(techemDeviceMessage.getHistory());
                         break;
                     }
+                    default:
+                        logger.debug("Thing handler: handleCommand(): (4/4): no channel to put this value into found");
+                        break;
                 }
+                logger.debug("Thing handler: handleCommand(): assigning new state to channel");
                 updateState(channelUID.getId(), newState);
             }
         }
     }
 
     private synchronized WMBusBridgeHandler getBridgeHandler() {
+        logger.debug("thinghandler: getBridgeHandler() begin");
         if (this.bridgeHandler == null) {
             Bridge bridge = getBridge();
             if (bridge == null) {
@@ -118,34 +141,43 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
                 return null;
             }
         }
+        logger.debug("thinghandler: getBridgeHandler() returning bridgehandler");
         return this.bridgeHandler;
     }
 
     private WMBusMessage getDevice() {
+        logger.debug("thinghandler: getDevice() begin");
         WMBusBridgeHandler bridgeHandler = getBridgeHandler();
-        if (bridgeHandler != null) {
-            return bridgeHandler.getDeviceById(deviceId);
+        if (bridgeHandler == null) {
+            logger.debug("thinghandler: getDevice() end: returning null");
+            return null;
         }
-        return null;
+        logger.debug("thinghandler: getDevice() end: returning devicebyid");
+        return bridgeHandler.getDeviceById(deviceId);
     }
 
     @Override
     public void onNewWMBusDevice(WMBusMessage wmBusDevice) {
+        logger.debug("thinghandler: onNEwWMBusDevice(): is it me?");
         if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
+            logger.debug("thinghandler: onNEwWMBusDevice(): yes it's me");
             updateStatus(ThingStatus.ONLINE);
             onChangedWMBusDevice(wmBusDevice);
         }
-
+        logger.debug("thinghandler: onNEwWMBusDevice(): no");
     }
 
     @Override
     public void onChangedWMBusDevice(WMBusMessage wmBusDevice) {
+        logger.debug("thinghandler: onChangedWMBusDevice(): is it me?");
         if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
-            techemDeviceMessage = (TechemHKVMessage) wmBusDevice;
+            // TODO
+            // techemDeviceMessage = (TechemHKVMessage) wmBusDevice;
+            logger.debug("thinghandler: onChangedWMBusDevice(): inform all channels to refresh");
             for (Channel curChan : getThing().getChannels()) {
                 handleCommand(curChan.getUID(), RefreshType.REFRESH);
             }
         }
-
+        logger.debug("thinghandler: onChangedWMBusDevice(): return");
     }
 }

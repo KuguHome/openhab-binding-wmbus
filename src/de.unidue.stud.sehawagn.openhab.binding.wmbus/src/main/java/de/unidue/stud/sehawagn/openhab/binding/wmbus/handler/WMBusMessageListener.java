@@ -1,6 +1,6 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
-import org.openmuc.jmbus.WMBusMessage;
+import org.openmuc.jmbus.wireless.WMBusMessage;
 
 public interface WMBusMessageListener {
 
