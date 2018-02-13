@@ -21,11 +21,11 @@ There is some more information and discussion [in the forum](https://community.o
 
 ## Images
 
-![A Techem Heat Cost Allocator on the radiator](techem.jpg)
-![The display, showing radio mode](techem_remote.jpg)
-![Amber Wireless Stick on the RaspberryPi](raspiamber.jpg)
-![The Thing in the Control Screen](control.png)
-![Diagram in HABmin, fed by several HKVs ](diagrams.png)
+![A Techem Heat Cost Allocator on the radiator](doc/techem.jpg)
+![The display, showing radio mode](doc/techem_remote.jpg)
+![Amber Wireless Stick on the RaspberryPi](doc/raspiamber.jpg)
+![The Thing in the Control Screen](doc/control.png)
+![Diagram in HABmin, fed by several HKVs ](doc/diagrams.png)
 
 
 ## Install
@@ -56,3 +56,7 @@ There is some more information and discussion [in the forum](https://community.o
 1. Install OpenHAB IDE according to their webpage. This is basically Eclipse IDE + Oomph + OpenHAB dev addons via Oomph.
 2. Clone this repository.
 3. File - Import - Maven - Existing Maven Projects. Give path to this git repository, select all three projects, add project to working set "WMBus" or similar.
+
+## Licenses
+
+This binding is released under EPL-1.0, though the included [patched version of outdated jmbus-2.2.2](https://github.com/pokerazor/jmbus) is under GPL-3.0. (Newer versions of it, to which we intend to switch to soon, are under MPL-2.0)

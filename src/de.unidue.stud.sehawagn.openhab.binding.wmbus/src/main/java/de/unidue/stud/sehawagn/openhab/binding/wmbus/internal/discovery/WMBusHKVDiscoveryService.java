@@ -32,7 +32,6 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     //TODO diese Liste erweitern um Kamstrup und Qundis-Geräte
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
             .put("68TCH105255", "techem_hkv").build();
-    // @formatter:on
 
     private WMBusBridgeHandler bridgeHandler;
 
@@ -41,8 +40,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
         this.bridgeHandler = bridgeHandler;
     }
 
-    public WMBusHKVDiscoveryService(Set<ThingTypeUID> supportedThingTypes, int timeout,
-            boolean backgroundDiscoveryEnabledByDefault) throws IllegalArgumentException {
+    public WMBusHKVDiscoveryService(Set<ThingTypeUID> supportedThingTypes, int timeout, boolean backgroundDiscoveryEnabledByDefault) throws IllegalArgumentException {
         super(supportedThingTypes, timeout, backgroundDiscoveryEnabledByDefault);
     }
 
