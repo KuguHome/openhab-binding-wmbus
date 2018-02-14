@@ -20,6 +20,7 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.types.UnDefType;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -68,20 +69,8 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         logger.debug("Thing handler: (1/4) command for channel " + channelUID.toString() + " command: " + command.toString());
         if (command == RefreshType.REFRESH) {
             logger.debug("Thing handler: handle command(): (2/4) command.refreshtype == REFRESH");
-            State newState = new State() {
+            State newState = UnDefType.NULL;
 
-                @Override
-                public String toFullString() {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-
-                @Override
-                public String format(String pattern) {
-                    // TODO Auto-generated method stub
-                    return null;
-                }
-            };
             if (techemDeviceMessage != null) {
                 logger.debug("Thing handler: handle Command(): (3/4) deviceMessage != null");
                 switch (channelUID.getId()) {
