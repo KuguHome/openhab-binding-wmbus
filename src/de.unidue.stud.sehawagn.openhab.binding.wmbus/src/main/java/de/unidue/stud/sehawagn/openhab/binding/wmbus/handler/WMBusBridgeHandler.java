@@ -106,7 +106,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     radioMode = WMBusMode.T;
                     break;
                 case "C":
-                    radioMode = WMBusMode.C;
+//                    radioMode = WMBusMode.C;
+//                    break;
                 default:
                     logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
@@ -115,7 +116,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
             // connect to the radio module / open WMBus connection
             logger.debug("Opening wmbus serial port {} in mode {}", interfaceName, radioMode.toString());
-            String receiverManufacturer = "imst"; // TODO verallgemeinern
+//            String receiverManufacturer = "imst"; // TODO verallgemeinern
+            String receiverManufacturer = "amber";
             WMBusManufacturer wmBusManufacturer = parseManufacturer(receiverManufacturer);
             if (wmBusManufacturer == null) {
                 logger.error("Cannot open WMBus device. Unknown manufacturer given: " + receiverManufacturer
@@ -126,6 +128,9 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 return;
             }
             logger.debug("Building new connection");
+
+            wmbusReceiver = new WMBusReceiver(this);
+
             WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver,
                     interfaceName);
             logger.debug("Setting WMBus radio mode");
