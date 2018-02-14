@@ -29,9 +29,10 @@ public class WMBusBindingConstants {
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE, THING_TYPE_TECHEM_HKV);
 
     // Bridge config properties
+    public static final String CONFKEY_STICK_MODEL = "stickModel";
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";
-    // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
     public static final String CONFKEY_RADIO_MODE = "radioMode";
+    // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
 
     // HKV config properties
     public static final String PROPERTY_HKV_ID = "hkvId";

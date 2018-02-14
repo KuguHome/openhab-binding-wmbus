@@ -2,20 +2,20 @@ package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.GregorianCalendar;
 
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.VariableDataStructure;
+import org.openmuc.jmbus.wireless.WMBusMessage;
 
 /**
  *
  * Represents a Message of a Techem Heizkostenverteiler (heat cost allocator)
  *
  */
-public class TechemHKVMessage { // extends WMBusMessage {
-
-    private final byte[] hkvBuffer = {};
+public class TechemHKVMessage {
 
     int ciField;
     String status = "";
@@ -30,50 +30,24 @@ public class TechemHKVMessage { // extends WMBusMessage {
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
 
-    // to make v3.0.1 WMBusMessage happy
-    Integer signalStrengthInDBm;
-    int controlField;
-    SecondaryAddress secondaryAddress;
     VariableDataStructure vdr;
 
-    // Java ERROR: Implicit super constructor WMBusMessage() is undefined for default constructor. Must define an
-    // explicit constructor TechemHKVMessage.java
-    // /de.unidue.stud.sehawagn.openhab.binding.wmbus/src/main/java/de/unidue/stud/sehawagn/openhab/binding/wmbus/internal
-    // line 18 Java Problem
-    // Problem: WMBusMessage hat keinen parameterlosen Konstruktur...
-    // und der Konstruktur mit Parametern ist nicht sichtbar von aussen... benötigt mod. jMBus-Bibliothek.
+    private WMBusMessage originalMessage;
 
-    // public TechemHKVMessage(WMBusMessage originalMessage) {
-    // /*
-    // * this(originalMessage.getRssi(), originalMessage.asBlob(), originalMessage.getControlField(),
-    // * originalMessage.getSecondaryAddress(), originalMessage.getVariableDataResponse());
-    // */
-    // this.signalStrengthInDBm = originalMessage.getRssi();
-    // this.hkvBuffer = originalMessage.asBlob();
-    // this.controlField = originalMessage.getControlField();
-    // this.secondaryAddress = originalMessage.getSecondaryAddress();
-    // this.vdr = originalMessage.getVariableDataResponse();
-    // }
-
-    /*
-     * public TechemHKVMessage(Integer signalStrengthInDBm, byte[] buffer, int controlField,
-     * SecondaryAddress secondaryAddress, VariableDataStructure vdr) {
-     * // super(signalStrengthInDBm, buffer, controlField, secondaryAddress, vdr);
-     * //super();
-     * this.hkvBuffer = buffer;
-     * }
-     */
+    public TechemHKVMessage(WMBusMessage originalMessage) {
+        this.originalMessage = originalMessage;
+    }
 
     public void decodeDeep() throws DecodingException {
-        // try {
-        // TODO Diese Methode gibt es nicht mehr in v3.0.1
-        // super.decodeDeep();
-        // } catch (DecodingException e) {
+        byte[] hkvBuffer = originalMessage.asBlob();
+        SecondaryAddress secondaryAddress = originalMessage.getSecondaryAddress();
+        vdr = originalMessage.getVariableDataResponse();
+
         int offset = 10;
 
         ciField = hkvBuffer[offset + 0] & 0xff;
 
-        if ((ciField == 0xa0 || ciField == 0xa2) && getSecondaryAddress().getManufacturerId().equals("TCH")) {
+        if ((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH")) {
             byte[] temp = { hkvBuffer[offset + 1] }; // TODO Methode für byte -> String hinzufügen
             status = HexConverter.bytesToHex(temp);
             lastDate = parseLastDate(offset + 2);
@@ -87,16 +61,8 @@ public class TechemHKVMessage { // extends WMBusMessage {
             history = HexConverter.bytesToHex(historyBytes);
 
         } else {
-            // TODO
-            // throw e;
-            return;
+            throw new DecodingException("No known Techem HKV message");
         }
-        // }
-    }
-
-    // TODO tut nichts - nur um den Fehlende-Methode-Fehler wegen WMBusMessage-Vererbung wegzubekommen
-    public SecondaryAddress getSecondaryAddress() {
-        return null;
     }
 
     public Calendar getLastDate() {
@@ -128,14 +94,14 @@ public class TechemHKVMessage { // extends WMBusMessage {
     }
 
     int parseBigEndianInt(int i) {
-        return (hkvBuffer[i] & 0xFF) + ((hkvBuffer[i + 1] & 0xFF) << 8);
+        return (originalMessage.asBlob()[i] & 0xFF) + ((originalMessage.asBlob()[i + 1] & 0xFF) << 8);
     }
 
     float parseTemp(int i) {
         float tempint = parseBigEndianInt(i);
 
         return tempint / 100;
-        // return String.format("%.2f", tempint / 100)+"�C";
+        // return String.format("%.2f", tempint / 100)+"°C";
     }
 
     private Calendar parseLastDate(int i) {
@@ -175,8 +141,8 @@ public class TechemHKVMessage { // extends WMBusMessage {
         s += ", Current Date: " + dateFormat.format(curDate.getTime());
         s += ", Current Value: " + curVal;
 
-        s += ", T1: " + String.format("%.2f", t1) + "�C";
-        s += ", T2: " + String.format("%.2f", t2) + "�C";
+        s += ", T1: " + String.format("%.2f", t1) + "°C";
+        s += ", T2: " + String.format("%.2f", t2) + "°C";
 
         s += ", History: " + history;
         return s;
@@ -184,25 +150,27 @@ public class TechemHKVMessage { // extends WMBusMessage {
 
     @Override
     public String toString() {
-        // TODO benögt die von WMBusMessage geerbten Methoden getRssi() usw.
-        return "TODO FIXME";
-        //
-        // StringBuilder builder = new StringBuilder();
-        // if (getVariableDataResponse() == null) {
-        // builder.append("Message has not been decoded. Bytes of this message: ");
-        // HexConverter.appendHexString(builder, hkvBuffer, 0, hkvBuffer.length);
-        // return builder.toString();
-        // } else {
-        // builder.append(new Date()).append(";").append(getRssi()).append(";").append(getControlField()).append(";")
-        // .append(getSecondaryAddress().getManufacturerId()).append(";")
-        // .append(getSecondaryAddress().getDeviceId()).append(";").append(getSecondaryAddress().getVersion())
-        // .append(";").append(getSecondaryAddress().getDeviceType()).append(";").append(ciField).append(";")
-        // .append(status).append(";").append(dateFormat.format(lastDate.getTime())).append(";")
-        // .append(lastVal).append(";").append(dateFormat.format(curDate.getTime())).append(";").append(curVal)
-        // .append(";").append(t1).append(";").append(t2).append(";").append(history).append(";")
-        // .append(HexConverter.bytesToHex(hkvBuffer));
-        // return builder.toString();
-        // }
+
+        StringBuilder builder = new StringBuilder();
+        if (originalMessage.getVariableDataResponse() == null) {
+            builder.append("Message has not been decoded. Bytes of this message: ");
+//            HexConverter.appendHexString(builder, originalMessage.asBlob(), 0, originalMessage.asBlob().length);
+            return builder.toString();
+        } else {
+            builder.append(new Date()).append(";").append(originalMessage.getRssi()).append(";").append(originalMessage.getControlField()).append(";")
+                    .append(originalMessage.getSecondaryAddress().getManufacturerId()).append(";")
+                    .append(originalMessage.getSecondaryAddress().getDeviceId()).append(";").append(originalMessage.getSecondaryAddress().getVersion())
+                    .append(";").append(originalMessage.getSecondaryAddress().getDeviceType()).append(";").append(ciField).append(";")
+                    .append(status).append(";").append(dateFormat.format(lastDate.getTime())).append(";")
+                    .append(lastVal).append(";").append(dateFormat.format(curDate.getTime())).append(";").append(curVal)
+                    .append(";").append(t1).append(";").append(t2).append(";").append(history).append(";")
+                    .append(HexConverter.bytesToHex(originalMessage.asBlob()));
+            return builder.toString();
+        }
+    }
+
+    public WMBusMessage getOriginalMessage() {
+        return originalMessage;
     }
 
 }

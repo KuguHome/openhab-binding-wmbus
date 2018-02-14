@@ -21,13 +21,13 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 
 import java.io.IOException;
+import java.util.Arrays;
 
 //import org.openmuc.jmbus.TechemHKVMessage;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import java.util.Arrays;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 
@@ -50,7 +50,7 @@ public class WMBusReceiver implements WMBusListener {
     public static String VENDOR_KAMSTRUP = "KAM";
 
     // OpenHAB logger
-    private final Logger logger = LoggerFactory.getLogger(TechemReceiver.class);
+    private final Logger logger = LoggerFactory.getLogger(WMBusReceiver.class);
 
     public WMBusReceiver(WMBusBridgeHandler wmBusBridgeHandler) {
         this.wmBusBridgeHandler = wmBusBridgeHandler;

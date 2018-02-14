@@ -6,23 +6,34 @@
 
     <!-- Hue Bridge -->
     <bridge-type id="wmbusbridge">
-        <label>Amber Wireless WMBus Stick</label>
-        <description>The WMBus bridge represents the USB stick used to receive WMBus messages.</description>
+        <label>WMBus Stick</label>
+        <description>The WMBus bridge represents the USB stick used to receive WMBus messages. There are three different sticks supported by the underlying jMBus library: Amber Wireless AMB8465-M, Radiocrafts RC1180-MBUS and IMST iM871A-USB</description>
 
-        <properties>
-            <property name="vendor">Amber Wireless</property>
-        </properties>
-        
         <config-description>
+            <parameter name="stickModel" type="text">
+                <description>The stick model used.</description>
+                <label>Stick model</label>
+                <required>true</required>
+                <options>
+                    <option value="amber">Amber Wireless AMB8465-M</option>
+                    <option value="rc">Radiocrafts RC1180-MBUS</option>
+                    <option value="imst">IMST iM871A-USB</option>
+                </options>
+            </parameter>
             <parameter name="serialDevice" type="text">
                 <context>network_address</context>
                 <label>Serial device</label>
                 <description>The name of the serial device (e.g. /dev/ttyUSB0 or COM5).</description>
                 <required>true</required>
             </parameter>
-            <parameter name="radioMode" type="text" pattern="S|T">
-                <description>Radio mode to operate the WMBus radio module on (S or T).</description>
+            <parameter name="radioMode" type="text">
+                <description>Radio mode to operate the WMBus radio module on.</description>
                 <label>Radio mode</label>
+                <options>
+                    <option value="S">S (Stationary) - interval</option>
+                    <option value="T">T (Transmit) - frequent transmit (e.g. Techem HKV)</option>
+                    <option value="C">C (Compact) - frequent transmit, more payload</option>
+                </options>
                 <required>true</required>
             </parameter>
         </config-description>

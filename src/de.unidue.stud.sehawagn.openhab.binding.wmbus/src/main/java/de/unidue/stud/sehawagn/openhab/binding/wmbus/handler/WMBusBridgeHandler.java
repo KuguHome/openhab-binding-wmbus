@@ -73,6 +73,15 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     public void initialize() {
         logger.debug("Initializing WMBus bridge handler.");
 
+        // check stick model
+        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_STICK_MODEL)
+                || getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL) == null
+                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL)).isEmpty()) {
+            logger.error("Cannot open WMBus device. Stick model not given.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Stick model not given.");
+            return;
+        }
+
         // check serial device name
         if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)
                 || getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) == null
@@ -93,10 +102,30 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
         // set up WMBus receiver = handler for radio telegrams
         if (wmbusReceiver == null) {
+            String stickModel = (String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL);
             String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
             String radioModeStr = (String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE);
-            WMBusMode radioMode;
 
+            // connect to the radio module / open WMBus connection
+            logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName, radioModeStr);
+
+            WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel);
+            if (wmBusManufacturer == null) {
+                logger.error("Cannot open WMBus device. Unknown manufacturer given: " + stickModel
+                        + ". Expected 'amber' or 'imst' or 'rc'.");
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                        "Cannot open WMBus device. Unknown manufacturer given: " + stickModel
+                                + ". Expected 'amber' or 'imst' or 'rc'.");
+                return;
+            }
+            logger.debug("Building new connection");
+
+            wmbusReceiver = new WMBusReceiver(this);
+
+            WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver,
+                    interfaceName);
+
+            WMBusMode radioMode;
             // check and convert radio mode
             switch (radioModeStr) {
                 case "S":
@@ -113,28 +142,9 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
                     return;
             }
-
-            // connect to the radio module / open WMBus connection
-            logger.debug("Opening wmbus serial port {} in mode {}", interfaceName, radioMode.toString());
-//            String receiverManufacturer = "imst"; // TODO verallgemeinern
-            String receiverManufacturer = "amber";
-            WMBusManufacturer wmBusManufacturer = parseManufacturer(receiverManufacturer);
-            if (wmBusManufacturer == null) {
-                logger.error("Cannot open WMBus device. Unknown manufacturer given: " + receiverManufacturer
-                        + ". Expected 'amber' or 'imst' or 'rc'.");
-                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                        "Cannot open WMBus device. Unknown manufacturer given: " + receiverManufacturer
-                                + ". Expected 'amber' or 'imst' or 'rc'.");
-                return;
-            }
-            logger.debug("Building new connection");
-
-            wmbusReceiver = new WMBusReceiver(this);
-
-            WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver,
-                    interfaceName);
-            logger.debug("Setting WMBus radio mode");
+            logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
             connectionBuilder.setMode(radioMode);
+
             try {
                 logger.debug("Building/opening connection");
                 this.wmbusConnection = connectionBuilder.build();
