@@ -25,7 +25,7 @@ Bundle-ActivationPolicy: lazy
 Export-Package: de.unidue.stud.sehawagn.openhab.binding.wmbus,
  de.unidue.stud.sehawagn.openhab.binding.wmbus.handler
 Require-Bundle: org.eclipse.smarthome.config.discovery
-Bundle-NativeCode: lib/native/linux/arm/librxtxSerial-2.2pre1-armhf.so ; osname=linux ; processor=arm,
+Bundle-NativeCode: lib/native/linux/ARM/librxtxSerial-2.2pre1-armhf.so ; osname=linux ; processor=arm,
  lib/native/linux/x86_32/librxtxSerial.so ; osname=linux ; processor=x86,
  lib/native/linux/x86_64/librxtxSerial.so ; osname=linux ; processor=x86_64,
  lib/native/linux/linux64/librxtxSerial.so ; osname=linux ; processor=amd64,

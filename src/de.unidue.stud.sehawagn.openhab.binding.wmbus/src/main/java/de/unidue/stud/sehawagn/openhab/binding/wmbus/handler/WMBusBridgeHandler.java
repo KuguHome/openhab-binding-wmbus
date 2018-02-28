@@ -135,11 +135,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     radioMode = WMBusMode.T;
                     break;
                 case "C":
-//                    radioMode = WMBusMode.C;
-//                    break;
+                    radioMode = WMBusMode.C;
+                    break;
                 default:
-                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
-                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S' or 'T'.");
+                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
                     return;
             }
             logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
@@ -147,7 +147,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
             try {
                 logger.debug("Building/opening connection");
-                this.wmbusConnection = connectionBuilder.build();
+                if (wmbusConnection != null) {
+                    logger.debug("Connection already set, closing old");
+                    wmbusConnection.close();
+                    wmbusConnection = null;
+                }
+                wmbusConnection = connectionBuilder.build();
             } catch (IOException e) {
                 logger.error("Cannot open WMBus device. Connection builder returned: " + e.getMessage());
                 updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
@@ -265,6 +270,16 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     @Override
     public void dispose() {
         logger.debug("WMBus bridge Handler disposed.");
+
+        if (wmbusConnection != null) {
+            logger.debug("Close connection");
+            try {
+                wmbusConnection.close();
+            } catch (IOException e) {
+                logger.error("An exception occurred while closing the wmbusConnection", e);
+            }
+            wmbusConnection = null;
+        }
 
         if (wmbusReceiver != null) {
             wmbusReceiver = null;
