@@ -23,6 +23,7 @@ package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.openmuc.jmbus.DecodingException;
 //import org.openmuc.jmbus.TechemHKVMessage;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -90,7 +91,18 @@ public class WMBusReceiver implements WMBusListener {
      */
     public void newMessage(WMBusMessage message) {
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
+            // decode VDR
+            try {
+                message.getVariableDataResponse().decode();
+                logger.debug("receiver: variable data response decoded");
+            } catch (DecodingException e) {
+                logger.debug("receiver: could not decode variable data response: " + e.getMessage());
+            }
+            // print it
             logger.debug("receiver: Matched message received: " + message.toString());
+            ///
+            // get variable response, decrypt.
+            // getdatarecords - DIB und VIB
             wmBusBridgeHandler.processMessage(message);
             logger.debug("receiver: Forwarded to handler.processMessage()");
         } else {
