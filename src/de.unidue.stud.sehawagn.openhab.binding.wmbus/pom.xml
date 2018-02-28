@@ -52,6 +52,15 @@
             <version>2.0.0</version>
         </dependency>
         -->
+        
+        <!-- https://mvnrepository.com/artifact/org.eclipse.core/org.eclipse.core.runtime -->
+        <!--
+        <dependency>
+            <groupId>org.eclipse.core</groupId>
+            <artifactId>org.eclipse.core.runtime</artifactId>
+            <version>3.13.0.v20170207-1030</version>
+        </dependency>
+        -->
 
 	</dependencies>
 </project>
