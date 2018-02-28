@@ -33,6 +33,7 @@ There is some more information and discussion [in the forum](https://community.o
 1. Run `mvn package` in the `src` directory..
 2. The compilation result will be at `src/de.unidue.stud.sehawagn.openhab.binding.wmbus/target/de.unidue.stud.sehawagn.openhab.binding.wmbus-2.0.0-SNAPSHOT.jar`.
 3. Drop this .jar into your openHAB2 Karaf deploy directory, e.g. `openhab2/addons`.
+3a. Native librxtxSerial.so needs to be placed in /etc/openhab2/rxtx/ with openhab user as the owner. This is where the binding will look for it. Native library is part of building jRXTX. File from Ubuntu/Debian packa rxtx-java may also work.
 4. It should get automatically picked up and started by Karaf. 
 5. Run `bundle:list` in the OSGi console, it should show a `wmbus` bundle in active state.
 6. Open PaperUI in the browser.
