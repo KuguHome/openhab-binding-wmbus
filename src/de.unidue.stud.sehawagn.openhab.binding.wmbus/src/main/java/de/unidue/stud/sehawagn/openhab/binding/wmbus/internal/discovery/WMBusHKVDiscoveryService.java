@@ -35,8 +35,8 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             //TODO get IDs from log
             //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
             //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
-            //.put("", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
-            //.put("", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
+            .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
+            .put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
             .build();
 
     private WMBusBridgeHandler bridgeHandler;
