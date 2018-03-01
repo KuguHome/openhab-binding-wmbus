@@ -33,8 +33,10 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
             .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
             //TODO get IDs from log
-            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
             //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
+            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
+            //.put("", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
+            //.put("", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
             .build();
 
     private WMBusBridgeHandler bridgeHandler;
@@ -89,8 +91,11 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             thingDiscovered(discoveryResult);
         } else {
             // device unknown -> log message
-            logger.debug("discovered unsupported WMBus device of type '{}' with secondary address {}",
-                    wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType(), wmBusDevice.getOriginalMessage().getSecondaryAddress().toString());
+            logger.debug("discovered unsupported WMBus device with our type ID {} of WMBus type '{}' with secondary address {}",
+                    getTypeID(wmBusDevice),
+                    wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType(),
+                    wmBusDevice.getOriginalMessage().getSecondaryAddress().toString()
+                    );
         }
     }
 
@@ -111,14 +116,19 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     private ThingTypeUID getThingTypeUID(WMBusDevice wmBusDevice) {
-        String typeIdString = wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
-                + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
-                + wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
+        String typeIdString = getTypeID(wmBusDevice);
         logger.debug("discovery: getThingTypeUID(): This device has typeID " + typeIdString
                 + " -- supported device types are "
                 + Arrays.toString(WMBusHKVDiscoveryService.TYPE_TO_WMBUS_ID_MAP.keySet().toArray()));
         String thingTypeId = TYPE_TO_WMBUS_ID_MAP.get(typeIdString);
         return thingTypeId != null ? new ThingTypeUID(BINDING_ID, thingTypeId) : null;
+    }
+
+    // this ID is needed for add new devices
+    private String getTypeID(WMBusDevice wmBusDevice) {
+        return wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
+                + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
+                + wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
     }
 
     public void activate() {

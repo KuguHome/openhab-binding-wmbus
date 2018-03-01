@@ -96,7 +96,6 @@ public class WMBusReceiver implements WMBusListener {
         logger.trace("receiver: new message received");
         // TODO does nothing at the moment - filter devices at some point
         // TODO add device ID filter as early as possible
-
         WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             // decode VDR
