@@ -33,8 +33,10 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
             .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
             //TODO get IDs from log
-            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
             //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
+            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
+            //.put("", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
+            //.put("", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
             .build();
 
     private WMBusBridgeHandler bridgeHandler;
