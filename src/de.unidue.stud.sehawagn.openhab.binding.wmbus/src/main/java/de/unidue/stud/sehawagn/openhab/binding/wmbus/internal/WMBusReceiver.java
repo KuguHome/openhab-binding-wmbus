@@ -71,9 +71,9 @@ public class WMBusReceiver implements WMBusListener {
 
     // TODO Filter by interesting device ID - only interesting devices.
     boolean filterMatch(int inQuestion) {
-        logger.debug("receiver: filterMatch(): do we know device: " + Integer.toString(inQuestion));
+        logger.trace("receiver: filterMatch(): do we know device: " + Integer.toString(inQuestion));
         if (filterIDs.length == 0) {
-            logger.debug("receiver: filterMatch(): length is zero -> yes");
+            logger.trace("receiver: filterMatch(): length is zero -> yes");
             return true;
         }
         for (int i = 0; i < filterIDs.length; i++) {
@@ -93,10 +93,10 @@ public class WMBusReceiver implements WMBusListener {
      * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
      */
     public void newMessage(WMBusMessage message) {
-        logger.debug("receiver: new message received");
+        logger.trace("receiver: new message received");
         // TODO does nothing at the moment - filter devices at some point
         // TODO add device ID filter as early as possible
-    
+
         WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             // decode VDR
@@ -108,6 +108,7 @@ public class WMBusReceiver implements WMBusListener {
                 for (DataRecord record : vdr.getDataRecords()) {
                     logger.debug("> record: " + record.toString());
                 }
+                device = new WMBusDevice(message);
             } catch (DecodingException e) {
                 logger.debug("receiver: could not decode variable data response: " + e.getMessage());
                 device = new TechemHKV(message);
@@ -126,7 +127,7 @@ public class WMBusReceiver implements WMBusListener {
             // get variable response, decrypt.
             // getdatarecords - DIB und VIB
             wmBusBridgeHandler.processMessage(device);
-            logger.debug("receiver: Forwarded to handler.processMessage()");
+            logger.trace("receiver: Forwarded to handler.processMessage()");
         } else {
             logger.debug("receiver: Unmatched message received: " + message.toString());
         }
@@ -140,6 +141,7 @@ public class WMBusReceiver implements WMBusListener {
     @Override
     public void stoppedListening(IOException e) {
         logger.debug("receiver: Stopped listening for new messages. Reason: {}", e.getMessage());
+        e.printStackTrace();
     }
 
 }

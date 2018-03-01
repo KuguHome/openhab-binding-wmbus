@@ -63,54 +63,54 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
 
     @Override
     public void handleCommand(ChannelUID channelUID, Command command) {
-        logger.debug("Thing handler: (1/4) command for channel " + channelUID.toString() + " command: " + command.toString());
+        logger.trace("Thing handler: (1/4) command for channel " + channelUID.toString() + " command: " + command.toString());
         if (command == RefreshType.REFRESH) {
-            logger.debug("Thing handler: handle command(): (2/4) command.refreshtype == REFRESH");
+            logger.trace("Thing handler: handle command(): (2/4) command.refreshtype == REFRESH");
             State newState = UnDefType.NULL;
 
             if (techemDevice != null) {
-                logger.debug("Thing handler: handle Command(): (3/4) deviceMessage != null");
+                logger.trace("Thing handler: handle Command(): (3/4) deviceMessage != null");
                 switch (channelUID.getId()) {
                     // TODO wie passiert die Kanalzuordnung - woher kommen diese Kanal-Nummern?
                     case CHANNEL_ROOMTEMPERATURE: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDevice.getT1());
                         break;
                     }
                     case CHANNEL_RADIATORTEMPERATURE: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDevice.getT2());
                         break;
                     }
                     case CHANNEL_CURRENTREADING: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDevice.getCurVal());
                         break;
                     }
                     case CHANNEL_LASTREADING: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDevice.getLastVal());
                         break;
                     }
                     case CHANNEL_RECEPTION: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DecimalType(techemDevice.getRssi());
                         break;
                     }
                     case CHANNEL_LASTDATE: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DateTimeType(techemDevice.getLastDate());
                         newState = new StringType(dateFormat.format(techemDevice.getLastDate().getTime()));
                         break;
                     }
                     case CHANNEL_CURRENTDATE: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new DateTimeType(techemDevice.getCurDate());
                         newState = new StringType(dateFormat.format(techemDevice.getCurDate().getTime()));
                         break;
                     }
                     case CHANNEL_ALMANAC: {
-                        logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
+                        logger.trace("Thing handler: handleCommand(): (4/4): got a valid channel");
                         newState = new StringType(techemDevice.getHistory());
                         break;
                     }
@@ -118,14 +118,14 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
                         logger.debug("Thing handler: handleCommand(): (4/4): no channel to put this value into found");
                         break;
                 }
-                logger.debug("Thing handler: handleCommand(): assigning new state to channel");
+                logger.trace("Thing handler: handleCommand(): assigning new state to channel");
                 updateState(channelUID.getId(), newState);
             }
         }
     }
 
     private synchronized WMBusBridgeHandler getBridgeHandler() {
-        logger.debug("thinghandler: getBridgeHandler() begin");
+        logger.trace("thinghandler: getBridgeHandler() begin");
         if (this.bridgeHandler == null) {
             Bridge bridge = getBridge();
             if (bridge == null) {
@@ -139,43 +139,43 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
                 return null;
             }
         }
-        logger.debug("thinghandler: getBridgeHandler() returning bridgehandler");
+        logger.trace("thinghandler: getBridgeHandler() returning bridgehandler");
         return this.bridgeHandler;
     }
 
     private WMBusDevice getDevice() {
-        logger.debug("thinghandler: getDevice() begin");
+        logger.trace("thinghandler: getDevice() begin");
         WMBusBridgeHandler bridgeHandler = getBridgeHandler();
         if (bridgeHandler == null) {
             logger.debug("thinghandler: getDevice() end: returning null");
             return null;
         }
-        logger.debug("thinghandler: getDevice() end: returning devicebyid");
+        logger.trace("thinghandler: getDevice() end: returning devicebyid");
         return bridgeHandler.getDeviceById(deviceId);
     }
 
     @Override
     public void onNewWMBusDevice(WMBusDevice wmBusDevice) {
-        logger.debug("thinghandler: onNEwWMBusDevice(): is it me?");
+        logger.trace("thinghandler: onNEwWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
-            logger.debug("thinghandler: onNEwWMBusDevice(): yes it's me");
+            logger.trace("thinghandler: onNEwWMBusDevice(): yes it's me");
             updateStatus(ThingStatus.ONLINE);
             onChangedWMBusDevice(wmBusDevice);
         }
-        logger.debug("thinghandler: onNEwWMBusDevice(): no");
+        logger.trace("thinghandler: onNEwWMBusDevice(): no");
     }
 
     @Override
     public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
-        logger.debug("thinghandler: onChangedWMBusDevice(): is it me?");
+        logger.trace("thinghandler: onChangedWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             techemDevice = (TechemHKV) wmBusDevice;
-            logger.debug("thinghandler: onChangedWMBusDevice(): inform all channels to refresh");
+            logger.trace("thinghandler: onChangedWMBusDevice(): inform all channels to refresh");
             for (Channel curChan : getThing().getChannels()) {
                 handleCommand(curChan.getUID(), RefreshType.REFRESH);
             }
         }
-        logger.debug("thinghandler: onChangedWMBusDevice(): return");
+        logger.trace("thinghandler: onChangedWMBusDevice(): return");
     }
 
 }

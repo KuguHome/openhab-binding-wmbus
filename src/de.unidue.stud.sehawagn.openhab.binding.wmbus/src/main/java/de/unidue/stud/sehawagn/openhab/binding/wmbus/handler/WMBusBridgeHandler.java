@@ -251,7 +251,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
      * @param device
      */
     private void notifyWMBusMessageListeners(final WMBusDevice device, final String type) {
-        logger.debug("bridge: notify message listeners: sending to all");
+        logger.trace("bridge: notify message listeners: sending to all");
         for (WMBusMessageListener wmBusMessageListener : wmBusMessageListeners) {
             try {
                 switch (type) {
@@ -272,7 +272,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 logger.error("An exception occurred while notifying the WMBusMessageListener", e);
             }
         }
-        logger.debug("bridge: notify message listeners: return");
+        logger.trace("bridge: notify message listeners: return");
     }
 
     @Override
@@ -295,24 +295,24 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     }
 
     public void processMessage(WMBusDevice device) {
-        logger.debug("bridge: processMessage begin");
+        logger.trace("bridge: processMessage begin");
         String deviceId = device.getDeviceId();
         String deviceState = DEVICE_STATE_ADDED;
         if (knownDevices.containsKey(deviceId)) {
             deviceState = DEVICE_STATE_CHANGED;
         }
         knownDevices.put(deviceId, device);
-        logger.debug("bridge processMessage: notifying listeners");
+        logger.trace("bridge processMessage: notifying listeners");
         notifyWMBusMessageListeners(device, deviceState);
-        logger.debug("bridge: processMessage end");
+        logger.trace("bridge: processMessage end");
     }
 
     public WMBusDevice getDeviceById(String deviceId) {
-        logger.debug("bridge: get device by id: " + deviceId);
+        logger.trace("bridge: get device by id: " + deviceId);
         if (knownDevices.containsKey(deviceId)) {
-            logger.debug("bridge: found device");
+            logger.trace("bridge: found device");
         } else {
-            logger.debug("bridge: device not found");
+            logger.trace("bridge: device not found");
         }
         return knownDevices.get(deviceId);
     }
