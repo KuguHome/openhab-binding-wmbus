@@ -104,6 +104,8 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                         DataRecord record = findRecord(new byte[] { 0x0b }, new byte[] { 0x6e });
                         if (record != null) {
                             newState = new DecimalType(record.getScaledDataValue());
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message");
                         }
                         break;
                     }
@@ -132,6 +134,8 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
                             newState = new DateTimeType(cal);
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message or not of type date");
                         }
                         break;
                     }
