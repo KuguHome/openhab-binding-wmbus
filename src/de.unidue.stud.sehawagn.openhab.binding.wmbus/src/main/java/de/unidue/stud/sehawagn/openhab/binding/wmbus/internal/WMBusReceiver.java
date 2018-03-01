@@ -23,7 +23,9 @@ package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.VariableDataStructure;
 //import org.openmuc.jmbus.TechemHKVMessage;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -67,6 +69,7 @@ public class WMBusReceiver implements WMBusListener {
         this.filterIDs = filterIDs;
     }
 
+    // TODO Filter by interesting device ID - only interesting devices.
     boolean filterMatch(int inQuestion) {
         logger.debug("receiver: filterMatch(): do we know device: " + Integer.toString(inQuestion));
         if (filterIDs.length == 0) {
@@ -90,11 +93,19 @@ public class WMBusReceiver implements WMBusListener {
      * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
      */
     public void newMessage(WMBusMessage message) {
+        logger.debug("receiver: new message received");
+        // TODO does nothing at the moment - filter devices at some point
+        // TODO add device ID filter as early as possible
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             // decode VDR
             try {
-                message.getVariableDataResponse().decode();
+                VariableDataStructure vdr = message.getVariableDataResponse();
+                vdr.decode();
                 logger.debug("receiver: variable data response decoded");
+                // TODO decrypt here - need to have decryption keys available here
+                for (DataRecord record : vdr.getDataRecords()) {
+                    logger.debug("> record: " + record.toString());
+                }
             } catch (DecodingException e) {
                 logger.debug("receiver: could not decode variable data response: " + e.getMessage());
             }
