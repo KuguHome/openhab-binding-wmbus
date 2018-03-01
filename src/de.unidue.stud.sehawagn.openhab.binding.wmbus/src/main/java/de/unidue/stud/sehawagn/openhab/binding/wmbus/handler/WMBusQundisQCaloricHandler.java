@@ -40,7 +40,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
     private WMBusDevice techemDevice;
 
-    public WMBusTechemHKVHandler(Thing thing) {
+    public WMBusQundisQCaloricHandler(Thing thing) {
         super(thing);
         logger.debug("WMBusQundisQCaloricHandler: new() for Thing" + thing.toString());
     }
@@ -52,7 +52,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
         deviceId = (String) config.getProperties().get(PROPERTY_HKV_ID);
         WMBusDevice device = getDevice();
         if (device instanceof TechemHKV) {
-            techemDevice = (TechemHKV) device;
+            techemDevice = device;
         }
         updateStatus(ThingStatus.ONLINE);
     }
@@ -184,5 +184,4 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
         }
         logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): return");
     }
-
 }
