@@ -61,11 +61,15 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             } else {
                 return null;
             }
-            /// add new devices here
+            // add new devices here
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
             // create handler for Techem HKV device
             logger.debug("Creating (handler for) TechemHKV device.");
             return new WMBusTechemHKVHandler(thing);
+        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QCALORIC_5_5)) {
+            // create handler for Qundis Qcaloric 5,5 device
+            logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
+            return new WMBusQundisQCaloricHandler(thing);
         } else {
             return null;
         }
