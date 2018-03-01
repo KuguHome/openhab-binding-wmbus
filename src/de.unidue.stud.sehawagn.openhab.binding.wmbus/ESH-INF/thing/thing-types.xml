@@ -5,8 +5,8 @@
 
     <!-- add new devices here -->
 
-	<!-- Generic thing for -->
-	<thing-type id="techem_hkv">
+    <!-- thing definition for Techem HKV -->
+    <thing-type id="techem_hkv">
 		<supported-bridge-type-refs>
 			<bridge-type-ref id="wmbusbridge" />
 		</supported-bridge-type-refs>
@@ -24,7 +24,7 @@
 			<channel id="current_date" typeId="current_date" />
 			<channel id="almanac" typeId="almanac" />
 		</channels>
-		
+
 		<config-description>
             <parameter name="hkvId" type="text">
                 <label>Heat Cost Allocator ID</label>
@@ -32,10 +32,41 @@
                 <required>true</required>
             </parameter>
         </config-description>
-
 	</thing-type>
 
-	<channel-type id="room_temperature">
+
+    <!-- thing definition for Qundis Qcaloric 5,5 -->
+    <thing-type id="qundis_qcaloric_5_5">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Qundis Qcaloric 5,5</label>
+        <description>A heat cost allocator model Qcaloric 5,5 by Qundis GmbH.</description>
+
+        <channels>
+            <channel id="room_temperature" typeId="room_temperature" />
+            <channel id="radiator_temperature" typeId="radiator_temperature" />
+            <channel id="current_reading" typeId="current_reading" />
+            <channel id="last_reading" typeId="last_reading" />
+            <channel id="reception" typeId="reception" />
+            <channel id="last_date" typeId="last_date" />
+            <channel id="current_date" typeId="current_date" />
+            <channel id="almanac" typeId="almanac" />
+        </channels>
+
+        <config-description>
+            <parameter name="hkvId" type="text">
+                <label>Heat Cost Allocator ID</label>
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+
+
+    <!-- channel definitions for all WMBus devices -->
+    <channel-type id="room_temperature">
 		<item-type>Number</item-type>
 		<label>Room Temperature</label>
 		<description>Current temperature in the room in degrees celsius</description>

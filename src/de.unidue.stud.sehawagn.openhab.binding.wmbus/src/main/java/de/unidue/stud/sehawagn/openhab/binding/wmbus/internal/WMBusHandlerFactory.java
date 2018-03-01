@@ -20,6 +20,7 @@ import com.google.common.collect.Sets;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQCaloricHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKVDiscoveryService;
 
@@ -29,7 +30,8 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKV
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     // add new devices here
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
+    //TODO make this nicer instead of cascading
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusTechemHKVHandler.SUPPORTED_THING_TYPES, WMBusQundisQCaloricHandler.SUPPORTED_THING_TYPES));
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
