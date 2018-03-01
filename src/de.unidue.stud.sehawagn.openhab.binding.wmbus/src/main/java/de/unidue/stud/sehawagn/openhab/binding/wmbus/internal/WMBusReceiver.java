@@ -101,17 +101,19 @@ public class WMBusReceiver implements WMBusListener {
             // print basic info
             logger.debug("receiver: control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
             // decode VDR
+            VariableDataStructure vdr = message.getVariableDataResponse();
             try {
-                VariableDataStructure vdr = message.getVariableDataResponse();
-                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
                 vdr.decode();
                 logger.debug("receiver: variable data response decoded");
+                // VDR needs to be decoded for correct header information
+                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
                 // TODO decrypt here - need to have decryption keys available here
                 for (DataRecord record : vdr.getDataRecords()) {
                     logger.debug("> record: " + record.toString());
                 }
                 device = new WMBusDevice(message);
             } catch (DecodingException e) {
+                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
                 logger.debug("receiver: could not decode variable data response: " + e.getMessage());
                 device = new TechemHKV(message);
                 try {
