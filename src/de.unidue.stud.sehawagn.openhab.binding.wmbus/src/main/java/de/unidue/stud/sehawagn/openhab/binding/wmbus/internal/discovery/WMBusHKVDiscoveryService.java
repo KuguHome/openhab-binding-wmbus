@@ -19,8 +19,8 @@ import com.google.common.collect.ImmutableMap;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusMessageListener;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory;
 
 public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implements WMBusMessageListener {
 
@@ -35,8 +35,8 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             //TODO get IDs from log
             //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
             //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
-            //.put("", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
-            //.put("", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
+            .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
+            .put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
             .build();
 
     private WMBusBridgeHandler bridgeHandler;
@@ -51,10 +51,10 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     @Override
+    // add new devices there
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        logger.trace("discovery: getsupperted thing types: these are "
-                + WMBusTechemHKVHandler.SUPPORTED_THING_TYPES.toString());
-        return WMBusTechemHKVHandler.SUPPORTED_THING_TYPES;
+        logger.trace("discovery: getSupportedThingTypes(): currently *implemented* are " + WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS.toString());
+        return WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS;
     }
 
     @Override
