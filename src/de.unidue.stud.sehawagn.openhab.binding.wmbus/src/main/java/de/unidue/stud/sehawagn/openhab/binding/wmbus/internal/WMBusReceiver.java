@@ -96,7 +96,6 @@ public class WMBusReceiver implements WMBusListener {
         logger.debug("receiver: new message received");
         // TODO does nothing at the moment - filter devices at some point
         // TODO add device ID filter as early as possible
-    
         WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             // decode VDR
@@ -108,6 +107,7 @@ public class WMBusReceiver implements WMBusListener {
                 for (DataRecord record : vdr.getDataRecords()) {
                     logger.debug("> record: " + record.toString());
                 }
+                device = new WMBusDevice(message);
             } catch (DecodingException e) {
                 logger.debug("receiver: could not decode variable data response: " + e.getMessage());
                 device = new TechemHKV(message);
