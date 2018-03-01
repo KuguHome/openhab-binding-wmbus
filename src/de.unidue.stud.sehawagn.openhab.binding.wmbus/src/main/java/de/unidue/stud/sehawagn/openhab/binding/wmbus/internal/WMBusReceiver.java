@@ -98,9 +98,12 @@ public class WMBusReceiver implements WMBusListener {
         // TODO add device ID filter as early as possible
         WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
+            // print basic info
+            logger.debug("receiver: control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
             // decode VDR
             try {
                 VariableDataStructure vdr = message.getVariableDataResponse();
+                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
                 vdr.decode();
                 logger.debug("receiver: variable data response decoded");
                 // TODO decrypt here - need to have decryption keys available here
@@ -122,9 +125,6 @@ public class WMBusReceiver implements WMBusListener {
             }
             // print it
             logger.trace("receiver: Matched message received: " + message.toString());
-            ///
-            // get variable response, decrypt.
-            // getdatarecords - DIB und VIB
             wmBusBridgeHandler.processMessage(device);
             logger.trace("receiver: Forwarded to handler.processMessage()");
         } else {
