@@ -52,7 +52,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     @Override
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        logger.debug("discovery: getsupperted thing types: these are "
+        logger.trace("discovery: getsupperted thing types: these are "
                 + WMBusTechemHKVHandler.SUPPORTED_THING_TYPES.toString());
         return WMBusTechemHKVHandler.SUPPORTED_THING_TYPES;
     }
@@ -71,12 +71,12 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     private void onWMBusMessageReceivedInternal(WMBusDevice wmBusDevice) {
-        logger.debug("discovery: msgreceivedInternal() begin");
+        logger.trace("discovery: msgreceivedInternal() begin");
         // try to find this device in the list of supported devices
         ThingUID thingUID = getThingUID(wmBusDevice);
 
         if (thingUID != null) {
-            logger.debug("discorvey: msgreceivedInternal(): device is known");
+            logger.trace("discorvey: msgreceivedInternal(): device is known");
             // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
@@ -87,7 +87,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
                     .withRepresentationProperty(wmBusDevice.getDeviceId().toString())
                     .withBridge(bridgeUID)
                     .withLabel("WMBus device ser.no. " + wmBusDevice.getDeviceId()).build();
-            logger.debug("discorvey: msgreceivedInternal(): notifying OpenHAB of new thing");
+            logger.trace("discorvey: msgreceivedInternal(): notifying OpenHAB of new thing");
             thingDiscovered(discoveryResult);
         } else {
             // device unknown -> log message
@@ -101,13 +101,13 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     // checks if this device is of the supported kind -> if yes, will be discovered
     private ThingUID getThingUID(WMBusDevice wmBusDevice) {
-        logger.debug("discover: getThingUID begin");
+        logger.trace("discover: getThingUID begin");
         ThingUID bridgeUID = bridgeHandler.getThing().getUID();
         ThingTypeUID thingTypeUID = getThingTypeUID(wmBusDevice);
 
         if (thingTypeUID != null && getSupportedThingTypes().contains(thingTypeUID)) {
-            logger.debug("discover: getThingUID have bridgeUID " + bridgeUID.toString());
-            logger.debug("discover: getThingUID have thingTypeUID " + thingTypeUID.toString());
+            logger.trace("discover: getThingUID have bridgeUID " + bridgeUID.toString());
+            logger.trace("discover: getThingUID have thingTypeUID " + thingTypeUID.toString());
             return new ThingUID(thingTypeUID, bridgeUID, wmBusDevice.getDeviceId() + "");
         } else {
             logger.debug("discover: get ThingUID found no supported device");

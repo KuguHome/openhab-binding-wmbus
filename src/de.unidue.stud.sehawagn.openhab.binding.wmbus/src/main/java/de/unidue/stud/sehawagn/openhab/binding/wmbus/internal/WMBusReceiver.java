@@ -121,7 +121,7 @@ public class WMBusReceiver implements WMBusListener {
                 }
             }
             // print it
-            logger.debug("receiver: Matched message received: " + message.toString());
+            logger.trace("receiver: Matched message received: " + message.toString());
             ///
             // get variable response, decrypt.
             // getdatarecords - DIB und VIB
