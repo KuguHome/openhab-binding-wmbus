@@ -76,7 +76,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
         ThingUID thingUID = getThingUID(wmBusDevice);
 
         if (thingUID != null) {
-            logger.trace("discorvey: msgreceivedInternal(): device is known");
+            logger.trace("discovery: msgreceivedInternal(): device is known");
             // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
@@ -101,16 +101,16 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     // checks if this device is of the supported kind -> if yes, will be discovered
     private ThingUID getThingUID(WMBusDevice wmBusDevice) {
-        logger.trace("discover: getThingUID begin");
+        logger.trace("discovery: getThingUID begin");
         ThingUID bridgeUID = bridgeHandler.getThing().getUID();
         ThingTypeUID thingTypeUID = getThingTypeUID(wmBusDevice);
 
         if (thingTypeUID != null && getSupportedThingTypes().contains(thingTypeUID)) {
-            logger.trace("discover: getThingUID have bridgeUID " + bridgeUID.toString());
-            logger.trace("discover: getThingUID have thingTypeUID " + thingTypeUID.toString());
+            logger.trace("discovery: getThingUID have bridgeUID " + bridgeUID.toString());
+            logger.trace("discovery: getThingUID have thingTypeUID " + thingTypeUID.toString());
             return new ThingUID(thingTypeUID, bridgeUID, wmBusDevice.getDeviceId() + "");
         } else {
-            logger.debug("discover: get ThingUID found no supported device");
+            logger.debug("discovery: get ThingUID found no supported device");
             return null;
         }
     }
