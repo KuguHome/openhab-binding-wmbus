@@ -37,7 +37,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
     private WMBusBridgeHandler bridgeHandler;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private TechemHKV techemDeviceMessage;
+    private TechemHKV techemDevice;
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
@@ -49,13 +49,10 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         logger.debug("Initializing WMBusTechemHKVHandler handler.");
         Configuration config = getConfig();
         deviceId = (String) config.getProperties().get(PROPERTY_HKV_ID);
-        WMBusDevice deviceMessage = getDevice();
-        // TODO
-        /*
-         * if (deviceMessage instanceof TechemHKVMessage) {
-         * techemDeviceMessage = (TechemHKVMessage) deviceMessage;
-         * }
-         */
+        WMBusDevice device = getDevice();
+        if (device instanceof TechemHKV) {
+            techemDevice = (TechemHKV) device;
+        }
         updateStatus(ThingStatus.ONLINE);
     }
 
@@ -71,51 +68,50 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
             logger.debug("Thing handler: handle command(): (2/4) command.refreshtype == REFRESH");
             State newState = UnDefType.NULL;
 
-            if (techemDeviceMessage != null) {
+            if (techemDevice != null) {
                 logger.debug("Thing handler: handle Command(): (3/4) deviceMessage != null");
                 switch (channelUID.getId()) {
                     // TODO wie passiert die Kanalzuordnung - woher kommen diese Kanal-Nummern?
                     case CHANNEL_ROOMTEMPERATURE: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DecimalType(techemDeviceMessage.getT1());
+                        newState = new DecimalType(techemDevice.getT1());
                         break;
                     }
                     case CHANNEL_RADIATORTEMPERATURE: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DecimalType(techemDeviceMessage.getT2());
+                        newState = new DecimalType(techemDevice.getT2());
                         break;
                     }
                     case CHANNEL_CURRENTREADING: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DecimalType(techemDeviceMessage.getCurVal());
+                        newState = new DecimalType(techemDevice.getCurVal());
                         break;
                     }
                     case CHANNEL_LASTREADING: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DecimalType(techemDeviceMessage.getLastVal());
+                        newState = new DecimalType(techemDevice.getLastVal());
                         break;
                     }
                     case CHANNEL_RECEPTION: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        // TODO
-                        // newState = new DecimalType(techemDeviceMessage.getRssi());
+                        newState = new DecimalType(techemDevice.getRssi());
                         break;
                     }
                     case CHANNEL_LASTDATE: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DateTimeType(techemDeviceMessage.getLastDate());
-                        // newState = new StringType(dateFormat.format(techemDeviceMessage.getLastDate().getTime()));
+                        newState = new DateTimeType(techemDevice.getLastDate());
+                        newState = new StringType(dateFormat.format(techemDevice.getLastDate().getTime()));
                         break;
                     }
                     case CHANNEL_CURRENTDATE: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new DateTimeType(techemDeviceMessage.getCurDate());
-                        // newState = new StringType(dateFormat.format(techemDeviceMessage.getCurDate().getTime()));
+                        newState = new DateTimeType(techemDevice.getCurDate());
+                        newState = new StringType(dateFormat.format(techemDevice.getCurDate().getTime()));
                         break;
                     }
                     case CHANNEL_ALMANAC: {
                         logger.debug("Thing handler: handleCommand(): (4/4): got a valid channel");
-                        newState = new StringType(techemDeviceMessage.getHistory());
+                        newState = new StringType(techemDevice.getHistory());
                         break;
                     }
                     default:
@@ -173,8 +169,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
     public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
         logger.debug("thinghandler: onChangedWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
-            // TODO
-            // techemDeviceMessage = (TechemHKVMessage) wmBusDevice;
+            techemDevice = (TechemHKV) wmBusDevice;
             logger.debug("thinghandler: onChangedWMBusDevice(): inform all channels to refresh");
             for (Channel curChan : getThing().getChannels()) {
                 handleCommand(curChan.getUID(), RefreshType.REFRESH);

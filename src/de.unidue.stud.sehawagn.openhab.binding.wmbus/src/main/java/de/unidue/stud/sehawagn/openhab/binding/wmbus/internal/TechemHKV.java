@@ -152,7 +152,7 @@ public class TechemHKV extends WMBusDevice {
 
         StringBuilder builder = new StringBuilder();
         if (getOriginalMessage().getVariableDataResponse() == null) {
-            builder.append("Message has not been decoded. Bytes of this message: ");
+            builder.append("TechemHKV: Message has not been decoded. Bytes of this message: ");
 //            HexConverter.appendHexString(builder, originalMessage.asBlob(), 0, originalMessage.asBlob().length);
             return builder.toString();
         } else {
@@ -166,6 +166,10 @@ public class TechemHKV extends WMBusDevice {
                     .append(HexConverter.bytesToHex(getOriginalMessage().asBlob()));
             return builder.toString();
         }
+    }
+
+    public Integer getRssi() {
+        return getOriginalMessage().getRssi();
     }
 
 }
