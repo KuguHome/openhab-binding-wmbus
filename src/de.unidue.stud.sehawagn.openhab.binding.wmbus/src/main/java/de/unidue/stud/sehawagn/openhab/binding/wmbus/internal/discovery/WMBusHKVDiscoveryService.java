@@ -19,8 +19,8 @@ import com.google.common.collect.ImmutableMap;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusMessageListener;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory;
 
 public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implements WMBusMessageListener {
 
@@ -51,10 +51,10 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     @Override
+    // add new devices there
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        logger.debug("discovery: getsupperted thing types: these are "
-                + WMBusTechemHKVHandler.SUPPORTED_THING_TYPES.toString());
-        return WMBusTechemHKVHandler.SUPPORTED_THING_TYPES;
+        logger.debug("discovery: getsupperted thing types: currently *implemented* are " + WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS.toString());
+        return WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS;
     }
 
     @Override

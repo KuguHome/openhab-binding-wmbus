@@ -29,7 +29,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKV
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     // add new devices here
-    private final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, WMBusTechemHKVHandler.SUPPORTED_THING_TYPES);
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
