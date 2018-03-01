@@ -59,6 +59,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             } else {
                 return null;
             }
+            /// hier neuen Typ anlegen für Kamstrup und Qundis
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
             // create handler for Techem HKV device
             logger.debug("Creating (handler for) TechemHKV device.");
