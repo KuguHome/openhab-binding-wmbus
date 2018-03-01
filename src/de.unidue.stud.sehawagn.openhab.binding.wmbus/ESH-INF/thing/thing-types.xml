@@ -118,7 +118,7 @@
 		<item-type>DateTime</item-type>
 		<label>Date of Current Reading</label>
 		<description>The date, when the current reading was taken.</description>
-		<category>GarageDoor</category>
+		<category>Date</category>
 		<state readOnly="true">
 		</state>
 	</channel-type>
