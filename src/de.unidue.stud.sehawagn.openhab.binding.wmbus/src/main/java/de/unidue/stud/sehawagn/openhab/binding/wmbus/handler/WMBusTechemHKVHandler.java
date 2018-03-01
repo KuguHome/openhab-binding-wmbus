@@ -41,7 +41,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
-        logger.debug("WMBusThingHandler: new() for Thing" + thing.toString());
+        logger.debug("WMBusTechemHKVHandler: new() for Thing" + thing.toString());
     }
 
     @Override
