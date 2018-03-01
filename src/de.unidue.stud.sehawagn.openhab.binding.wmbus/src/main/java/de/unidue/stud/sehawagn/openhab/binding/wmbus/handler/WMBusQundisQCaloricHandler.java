@@ -80,13 +80,13 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                 logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (3/5) deviceMessage != null");
                 //TODO reduce channels to only what this device can provide
                 /*
-                 * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading
-                 * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- previous reading?
-                 * DIB:42, VIB:6C -> descr:DATE, function:INST_VAL, storage:1, value:Wed Mar 31 00:00:00 CEST 2128 -- previous reading?
-                 * DIB:CB08, VIB:6E -> descr:HCA, function:INST_VAL, storage:17, value:000000, unit:RESERVED -- previous reading?
-                 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Thu Nov 30 00:00:00 CET 2017 -- previous reading?
+                 * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading / measurement value
+                 * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- reading before previous one
+                 * DIB:42, VIB:6C -> descr:DATE, function:INST_VAL, storage:1, value:Sun Dec 31 00:00:00 CET 2017 -- reading before previous one
+                 * DIB:CB08, VIB:6E -> descr:HCA, function:INST_VAL, storage:17, value:000000, unit:RESERVED  -- previous reading
+                 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Wed Feb 28 00:00:00 CET 2018 -- previous reading
                  * DIB:32, VIB:6C -> descr:DATE, function:ERROR_VAL, value:Sat Sep 23 00:00:00 CEST 2017 -- time of last error
-                 * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Wed Dec 13 17:25:00 CET 2017 -- current time
+                 * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Thu Mar 01 21:12:00 CET 2018 -- timestamp of current / latest reading
                  */
                 switch (channelUID.getId()) {
                     case CHANNEL_ROOMTEMPERATURE: {
