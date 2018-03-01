@@ -15,7 +15,11 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  * Represents a Message of a Techem Heizkostenverteiler (heat cost allocator)
  *
  */
-public class TechemHKVMessage {
+public class TechemHKV extends WMBusDevice {
+
+    public TechemHKV(WMBusMessage originalMessage) {
+        super(originalMessage);
+    }
 
     int ciField;
     String status = "";
@@ -32,16 +36,11 @@ public class TechemHKVMessage {
 
     VariableDataStructure vdr;
 
-    private WMBusMessage originalMessage;
-
-    public TechemHKVMessage(WMBusMessage originalMessage) {
-        this.originalMessage = originalMessage;
-    }
-
-    public void decodeDeep() throws DecodingException {
-        byte[] hkvBuffer = originalMessage.asBlob();
-        SecondaryAddress secondaryAddress = originalMessage.getSecondaryAddress();
-        vdr = originalMessage.getVariableDataResponse();
+    @Override
+    public void decode() throws DecodingException {
+        byte[] hkvBuffer = getOriginalMessage().asBlob();
+        SecondaryAddress secondaryAddress = getOriginalMessage().getSecondaryAddress();
+        vdr = getOriginalMessage().getVariableDataResponse();
 
         int offset = 10;
 
@@ -57,8 +56,8 @@ public class TechemHKVMessage {
             t1 = parseTemp(offset + 10);
             t2 = parseTemp(offset + 12);
 
-            System.arraycopy(hkvBuffer, 24, historyBytes, 0, hkvBuffer.length - 24);
-            history = HexConverter.bytesToHex(historyBytes);
+//            System.arraycopy(hkvBuffer, 24, historyBytes, 0, hkvBuffer.length - 24);
+//            history = HexConverter.bytesToHex(historyBytes);
 
         } else {
             throw new DecodingException("No known Techem HKV message");
@@ -94,7 +93,7 @@ public class TechemHKVMessage {
     }
 
     int parseBigEndianInt(int i) {
-        return (originalMessage.asBlob()[i] & 0xFF) + ((originalMessage.asBlob()[i + 1] & 0xFF) << 8);
+        return (getOriginalMessage().asBlob()[i] & 0xFF) + ((getOriginalMessage().asBlob()[i + 1] & 0xFF) << 8);
     }
 
     float parseTemp(int i) {
@@ -152,25 +151,21 @@ public class TechemHKVMessage {
     public String toString() {
 
         StringBuilder builder = new StringBuilder();
-        if (originalMessage.getVariableDataResponse() == null) {
+        if (getOriginalMessage().getVariableDataResponse() == null) {
             builder.append("Message has not been decoded. Bytes of this message: ");
 //            HexConverter.appendHexString(builder, originalMessage.asBlob(), 0, originalMessage.asBlob().length);
             return builder.toString();
         } else {
-            builder.append(new Date()).append(";").append(originalMessage.getRssi()).append(";").append(originalMessage.getControlField()).append(";")
-                    .append(originalMessage.getSecondaryAddress().getManufacturerId()).append(";")
-                    .append(originalMessage.getSecondaryAddress().getDeviceId()).append(";").append(originalMessage.getSecondaryAddress().getVersion())
-                    .append(";").append(originalMessage.getSecondaryAddress().getDeviceType()).append(";").append(ciField).append(";")
+            builder.append(new Date()).append(";").append(getOriginalMessage().getRssi()).append(";").append(getOriginalMessage().getControlField()).append(";")
+                    .append(getOriginalMessage().getSecondaryAddress().getManufacturerId()).append(";")
+                    .append(getOriginalMessage().getSecondaryAddress().getDeviceId()).append(";").append(getOriginalMessage().getSecondaryAddress().getVersion())
+                    .append(";").append(getOriginalMessage().getSecondaryAddress().getDeviceType()).append(";").append(ciField).append(";")
                     .append(status).append(";").append(dateFormat.format(lastDate.getTime())).append(";")
                     .append(lastVal).append(";").append(dateFormat.format(curDate.getTime())).append(";").append(curVal)
                     .append(";").append(t1).append(";").append(t2).append(";").append(history).append(";")
-                    .append(HexConverter.bytesToHex(originalMessage.asBlob()));
+                    .append(HexConverter.bytesToHex(getOriginalMessage().asBlob()));
             return builder.toString();
         }
-    }
-
-    public WMBusMessage getOriginalMessage() {
-        return originalMessage;
     }
 
 }

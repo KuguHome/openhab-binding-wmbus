@@ -105,7 +105,7 @@ public class TechemReceiver implements WMBusListener {
         // message.decodeDeep();
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             logger.debug("Matched message received: " + message.toString());
-            wmBusBridgeHandler.processMessage(message);
+            wmBusBridgeHandler.processMessage(new WMBusDevice(message));
         } else {
             logger.debug("Unmatched message received: " + message.toString());
         }

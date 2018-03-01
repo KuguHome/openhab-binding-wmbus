@@ -20,12 +20,12 @@ import org.eclipse.smarthome.core.types.Command;
 import org.openmuc.jmbus.wireless.WMBusConnection;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusSerialBuilder;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusSerialBuilder.WMBusManufacturer;
-import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.openmuc.jmbus.wireless.WMBusMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusReceiver;
 
 /**
@@ -45,7 +45,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     private WMBusReceiver wmbusReceiver = null;
     private WMBusConnection wmbusConnection = null;
 
-    private Map<String, WMBusMessage> knownDevices = new HashMap<>();
+    private Map<String, WMBusDevice> knownDevices = new HashMap<>();
 
     private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
@@ -231,7 +231,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         logger.debug("register listener: Success");
         if (result) {
             // inform the listener initially about all devices and their states
-            for (WMBusMessage device : knownDevices.values()) {
+            for (WMBusDevice device : knownDevices.values()) {
                 wmBusMessageListener.onNewWMBusDevice(device);
             }
         }
@@ -241,19 +241,19 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     /**
      * Iterate through wmBusMessageListeners and notify them about a newly received message.
      *
-     * @param message
+     * @param device
      */
-    private void notifyWMBusMessageListeners(final WMBusMessage message, final String type) {
+    private void notifyWMBusMessageListeners(final WMBusDevice device, final String type) {
         logger.debug("bridge: notify message listeners: sending to all");
         for (WMBusMessageListener wmBusMessageListener : wmBusMessageListeners) {
             try {
                 switch (type) {
                     case DEVICE_STATE_ADDED: {
-                        wmBusMessageListener.onNewWMBusDevice(message);
+                        wmBusMessageListener.onNewWMBusDevice(device);
                         break;
                     }
                     case DEVICE_STATE_CHANGED: {
-                        wmBusMessageListener.onChangedWMBusDevice(message);
+                        wmBusMessageListener.onChangedWMBusDevice(device);
                         break;
                     }
                     default: {
@@ -286,20 +286,20 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         }
     }
 
-    public void processMessage(WMBusMessage message) {
+    public void processMessage(WMBusDevice device) {
         logger.debug("bridge: processMessage begin");
-        String deviceId = message.getSecondaryAddress().getDeviceId().toString();
+        String deviceId = device.getDeviceId();
         String deviceState = DEVICE_STATE_ADDED;
         if (knownDevices.containsKey(deviceId)) {
             deviceState = DEVICE_STATE_CHANGED;
         }
-        knownDevices.put(deviceId, message);
+        knownDevices.put(deviceId, device);
         logger.debug("bridge processMessage: notifying listeners");
-        notifyWMBusMessageListeners(message, deviceState);
+        notifyWMBusMessageListeners(device, deviceState);
         logger.debug("bridge: processMessage end");
     }
 
-    public WMBusMessage getDeviceById(String deviceId) {
+    public WMBusDevice getDeviceById(String deviceId) {
         logger.debug("bridge: get device by id: " + deviceId);
         if (knownDevices.containsKey(deviceId)) {
             logger.debug("bridge: found device");

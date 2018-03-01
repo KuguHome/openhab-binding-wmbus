@@ -21,13 +21,13 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
-import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemHKVMessage;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemHKV;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
 public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMessageListener {
 
@@ -37,7 +37,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
     private WMBusBridgeHandler bridgeHandler;
 
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
-    private TechemHKVMessage techemDeviceMessage;
+    private TechemHKV techemDeviceMessage;
 
     public WMBusTechemHKVHandler(Thing thing) {
         super(thing);
@@ -49,7 +49,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         logger.debug("Initializing WMBusTechemHKVHandler handler.");
         Configuration config = getConfig();
         deviceId = (String) config.getProperties().get(PROPERTY_HKV_ID);
-        WMBusMessage deviceMessage = getDevice();
+        WMBusDevice deviceMessage = getDevice();
         // TODO
         /*
          * if (deviceMessage instanceof TechemHKVMessage) {
@@ -147,7 +147,7 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         return this.bridgeHandler;
     }
 
-    private WMBusMessage getDevice() {
+    private WMBusDevice getDevice() {
         logger.debug("thinghandler: getDevice() begin");
         WMBusBridgeHandler bridgeHandler = getBridgeHandler();
         if (bridgeHandler == null) {
@@ -159,9 +159,9 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
     }
 
     @Override
-    public void onNewWMBusDevice(WMBusMessage wmBusDevice) {
+    public void onNewWMBusDevice(WMBusDevice wmBusDevice) {
         logger.debug("thinghandler: onNEwWMBusDevice(): is it me?");
-        if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
+        if (wmBusDevice.getDeviceId().equals(deviceId)) {
             logger.debug("thinghandler: onNEwWMBusDevice(): yes it's me");
             updateStatus(ThingStatus.ONLINE);
             onChangedWMBusDevice(wmBusDevice);
@@ -170,9 +170,9 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
     }
 
     @Override
-    public void onChangedWMBusDevice(WMBusMessage wmBusDevice) {
+    public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
         logger.debug("thinghandler: onChangedWMBusDevice(): is it me?");
-        if (wmBusDevice.getSecondaryAddress().getDeviceId().toString().equals(deviceId)) {
+        if (wmBusDevice.getDeviceId().equals(deviceId)) {
             // TODO
             // techemDeviceMessage = (TechemHKVMessage) wmBusDevice;
             logger.debug("thinghandler: onChangedWMBusDevice(): inform all channels to refresh");
@@ -182,4 +182,5 @@ public class WMBusTechemHKVHandler extends BaseThingHandler implements WMBusMess
         }
         logger.debug("thinghandler: onChangedWMBusDevice(): return");
     }
+
 }

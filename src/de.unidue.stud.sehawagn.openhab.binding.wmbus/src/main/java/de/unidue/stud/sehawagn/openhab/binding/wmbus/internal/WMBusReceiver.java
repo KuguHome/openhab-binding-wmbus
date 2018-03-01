@@ -90,20 +90,32 @@ public class WMBusReceiver implements WMBusListener {
      * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
      */
     public void newMessage(WMBusMessage message) {
+        WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
             // decode VDR
             try {
                 message.getVariableDataResponse().decode();
+                message.getVariableDataResponse().getDataRecords();
+
                 logger.debug("receiver: variable data response decoded");
             } catch (DecodingException e) {
                 logger.debug("receiver: could not decode variable data response: " + e.getMessage());
+                device = new TechemHKV(message);
+                try {
+                    logger.debug("receiver: try to decode as Techem Message:");
+                    device.decode();
+                    wmBusBridgeHandler.processMessage(device);
+                } catch (DecodingException e1) {
+                    logger.debug("receiver: could not decode as Techem Message: " + e1.getMessage());
+                    e1.printStackTrace();
+                }
             }
             // print it
             logger.debug("receiver: Matched message received: " + message.toString());
             ///
             // get variable response, decrypt.
             // getdatarecords - DIB und VIB
-            wmBusBridgeHandler.processMessage(message);
+            wmBusBridgeHandler.processMessage(device);
             logger.debug("receiver: Forwarded to handler.processMessage()");
         } else {
             logger.debug("receiver: Unmatched message received: " + message.toString());

@@ -12,7 +12,6 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,6 +20,7 @@ import com.google.common.collect.ImmutableMap;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusMessageListener;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
 public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implements WMBusMessageListener {
 
@@ -59,12 +59,12 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     @Override
-    public void onNewWMBusDevice(WMBusMessage wmBusDevice) {
-        logger.debug("discovery: onnewWMBusDevice(): new device " + wmBusDevice.getSecondaryAddress().toString());
+    public void onNewWMBusDevice(WMBusDevice wmBusDevice) {
+        logger.debug("discovery: onnewWMBusDevice(): new device " + wmBusDevice.getOriginalMessage().getSecondaryAddress().toString());
         onWMBusMessageReceivedInternal(wmBusDevice);
     }
 
-    private void onWMBusMessageReceivedInternal(WMBusMessage wmBusDevice) {
+    private void onWMBusMessageReceivedInternal(WMBusDevice wmBusDevice) {
         logger.debug("discovery: msgreceivedInternal() begin");
         // try to find this device in the list of supported devices
         ThingUID thingUID = getThingUID(wmBusDevice);
@@ -74,24 +74,24 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
-            properties.put(PROPERTY_HKV_ID, wmBusDevice.getSecondaryAddress().getDeviceId().toString());
+            properties.put(PROPERTY_HKV_ID, wmBusDevice.getDeviceId().toString());
 
             // TODO label according to uid
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
-                    .withRepresentationProperty(wmBusDevice.getSecondaryAddress().getDeviceId().toString())
+                    .withRepresentationProperty(wmBusDevice.getDeviceId().toString())
                     .withBridge(bridgeUID)
-                    .withLabel("WMBus device ser.no. " + wmBusDevice.getSecondaryAddress().getDeviceId()).build();
+                    .withLabel("WMBus device ser.no. " + wmBusDevice.getDeviceId()).build();
             logger.debug("discorvey: msgreceivedInternal(): notifying OpenHAB of new thing");
             thingDiscovered(discoveryResult);
         } else {
             // device unknown -> log message
             logger.debug("discovered unsupported WMBus device of type '{}' with secondary address {}",
-                    wmBusDevice.getSecondaryAddress().getDeviceType(), wmBusDevice.getSecondaryAddress().toString());
+                    wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType(), wmBusDevice.getOriginalMessage().getSecondaryAddress().toString());
         }
     }
 
     // checks if this device is of the supported kind -> if yes, will be discovered
-    private ThingUID getThingUID(WMBusMessage wmBusDevice) {
+    private ThingUID getThingUID(WMBusDevice wmBusDevice) {
         logger.debug("discover: getThingUID begin");
         ThingUID bridgeUID = bridgeHandler.getThing().getUID();
         ThingTypeUID thingTypeUID = getThingTypeUID(wmBusDevice);
@@ -99,17 +99,17 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
         if (thingTypeUID != null && getSupportedThingTypes().contains(thingTypeUID)) {
             logger.debug("discover: getThingUID have bridgeUID " + bridgeUID.toString());
             logger.debug("discover: getThingUID have thingTypeUID " + thingTypeUID.toString());
-            return new ThingUID(thingTypeUID, bridgeUID, wmBusDevice.getSecondaryAddress().getDeviceId() + "");
+            return new ThingUID(thingTypeUID, bridgeUID, wmBusDevice.getDeviceId() + "");
         } else {
             logger.debug("discover: get ThingUID found no supported device");
             return null;
         }
     }
 
-    private ThingTypeUID getThingTypeUID(WMBusMessage wmBusDevice) {
-        String typeIdString = wmBusDevice.getControlField() + "" + wmBusDevice.getSecondaryAddress().getManufacturerId()
-                + "" + wmBusDevice.getSecondaryAddress().getVersion() + ""
-                + wmBusDevice.getSecondaryAddress().getDeviceType().getId();
+    private ThingTypeUID getThingTypeUID(WMBusDevice wmBusDevice) {
+        String typeIdString = wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
+                + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
+                + wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
         logger.debug("discovery: getThingTypeUID(): This device has typeID " + typeIdString
                 + " -- supported device types are "
                 + Arrays.toString(WMBusHKVDiscoveryService.TYPE_TO_WMBUS_ID_MAP.keySet().toArray()));
@@ -123,7 +123,7 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     @Override
-    public void onChangedWMBusDevice(WMBusMessage wmBusDevice) {
+    public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
         // nothing to do
     }
 
