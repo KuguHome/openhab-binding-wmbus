@@ -11,7 +11,6 @@ import java.util.Set;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
-import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -75,12 +74,11 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
             logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (2/5) command.refreshtype == REFRESH");
             State newState = UnDefType.NULL;
 
-            //TODO getOriginalMessage()
-            //TODO ev. eigene Klasse als Pendant für TechemHKV
-            //TODO generisch machen über Handler oder über WMBusDevice-Ableitungsklasse?
+            //TODO generisch machen über abgeleitete Handler oder über 1 generischen Handler mit gerätespezifischen WMBusDevice-Ableitungsklassen?
 
             if (techemDevice != null) {
                 logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (3/5) deviceMessage != null");
+                //TODO reduce channels to only what this device can provide
                 /*
                  * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading
                  * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- previous reading?
@@ -103,7 +101,6 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                     }
                     case CHANNEL_CURRENTREADING: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: CURRENTREADING");
-                        // DIB:0B, VIB:6E
                         DataRecord record = findRecord(new byte[] { 0x0b }, new byte[] { 0x6e });
                         if (record != null) {
                             newState = new DecimalType(record.getScaledDataValue());
@@ -112,8 +109,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                     }
                     case CHANNEL_LASTREADING: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTREADING");
-                        //TODO
-                        //newState = new DecimalType(techemDevice.getLastVal());
+                        //TODO newState = new DecimalType(techemDevice.getLastVal());
                         break;
                     }
                     case CHANNEL_RECEPTION: {
@@ -123,18 +119,15 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                     }
                     case CHANNEL_LASTDATE: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTDATE");
+                        //TODO
                         //newState = new DateTimeType(techemDevice.getLastDate());
                         //newState = new StringType(dateFormat.format(techemDevice.getLastDate().getTime()));
                         break;
                     }
                     case CHANNEL_CURRENTDATE: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: CURRENTDATE");
-                        //newState = new DateTimeType(techemDevice.getCurDate());
-                        //newState = new StringType(dateFormat.format(techemDevice.getCurDate().getTime()));
-                        // DIB:04, VIB:6D
                         DataRecord record = findRecord(new byte[] { 0x04 }, new byte[] { 0x6d });
                         if (record != null && record.getDataValueType() == DataValueType.DATE) {
-                            //TODO String oder DateTimeType besser?
                             Date date = (java.util.Date) record.getDataValue();
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
@@ -144,7 +137,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                     }
                     case CHANNEL_ALMANAC: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: ALMANAC");
-                        newState = new StringType("TODO-ALMANAC"); //TODO new StringType(techemDevice.getHistory());
+                        //newState = new StringType(techemDevice.getHistory());
                         break;
                     }
                     default:
@@ -214,14 +207,14 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
     public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
         logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
-            //techemDevice = (TechemHKV) wmBusDevice;
-            // TODO
             techemDevice = wmBusDevice;
-            logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): inform all channels to refresh");
+            logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): yes -> inform all channels to refresh");
             // refresh all channels -> handleCommand()
             for (Channel curChan : getThing().getChannels()) {
                 handleCommand(curChan.getUID(), RefreshType.REFRESH);
             }
+        } else {
+            logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): no");
         }
         logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): return");
     }
