@@ -91,8 +91,11 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
             thingDiscovered(discoveryResult);
         } else {
             // device unknown -> log message
-            logger.debug("discovered unsupported WMBus device of type '{}' with secondary address {}",
-                    wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType(), wmBusDevice.getOriginalMessage().getSecondaryAddress().toString());
+            logger.debug("discovered unsupported WMBus device with our type ID {} of WMBus type '{}' with secondary address {}",
+                    getTypeID(wmBusDevice),
+                    wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType(),
+                    wmBusDevice.getOriginalMessage().getSecondaryAddress().toString()
+                    );
         }
     }
 
@@ -113,14 +116,19 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     }
 
     private ThingTypeUID getThingTypeUID(WMBusDevice wmBusDevice) {
-        String typeIdString = wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
-                + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
-                + wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
+        String typeIdString = getTypeID(wmBusDevice);
         logger.debug("discovery: getThingTypeUID(): This device has typeID " + typeIdString
                 + " -- supported device types are "
                 + Arrays.toString(WMBusHKVDiscoveryService.TYPE_TO_WMBUS_ID_MAP.keySet().toArray()));
         String thingTypeId = TYPE_TO_WMBUS_ID_MAP.get(typeIdString);
         return thingTypeId != null ? new ThingTypeUID(BINDING_ID, thingTypeId) : null;
+    }
+
+    // this ID is needed for add new devices
+    private String getTypeID(WMBusDevice wmBusDevice) {
+        return wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
+                + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
+                + wmBusDevice.getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
     }
 
     public void activate() {
