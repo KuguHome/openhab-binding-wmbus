@@ -10,12 +10,12 @@ public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
-    // add new devices here
+    // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before constructor
     public static final String THING_TYPE_NAME_TECHEM_HKV = "techem_hkv"; // heat cost allocator (Heizkostenverteiler)
     public static final String THING_TYPE_NAME_KAMSTRUP_MULTICAL_302 = "kamstrup_multical_302"; // water heat meter (Wärmemengenzähler)
     public static final String THING_TYPE_NAME_QUNDIS_QHEAT_5 = "qundis_qheat_5"; // water heat meter (Wärmemengenzähler)
-    public static final String THING_TYPE_NAME_QUNDIS_QWATER_5_5 = "qundis_qheat_5.5"; // water (flow) meter (Wasserzähler)
-    public static final String THING_TYPE_NAME_QUNDIS_QCALORIC_5_5 = "qundis_qcaloric_5.5"; // heat cost allocator (Heizkostenverteiler)
+    public static final String THING_TYPE_NAME_QUNDIS_QWATER_5_5 = "qundis_qheat_5_5"; // water (flow) meter (Wasserzähler)
+    public static final String THING_TYPE_NAME_QUNDIS_QCALORIC_5_5 = "qundis_qcaloric_5_5"; // heat cost allocator (Heizkostenverteiler)
 
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
