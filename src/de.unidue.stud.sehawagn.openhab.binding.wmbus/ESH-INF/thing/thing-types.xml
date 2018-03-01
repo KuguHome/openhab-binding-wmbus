@@ -3,6 +3,8 @@
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
+    <!-- add new devices here -->
+
 	<!-- Generic thing for -->
 	<thing-type id="techem_hkv">
 		<supported-bridge-type-refs>

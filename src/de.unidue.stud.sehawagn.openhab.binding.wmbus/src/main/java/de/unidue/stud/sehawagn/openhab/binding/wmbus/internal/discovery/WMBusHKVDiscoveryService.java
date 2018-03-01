@@ -29,9 +29,13 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     private final static int SEARCH_TIME = 480; // wait some time, because the interval of all HCAs may be long
 
     // @formatter:off
-    //TODO diese Liste erweitern um Kamstrup und Qundis-Geräte
+    // add new devices here; these IDs here are generated in getThingTypeUID()
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
-            .put("68TCH105255", "techem_hkv").build();
+            .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
+            //TODO get IDs from log
+            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
+            //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
+            .build();
 
     private WMBusBridgeHandler bridgeHandler;
 
