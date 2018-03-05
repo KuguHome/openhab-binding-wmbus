@@ -21,6 +21,7 @@ import com.google.common.collect.Sets;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQCaloricHandler;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQWaterHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKVDiscoveryService;
 
@@ -31,7 +32,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     // add new devices here
     //TODO make this nicer instead of cascading
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusTechemHKVHandler.SUPPORTED_THING_TYPES, WMBusQundisQCaloricHandler.SUPPORTED_THING_TYPES));
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusTechemHKVHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusQundisQCaloricHandler.SUPPORTED_THING_TYPES, WMBusQundisQWaterHandler.SUPPORTED_THING_TYPES)));
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
@@ -70,6 +71,10 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             // create handler for Qundis Qcaloric 5,5 device
             logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
             return new WMBusQundisQCaloricHandler(thing);
+        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QWATER_5_5)) {
+            // create handler for Qundis Qwater 5,5 device
+            logger.debug("Creating (handler for) Qundis Qwater 5,5 device.");
+            return new WMBusQundisQWaterHandler(thing);
         } else {
             return null;
         }
