@@ -45,20 +45,23 @@
         <description>A heat cost allocator model Qcaloric 5,5 by Qundis GmbH.</description>
 
         <channels>
-            <channel id="room_temperature" typeId="room_temperature" />
-            <channel id="radiator_temperature" typeId="radiator_temperature" />
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
-            <channel id="last_date" typeId="last_date" />
+            <channel id="error_date" typeId="error_date" />
+
+            <channel id="current_reading" typeId="current_reading" />
             <channel id="current_date" typeId="current_date" />
-            <channel id="almanac" typeId="almanac" />
+
+            <channel id="previous_reading" typeId="previous_reading" />
+            <channel id="previous_date" typeId="previous_date" />
+
+            <channel id="last_reading" typeId="last_reading" />
+            <channel id="last_date" typeId="last_date" />
         </channels>
 
         <config-description>
             <parameter name="hkvId" type="text">
                 <label>Heat Cost Allocator ID</label>
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light.</description>
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
                 <required>true</required>
             </parameter>
         </config-description>
