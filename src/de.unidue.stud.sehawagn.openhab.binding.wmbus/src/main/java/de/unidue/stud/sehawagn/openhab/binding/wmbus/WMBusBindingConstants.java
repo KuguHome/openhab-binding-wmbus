@@ -27,14 +27,24 @@ public class WMBusBindingConstants {
     public final static ThingTypeUID THING_TYPE_QUNDIS_QCALORIC_5_5 = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_QUNDIS_QCALORIC_5_5);
 
     // List all channels
+    // general channels
+    public static final String CHANNEL_RECEPTION = "reception";
+    public static final String CHANNEL_ALMANAC = "almanac";
+    public static final String CHANNEL_ERRORDATE = "error_date";
+
+    // temperatures
     public static final String CHANNEL_ROOMTEMPERATURE = "room_temperature";
     public static final String CHANNEL_RADIATORTEMPERATURE = "radiator_temperature";
+
+    // measurement readings
     public static final String CHANNEL_CURRENTREADING = "current_reading";
-    public static final String CHANNEL_LASTREADING = "last_reading";
-    public static final String CHANNEL_RECEPTION = "reception";
-    public static final String CHANNEL_LASTDATE = "last_date";
     public static final String CHANNEL_CURRENTDATE = "current_date";
-    public static final String CHANNEL_ALMANAC = "almanac";
+
+    public static final String CHANNEL_PREVIOUSREADING = "previous_reading";
+    public static final String CHANNEL_PREVIOUSDATE = "previous_date";
+
+    public static final String CHANNEL_LASTREADING = "last_reading";
+    public static final String CHANNEL_LASTDATE = "last_date";
 
     // add new devices here
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE, THING_TYPE_TECHEM_HKV, THING_TYPE_KAMSTRUP_MULTICAL_302, THING_TYPE_QUNDIS_QHEAT_5, THING_TYPE_QUNDIS_QWATER_5_5, THING_TYPE_QUNDIS_QCALORIC_5_5);

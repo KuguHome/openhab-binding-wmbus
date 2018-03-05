@@ -90,38 +90,62 @@
 		<state readOnly="true" pattern="%d">
 		</state>
 	</channel-type>
+    <channel-type id="previous_reading">
+        <item-type>Number</item-type>
+        <label>Last Reading</label>
+        <description>Heat cost allocation reading of yesterday</description>
+        <category>Energy</category>
+        <state readOnly="true" pattern="%d">
+        </state>
+    </channel-type>
 	<channel-type id="last_reading">
 		<item-type>Number</item-type>
 		<label>Last Reading</label>
-		<description>Heat cost allocation reading of the last period</description>
+		<description>Heat cost allocation reading of the previous period (yearly/quarterly/monthly).</description>
 		<category>Energy</category>
 		<state readOnly="true" pattern="%d">
 		</state>
 	</channel-type>
-	<channel-type id="reception">
-		<item-type>Number</item-type>
-		<label>Reception Signal Strength</label>
-		<description>The Received Signal Strength Indication, power of the radio signal in dBm (decibel miliwatt)</description>
-		<category>QualityOfService</category>
-		<state readOnly="true" pattern="%d">
-		</state>
-	</channel-type>
-	<channel-type id="last_date">
-		<item-type>DateTime</item-type>
-		<label>Date of Last Reading</label>
-		<description>The date, when the last reading was taken.</description>
-		<category>Date</category>
-		<state readOnly="true">
-		</state>
-	</channel-type>
-	<channel-type id="current_date">
-		<item-type>DateTime</item-type>
-		<label>Date of Current Reading</label>
-		<description>The date, when the current reading was taken.</description>
-		<category>Date</category>
-		<state readOnly="true">
-		</state>
-	</channel-type>
+    <channel-type id="current_date">
+        <item-type>DateTime</item-type>
+        <label>Date of Current Reading</label>
+        <description>The date, when the current reading was taken.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="previous_date">
+        <item-type>DateTime</item-type>
+        <label>Date of Current Reading</label>
+        <description>The date, when the current reading was taken.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="last_date">
+        <item-type>DateTime</item-type>
+        <label>Date of Last Reading</label>
+        <description>The date, when the reading of the previous period was taken.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="error_date">
+        <item-type>DateTime</item-type>
+        <label>Date of Last Reading</label>
+        <description>The date, when the device last encountered an error. May be set to manufacturing date or installation date if none happened.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="reception">
+        <item-type>Number</item-type>
+        <label>Reception Signal Strength</label>
+        <description>The Received Signal Strength Indication, power of the radio signal in dBm (decibel miliwatt)</description>
+        <category>QualityOfService</category>
+        <state readOnly="true" pattern="%d">
+        </state>
+    </channel-type>
 	<channel-type id="almanac">
 		<item-type>String</item-type>
 		<label>Monthly Readings</label>
