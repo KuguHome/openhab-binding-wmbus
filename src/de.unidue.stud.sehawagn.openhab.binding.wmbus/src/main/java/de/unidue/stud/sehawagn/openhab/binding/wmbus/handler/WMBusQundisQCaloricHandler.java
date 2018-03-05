@@ -33,6 +33,8 @@ import com.google.common.collect.Sets;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemHKV;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
+// Thing resp. device handler for the Qundis Qcaloric 5,5 heat cost allocator (Heizkostenverteiler)
+
 public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBusMessageListener {
 
     // must set this for add new device handlers
@@ -89,14 +91,24 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                  * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Thu Mar 01 21:12:00 CET 2018 -- timestamp of current / latest reading
                  */
                 switch (channelUID.getId()) {
-                    case CHANNEL_ROOMTEMPERATURE: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: ROOMTEMPERATURE");
-                        //TODO newState = new DecimalType(techemDevice.getT1());
+                    case CHANNEL_RECEPTION: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: RECEPTION");
+                        newState = new DecimalType(techemDevice.getOriginalMessage().getRssi());
                         break;
                     }
-                    case CHANNEL_RADIATORTEMPERATURE: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: RADIATORTEMPERATURE");
-                        //TODO newState = new DecimalType(techemDevice.getT2());
+                    //TODO put all the date value conversions into an helper method
+                    //TODO do not instantiate new byte arrays each time (re-use / convert to constants)
+                    case CHANNEL_ERRORDATE: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: ERRORDATE");
+                        DataRecord record = findRecord(new byte[] { 0x32 }, new byte[] { 0x6c });
+                        if (record != null && record.getDataValueType() == DataValueType.DATE) {
+                            Date date = (java.util.Date) record.getDataValue();
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(date);
+                            newState = new DateTimeType(cal);
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message or not of type date");
+                        }
                         break;
                     }
                     case CHANNEL_CURRENTREADING: {
@@ -107,23 +119,6 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                         } else {
                             logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message");
                         }
-                        break;
-                    }
-                    case CHANNEL_LASTREADING: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTREADING");
-                        //TODO newState = new DecimalType(techemDevice.getLastVal());
-                        break;
-                    }
-                    case CHANNEL_RECEPTION: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: RECEPTION");
-                        newState = new DecimalType(techemDevice.getOriginalMessage().getRssi());
-                        break;
-                    }
-                    case CHANNEL_LASTDATE: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTDATE");
-                        //TODO
-                        //newState = new DateTimeType(techemDevice.getLastDate());
-                        //newState = new StringType(dateFormat.format(techemDevice.getLastDate().getTime()));
                         break;
                     }
                     case CHANNEL_CURRENTDATE: {
@@ -139,9 +134,53 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                         }
                         break;
                     }
-                    case CHANNEL_ALMANAC: {
-                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: ALMANAC");
-                        //newState = new StringType(techemDevice.getHistory());
+                    //TODO improve naming: last reading <--> previous reading (need to find out what is actually reported by this device as previous reading)
+                    case CHANNEL_PREVIOUSREADING: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: PREVIOUSREADING");
+                        //TODO why is type cast at 0xCB required? 0xCB already is a byte, right?
+                        DataRecord record = findRecord(new byte[] { (byte) 0xCB, 0x08 }, new byte[] { 0x6e });
+                        if (record != null) {
+                            newState = new DecimalType(record.getScaledDataValue());
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message");
+                        }
+                        break;
+                    }
+                    case CHANNEL_PREVIOUSDATE: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: PREVIOUSDATE");
+                        //TODO why is type cast at 0xC2 required? 0xCB already is a byte, right?
+                        DataRecord record = findRecord(new byte[] { (byte) 0xC2, 0x08 }, new byte[] { 0x6c });
+                        if (record != null && record.getDataValueType() == DataValueType.DATE) {
+                            Date date = (java.util.Date) record.getDataValue();
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(date);
+                            newState = new DateTimeType(cal);
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message or not of type date");
+                        }
+                        break;
+                    }
+                    case CHANNEL_LASTREADING: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTREADING");
+                        DataRecord record = findRecord(new byte[] { 0x4b }, new byte[] { 0x6e });
+                        if (record != null) {
+                            newState = new DecimalType(record.getScaledDataValue());
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message");
+                        }
+                        break;
+                    }
+                    case CHANNEL_LASTDATE: {
+                        logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: LASTDATE");
+                        DataRecord record = findRecord(new byte[] { 0x42 }, new byte[] { 0x6c });
+                        if (record != null && record.getDataValueType() == DataValueType.DATE) {
+                            Date date = (java.util.Date) record.getDataValue();
+                            Calendar cal = Calendar.getInstance();
+                            cal.setTime(date);
+                            newState = new DateTimeType(cal);
+                        } else {
+                            logger.trace("WMBusQundisQCaloricHandler: handleCommand(): record not found in message or not of type date");
+                        }
                         break;
                     }
                     default:
