@@ -38,6 +38,7 @@ public class WMBusBindingConstants {
 
     // measurement readings
     public static final String CHANNEL_CURRENTREADING = "current_reading";
+    public static final String CHANNEL_CURRENTVOLUMEFLOW = "current_volume_flow";
     public static final String CHANNEL_CURRENTDATE = "current_date";
 
     public static final String CHANNEL_PREVIOUSREADING = "previous_reading";
@@ -57,7 +58,7 @@ public class WMBusBindingConstants {
     // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
 
     // HKV config properties
-    public static final String PROPERTY_HKV_ID = "hkvId";
+    public static final String PROPERTY_HKV_ID = "hkvId"; //TODO change to WmbusDevice_ID
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
 
     // defaults
