@@ -10,7 +10,8 @@ public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
-    // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before constructor
+    // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before
+    // constructor
     public static final String THING_TYPE_NAME_TECHEM_HKV = "techem_hkv"; // heat cost allocator (Heizkostenverteiler)
     public static final String THING_TYPE_NAME_KAMSTRUP_MULTICAL_302 = "kamstrup_multical_302"; // water heat meter (Wärmemengenzähler)
     public static final String THING_TYPE_NAME_QUNDIS_QHEAT_5 = "qundis_qheat_5"; // water heat meter (Wärmemengenzähler)
@@ -53,6 +54,7 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_STICK_MODEL = "stickModel";
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";
     public static final String CONFKEY_RADIO_MODE = "radioMode";
+    public static final String CONFKEY_ENCRYPTION_KEYS = "encryptionKeys";
     // public static final String CONFKEY_POLLING_INTERVAL = "pollingInterval";
 
     // HKV config properties
