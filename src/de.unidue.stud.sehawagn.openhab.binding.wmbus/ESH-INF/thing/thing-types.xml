@@ -73,7 +73,7 @@
     <channel-type id="room_temperature">
 		<item-type>Number</item-type>
 		<label>Room Temperature</label>
-		<description>Current temperature in the room in degrees celsius</description>
+		<description>Current temperature in the room in degrees celsius.</description>
 		<category>Temperature</category>
 		<state readOnly="true" pattern="%.2f °C">
 		</state>
@@ -81,7 +81,7 @@
 	<channel-type id="radiator_temperature">
 		<item-type>Number</item-type>
 		<label>Radiator Temperature</label>
-		<description>Current temperature of the radiator in degrees celsius</description>
+		<description>Current temperature of the radiator in degrees celsius.</description>
 		<category>Temperature</category>
 		<state readOnly="true" pattern="%.2f °C">
 		</state>
@@ -89,15 +89,15 @@
 	<channel-type id="current_reading">
 		<item-type>Number</item-type>
 		<label>Current Reading</label>
-		<description>Current heat cost allocation reading</description>
+		<description>Current heat cost allocation reading.</description>
 		<category>Energy</category>
 		<state readOnly="true" pattern="%d">
 		</state>
 	</channel-type>
     <channel-type id="previous_reading">
         <item-type>Number</item-type>
-        <label>Last Reading</label>
-        <description>Heat cost allocation reading of yesterday</description>
+        <label>Previous Reading</label>
+        <description>Heat cost allocation reading of previous month.</description>
         <category>Energy</category>
         <state readOnly="true" pattern="%d">
         </state>
@@ -105,7 +105,7 @@
 	<channel-type id="last_reading">
 		<item-type>Number</item-type>
 		<label>Last Reading</label>
-		<description>Heat cost allocation reading of the previous period (yearly/quarterly/monthly).</description>
+		<description>Heat cost allocation reading of the previous accounting period, usually yearly.</description>
 		<category>Energy</category>
 		<state readOnly="true" pattern="%d">
 		</state>
@@ -113,15 +113,15 @@
     <channel-type id="current_date">
         <item-type>DateTime</item-type>
         <label>Date of Current Reading</label>
-        <description>The date, when the current reading was taken.</description>
+        <description>The time when the current reading was taken.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
     </channel-type>
     <channel-type id="previous_date">
         <item-type>DateTime</item-type>
-        <label>Date of Current Reading</label>
-        <description>The date, when the current reading was taken.</description>
+        <label>Date of Previous Reading</label>
+        <description>The time when the previous month's reading was taken.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
@@ -129,15 +129,15 @@
     <channel-type id="last_date">
         <item-type>DateTime</item-type>
         <label>Date of Last Reading</label>
-        <description>The date, when the reading of the previous period was taken.</description>
+        <description>The time when the reading of the previous period was taken.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
     </channel-type>
     <channel-type id="error_date">
         <item-type>DateTime</item-type>
-        <label>Date of Last Reading</label>
-        <description>The date, when the device last encountered an error. May be set to manufacturing date or installation date if none happened.</description>
+        <label>Date of Last Error</label>
+        <description>The date, when the device last encountered an error. May be set to manufacturing date or installation date if none happened yet.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
@@ -145,7 +145,7 @@
     <channel-type id="reception">
         <item-type>Number</item-type>
         <label>Reception Signal Strength</label>
-        <description>The Received Signal Strength Indication, power of the radio signal in dBm (decibel miliwatt)</description>
+        <description>The Received Signal Strength Indication, power of the radio signal in dBm (decibel milliwatt)</description>
         <category>QualityOfService</category>
         <state readOnly="true" pattern="%d">
         </state>
