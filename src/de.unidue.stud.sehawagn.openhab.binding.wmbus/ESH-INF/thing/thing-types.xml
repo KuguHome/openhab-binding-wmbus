@@ -144,7 +144,7 @@
         <channels>
             <channel id="reception" typeId="reception" />
 
-            <channel id="current_power_w" typeID="current_reading" />
+            <channel id="current_power_w" typeId="current_reading" />
             <channel id="current_volume_total_m3" typeId="current_reading" />   <!-- TODO make more specific channel types -->
             <channel id="current_energy_total_wh" typeId="current_reading" />
             <!-- NOTE: this device does not publish a current reading's date in its WMBus messages - is filled using now time -->
