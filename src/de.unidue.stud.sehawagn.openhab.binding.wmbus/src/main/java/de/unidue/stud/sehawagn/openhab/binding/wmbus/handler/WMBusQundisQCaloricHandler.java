@@ -251,10 +251,23 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
         logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             techemDevice = wmBusDevice;
-            logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): yes -> inform all channels to refresh");
-            // refresh all channels -> handleCommand()
-            for (Channel curChan : getThing().getChannels()) {
-                handleCommand(curChan.getUID(), RefreshType.REFRESH);
+            logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): yes");
+            // in between the standard OMS format messages, this device sends out messages in manufcaturer-specific format in between -> filter these out
+            // these messages are missing the usual values -> would lead to channels being set to NULL
+            /*
+             * DIB:0D, VIB:FF5F -> descr:MANUFACTURER_SPECIFIC, function:INST_VAL, value:/
+             * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 12:33:00 CET 2018
+             */
+            //TODO why is type cast at 0xff required? 0xff already is a byte, right?
+            DataRecord record = findRecord(new byte[] { 0x0d }, new byte[] { (byte) 0xff, 0x5f });
+            if (record != null) {
+                logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): this is a message with non-OMS manufacturer-specific value, ignoring this message");
+            } else {
+                // refresh all channels -> handleCommand()
+                logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): inform all channels to refresh");
+                for (Channel curChan : getThing().getChannels()) {
+                    handleCommand(curChan.getUID(), RefreshType.REFRESH);
+                }
             }
         } else {
             logger.trace("WMBusQundisQCaloricHandler: onChangedWMBusDevice(): no");
