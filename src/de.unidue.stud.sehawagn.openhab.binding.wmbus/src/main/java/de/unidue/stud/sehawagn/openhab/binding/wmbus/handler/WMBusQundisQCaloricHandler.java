@@ -82,10 +82,10 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                 logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (3/5) deviceMessage != null");
                 /*
                  * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading / measurement value
-                 * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- reading before previous one
+                 * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- reading before previous one over last year
                  * DIB:42, VIB:6C -> descr:DATE, function:INST_VAL, storage:1, value:Sun Dec 31 00:00:00 CET 2017 -- reading before previous one
                  * DIB:CB08, VIB:6E -> descr:HCA, function:INST_VAL, storage:17, value:000000, unit:RESERVED  -- previous reading
-                 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Wed Feb 28 00:00:00 CET 2018 -- previous reading
+                 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Wed Feb 28 00:00:00 CET 2018 -- previous reading over last month
                  * DIB:32, VIB:6C -> descr:DATE, function:ERROR_VAL, value:Sat Sep 23 00:00:00 CEST 2017 -- time of last error
                  * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 12:23:00 CET 2018 -- timestamp of current / latest reading
                  */
