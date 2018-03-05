@@ -80,7 +80,6 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
 
             if (techemDevice != null) {
                 logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (3/5) deviceMessage != null");
-                //TODO reduce channels to only what this device can provide
                 /*
                  * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading / measurement value
                  * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- reading before previous one
