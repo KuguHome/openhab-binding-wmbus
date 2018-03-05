@@ -59,6 +59,7 @@
         </channels>
 
         <config-description>
+            <!-- TODO change to generic "wmbusDeviceId" -->
             <parameter name="hkvId" type="text">
                 <label>Heat Cost Allocator ID</label>
                 <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
