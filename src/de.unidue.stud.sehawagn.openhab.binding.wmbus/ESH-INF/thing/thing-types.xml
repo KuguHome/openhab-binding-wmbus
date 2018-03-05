@@ -83,7 +83,7 @@
             <channel id="error_date" typeId="error_date" />
 
             <channel id="current_reading" typeId="current_reading" />
-            <channel id="current_volume_flow" typeId="current_volume_flow" />
+            <channel id="current_volume_flow_m3h" typeId="current_volume_flow_m3h" />
             <channel id="current_date" typeId="current_date" />
 
             <channel id="previous_reading" typeId="previous_reading" />
@@ -157,7 +157,7 @@
 		<state readOnly="true" pattern="%.2f">
 		</state>
 	</channel-type>
-    <channel-type id="current_volume_flow">
+    <channel-type id="current_volume_flow_m3h">
         <item-type>Number</item-type>
         <label>Current Reading (Volume Flow)</label>
         <description>Current volume flow reading.</description>
