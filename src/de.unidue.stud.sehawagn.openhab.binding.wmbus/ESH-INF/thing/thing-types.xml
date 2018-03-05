@@ -69,6 +69,41 @@
     </thing-type>
 
 
+    <!-- thing definition for Qundis Qwater 5,5 -->
+    <thing-type id="qundis_qwater_5_5">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Qundis Qwater 5,5</label>
+        <description>A water flow meter model Qwater 5,5 by Qundis GmbH.</description>
+
+        <channels>
+            <channel id="reception" typeId="reception" />
+            <channel id="error_date" typeId="error_date" />
+
+            <channel id="current_reading" typeId="current_reading" />
+            <channel id="current_volume_flow" typeId="current_volume_flow" />
+            <channel id="current_date" typeId="current_date" />
+
+            <channel id="previous_reading" typeId="previous_reading" />
+            <channel id="previous_date" typeId="previous_date" />
+
+            <channel id="last_reading" typeId="last_reading" />
+            <channel id="last_date" typeId="last_date" />
+        </channels>
+
+        <config-description>
+            <!-- TODO change to generic "wmbusDeviceId" -->
+            <parameter name="hkvId" type="text">
+                <label>Heat Cost Allocator ID</label>
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+
+
     <!-- channel definitions for all WMBus devices -->
     <channel-type id="room_temperature">
 		<item-type>Number</item-type>
@@ -86,20 +121,28 @@
 		<state readOnly="true" pattern="%.2f °C">
 		</state>
 	</channel-type>
-	<channel-type id="current_reading">
+	<channel-type id="current_reading">    <!-- TODO change reading to own channel type of what it actually is -->
 		<item-type>Number</item-type>
 		<label>Current Reading</label>
 		<description>Current heat cost allocation reading.</description>
 		<category>Energy</category>
-		<state readOnly="true" pattern="%d">
+		<state readOnly="true" pattern="%.2f">
 		</state>
 	</channel-type>
+    <channel-type id="current_volume_flow">
+        <item-type>Number</item-type>
+        <label>Current Reading (Volume Flow)</label>
+        <description>Current volume flow reading.</description>
+        <category>Energy</category>
+        <state readOnly="true" pattern="%.2f m³/h"> <!-- TODO change %d to %2.f for most numeric values -->
+        </state>
+    </channel-type>
     <channel-type id="previous_reading">
         <item-type>Number</item-type>
         <label>Previous Reading</label>
         <description>Heat cost allocation reading of previous month.</description>
         <category>Energy</category>
-        <state readOnly="true" pattern="%d">
+        <state readOnly="true" pattern="%.2f">
         </state>
     </channel-type>
 	<channel-type id="last_reading">
@@ -107,7 +150,7 @@
 		<label>Last Reading</label>
 		<description>Heat cost allocation reading of the previous accounting period, usually yearly.</description>
 		<category>Energy</category>
-		<state readOnly="true" pattern="%d">
+		<state readOnly="true" pattern="%.2f">
 		</state>
 	</channel-type>
     <channel-type id="current_date">
@@ -137,7 +180,7 @@
     <channel-type id="error_date">
         <item-type>DateTime</item-type>
         <label>Date of Last Error</label>
-        <description>The date, when the device last encountered an error. May be set to manufacturing date or installation date if none happened yet.</description>
+        <description>The date, when the device last encountered an error. May be set to manufacturing date, installation date or sometime far in the future if none happened yet.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
