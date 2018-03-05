@@ -148,7 +148,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
                     }
                     case CHANNEL_PREVIOUSDATE: {
                         logger.trace("WMBusQundisQCaloricHandler: handleCommand(): (4/5): got a valid channel: PREVIOUSDATE");
-                        //TODO why is type cast at 0xC2 required? 0xCB already is a byte, right?
+                        //TODO why is type cast at 0xC2 required? 0xC2 already is a byte, right?
                         DataRecord record = findRecord(new byte[] { (byte) 0xC2, 0x08 }, new byte[] { 0x6c });
                         if (record != null && record.getDataValueType() == DataValueType.DATE) {
                             Date date = (java.util.Date) record.getDataValue();
