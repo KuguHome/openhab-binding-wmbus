@@ -36,6 +36,11 @@
                 </options>
                 <required>true</required>
             </parameter>
+            <parameter name="encryptionKeys" type="text">
+                <description>Encryption Keys in form ID:KEY;ID:KEY</description>
+                <label>Encryption Keys</label>
+                <required>false</required>
+            </parameter>
         </config-description>
     </bridge-type>
 

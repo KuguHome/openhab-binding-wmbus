@@ -6,8 +6,11 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+
+import javax.xml.bind.DatatypeConverter;
 
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
 import org.eclipse.smarthome.core.thing.Bridge;
@@ -17,6 +20,7 @@ import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusConnection;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusSerialBuilder;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusSerialBuilder.WMBusManufacturer;
@@ -48,6 +52,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     private Map<String, WMBusDevice> knownDevices = new HashMap<>();
 
     private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
+
+    private Map<SecondaryAddress, byte[]> encryptionKeys;
 
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -167,13 +173,17 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 return;
             }
 
-            // TODO Verschlüsselung hinzufügen
-            /*
-             * Map<SecondaryAddress, byte[]> keyPairs = getKeyPairs();
-             * for (Entry<SecondaryAddress, byte[]> keyPair : keyPairs.entrySet()) {
-             * wmBusConnection.addKey(keyPair.getKey(), keyPair.getValue());
-             * }
-             */
+            if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)
+                    || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null
+                    || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
+                logger.debug("No encryption keys given.");
+            } else {
+                parseKeys();
+                Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
+                for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
+                    wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
+                }
+            }
 
             logger.debug("Connected to WMBus serial port");
 
@@ -212,6 +222,10 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             logger.debug("WMBusBridgeHandler: Initialization done! Setting bridge online");
             updateStatus(ThingStatus.ONLINE);
         }
+    }
+
+    private Map<SecondaryAddress, byte[]> getEncryptionKeys() {
+        return encryptionKeys;
     }
 
     private static WMBusManufacturer parseManufacturer(String manufacturer) {
@@ -315,6 +329,34 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             logger.trace("bridge: device not found");
         }
         return knownDevices.get(deviceId);
+    }
+
+    private void parseKeys() {
+        String[] idKeyPairs = ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).split(";");
+        for (String currentKey : idKeyPairs) {
+            String[] idKeyPair = currentKey.split(":");
+            if (idKeyPair.length != 2) {
+                logger.error("A key has to be a given as [secondary address]:[key].", true);
+            } else {
+                int secondaryAddressLength = idKeyPair[0].length();
+                if (secondaryAddressLength != 16) {
+                    logger.error("The secondary address needs to be 16 digits long, but has " + secondaryAddressLength + '.', true);
+                } else {
+                    try {
+                        byte[] secondaryAddressbytes = DatatypeConverter.parseHexBinary(idKeyPair[0]);
+                        SecondaryAddress secondaryAddress = SecondaryAddress.newFromWMBusLlHeader(secondaryAddressbytes, 0);
+                        try {
+                            byte[] key = DatatypeConverter.parseHexBinary(idKeyPair[1]);
+                            encryptionKeys.put(secondaryAddress, key);
+                        } catch (IllegalArgumentException e) {
+                            logger.error("The key is not hexadecimal.", true);
+                        }
+                    } catch (NumberFormatException e) {
+                        logger.error("The secondary address is not hexadecimal.", true);
+                    }
+                }
+            }
+        }
     }
 
 }
