@@ -132,6 +132,39 @@
     </thing-type>
 
 
+    <!-- thing definition for Kamstrup MultiCal 302 -->
+    <thing-type id="kamstrup_multical_302">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Kamstrup MultiCal 302</label>
+        <description>A (water) heat meter with (water) flow meter function model MultiCal 302 by Kamstrup.</description>
+
+        <channels>
+            <channel id="reception" typeId="reception" />
+
+            <channel id="current_power_w" typeID="current_reading" />
+            <channel id="current_volume_total_m3" typeId="current_reading" />   <!-- TODO make more specific channel types -->
+            <channel id="current_energy_total_wh" typeId="current_reading" />
+            <!-- NOTE: this device does not publish a current reading's date in its WMBus messages - is filled using now time -->
+            <channel id="current_date" typeId="current_date" />
+
+            <channel id="previous_energy_total_wh" typeId="previous_reading" />
+            <channel id="previous_date" typeId="previous_date" />
+        </channels>
+
+        <config-description>
+            <!-- TODO change to generic "wmbusDeviceId" -->
+            <parameter name="hkvId" type="text">
+                <label>Heat Cost Allocator ID</label>   <!-- TODO this is not a HKV -->
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+
+
     <!-- channel definitions for all WMBus devices -->
     <channel-type id="room_temperature">
 		<item-type>Number</item-type>
