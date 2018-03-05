@@ -33,7 +33,7 @@ import com.google.common.collect.Sets;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.TechemHKV;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
-// Thing resp. device handler for the Qundis Qcaloric 5,5 heat cost allocator (Heizkostenverteiler)
+// Thing resp. device handler for the Qundis Qwater 5,5 water flow meter (Wasserzähler)
 
 public class WMBusQundisQWaterHandler extends BaseThingHandler implements WMBusMessageListener {
 
