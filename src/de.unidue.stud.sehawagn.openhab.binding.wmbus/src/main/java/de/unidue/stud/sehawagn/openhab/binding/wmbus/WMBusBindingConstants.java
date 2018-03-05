@@ -31,6 +31,7 @@ public class WMBusBindingConstants {
     public static final String CHANNEL_RECEPTION = "reception";
     public static final String CHANNEL_ALMANAC = "almanac";
     public static final String CHANNEL_ERRORDATE = "error_date";
+    public static final String CHANNEL_ERRORFLAGS = "error_flags";
 
     // temperatures
     public static final String CHANNEL_ROOMTEMPERATURE = "room_temperature";
