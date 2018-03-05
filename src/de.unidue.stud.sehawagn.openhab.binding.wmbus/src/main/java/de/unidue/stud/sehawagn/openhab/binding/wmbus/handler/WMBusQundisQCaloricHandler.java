@@ -257,6 +257,7 @@ public class WMBusQundisQCaloricHandler extends BaseThingHandler implements WMBu
             /*
              * DIB:0D, VIB:FF5F -> descr:MANUFACTURER_SPECIFIC, function:INST_VAL, value:/
              * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 12:33:00 CET 2018
+             * (no other records in these messages)
              */
             //TODO why is type cast at 0xff required? 0xff already is a byte, right?
             DataRecord record = findRecord(new byte[] { 0x0d }, new byte[] { (byte) 0xff, 0x5f });
