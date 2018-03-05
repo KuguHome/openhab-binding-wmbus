@@ -104,6 +104,34 @@
     </thing-type>
 
 
+    <!-- thing definition for Qundis Qheat 5 -->
+    <thing-type id="qundis_qheat_5">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Qundis Qheat 5</label>
+        <description>A water energy meter (Wärmemengenzähler) model Qheat 5 by Qundis GmbH.</description>
+
+        <channels>
+            <channel id="reception" typeId="reception" />
+            <channel id="error_flags" typeId="error_flags" />
+
+            <channel id="current_reading" typeId="current_reading" />
+            <channel id="current_date" typeId="current_date" />
+        </channels>
+
+        <config-description>
+            <!-- TODO change to generic "wmbusDeviceId" -->
+            <parameter name="hkvId" type="text">
+                <label>Heat Cost Allocator ID</label>
+                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+
+
     <!-- channel definitions for all WMBus devices -->
     <channel-type id="room_temperature">
 		<item-type>Number</item-type>
