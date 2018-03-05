@@ -34,7 +34,6 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
     // you can get these values using the diagnostics radio message printer included with the JMBus library
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
             .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
-            //TODO get IDs from log
             .put("68KAM484", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
             .put("68LSE264", THING_TYPE_NAME_QUNDIS_QHEAT_5)
             .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
