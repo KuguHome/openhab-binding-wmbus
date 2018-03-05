@@ -30,11 +30,13 @@ public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implement
 
     // @formatter:off
     // add new devices here; these IDs here are generated in getThingTypeUID()
+    // basically: control field (0x44 = dec. 68) + manufacturer ID (3 characters) + device version (as output by test program) + device type from jMBus DeviceType class (eg. HEAT_METER = 0x04 = 4)
+    // you can get these values using the diagnostics radio message printer included with the JMBus library
     private final static Map<String, String> TYPE_TO_WMBUS_ID_MAP = new ImmutableMap.Builder<String, String>()
             .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
             //TODO get IDs from log
-            //.put("", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
-            //.put("", THING_TYPE_NAME_QUNDIS_QHEAT_5)
+            .put("68KAM484", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302)
+            .put("68LSE264", THING_TYPE_NAME_QUNDIS_QHEAT_5)
             .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5)
             .put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
             .build();
