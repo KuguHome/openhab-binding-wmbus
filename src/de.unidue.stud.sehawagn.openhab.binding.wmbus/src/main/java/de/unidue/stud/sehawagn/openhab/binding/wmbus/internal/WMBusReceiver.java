@@ -69,7 +69,6 @@ public class WMBusReceiver implements WMBusListener {
         this.filterIDs = filterIDs;
     }
 
-    // TODO Filter by interesting device ID - only interesting devices.
     boolean filterMatch(int inQuestion) {
         logger.trace("receiver: filterMatch(): do we know device: " + Integer.toString(inQuestion));
         if (filterIDs.length == 0) {
@@ -82,7 +81,7 @@ public class WMBusReceiver implements WMBusListener {
                 return true;
             }
         }
-        logger.debug("receiver: filterMatch(): not found");
+        logger.trace("receiver: filterMatch(): not found");
         return false;
     }
 

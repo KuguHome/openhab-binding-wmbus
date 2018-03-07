@@ -1,6 +1,7 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.handler;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -78,12 +79,21 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     public void initialize() {
         logger.debug("WMBusBridgeHandler: initialize()");
 
-        // TODO
-        logger.debug("WMBusBridgeHandler: waiting 1 minute to let other bindings using serial interfaces start up.");
-        try {
-            Thread.sleep(1000 * 60 * 1);
-        } catch (InterruptedException e) {
-            logger.debug("WMBusHandlerFactory: returned early out of thread sleep :-(");
+        // check stick model
+        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_STARTUP_DELAY) || getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY) == null) {
+            logger.error("Cannot open WMBus device. Startup delay not given.");
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Startup delay not given.");
+            return;
+        }
+        int startupDelay = ((BigDecimal) getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY)).intValue();
+        if (startupDelay > 0) {
+            logger.debug("WMBusBridgeHandler: waiting {} seconds to let other bindings using serial interfaces start up.", startupDelay);
+
+            try {
+                Thread.sleep(1000 * startupDelay);
+            } catch (InterruptedException e) {
+                logger.debug("WMBusHandlerFactory: returned early out of thread sleep :-(");
+            }
         }
 
         // check stick model
