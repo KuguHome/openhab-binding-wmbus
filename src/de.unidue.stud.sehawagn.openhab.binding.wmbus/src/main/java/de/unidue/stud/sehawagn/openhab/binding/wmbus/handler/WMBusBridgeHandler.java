@@ -156,6 +156,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
             try {
                 logger.debug("Building/opening connection");
+                logger.debug("NOTE: if initialization does not progress from here, check system journal for Execptions -- probably native lib loaded by another ClassLoader = previous version of WMBus binding");
                 if (wmbusConnection != null) {
                     logger.debug("Connection already set, closing old");
                     wmbusConnection.close();
