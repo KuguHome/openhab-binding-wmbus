@@ -178,19 +178,10 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 return;
             }
 
-            if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
-                logger.debug("No encryption keys given.");
-            } else {
-                parseKeys();
-                Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
-                for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
-                    wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
-                }
-            }
-
             logger.debug("Connected to WMBus serial port");
 
             // close WMBus connection on shutdown
+            logger.trace("Setting shutdown hook");
             Runtime.getRuntime().addShutdownHook(new Thread() {
                 @Override
                 public void run() {
@@ -206,6 +197,20 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                     }
                 }
             });
+
+            if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
+                logger.debug("No encryption keys given.");
+            } else {
+                logger.trace("Parsing given encryption keys");
+                parseKeys();
+                logger.trace("Encryption keys parsed");
+                logger.trace("Setting encryption keys in JMBus");
+                Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
+                for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
+                    wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
+                }
+                logger.trace("Keys successfully set");
+            }
 
             /*
              * this.wmbusReceiver = new TechemReceiver(this);
