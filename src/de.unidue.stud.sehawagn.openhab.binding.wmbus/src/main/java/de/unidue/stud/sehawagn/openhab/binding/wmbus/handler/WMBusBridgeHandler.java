@@ -78,7 +78,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
     public void initialize() {
         logger.debug("WMBusBridgeHandler: initialize()");
 
-        //TODO
+        // TODO
         logger.debug("WMBusBridgeHandler: waiting 1 minute to let other bindings using serial interfaces start up.");
         try {
             Thread.sleep(1000 * 60 * 1);
@@ -125,6 +125,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             logger.debug("Building new connection");
 
             wmbusReceiver = new WMBusReceiver(this);
+
+            if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) || getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).isEmpty()) {
+                logger.debug("Device ID filter is empty.");
+            } else {
+                wmbusReceiver.setFilterIDs(parseDeviceIDFilter());
+            }
 
             WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver, interfaceName);
 
@@ -342,6 +348,16 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 }
             }
         }
+    }
+
+    private int[] parseDeviceIDFilter() {
+        String[] ids = ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).split(";");
+        int[] idInts = new int[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            String curID = ids[i];
+            idInts[i] = Integer.valueOf(curID);
+        }
+        return idInts;
     }
 
 }

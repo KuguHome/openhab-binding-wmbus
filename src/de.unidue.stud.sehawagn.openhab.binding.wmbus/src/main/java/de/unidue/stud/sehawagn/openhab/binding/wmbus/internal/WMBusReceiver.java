@@ -130,7 +130,7 @@ public class WMBusReceiver implements WMBusListener {
             wmBusBridgeHandler.processMessage(device);
             logger.trace("receiver: Forwarded to handler.processMessage()");
         } else {
-            logger.debug("receiver: Unmatched message received: " + message.toString());
+            logger.trace("receiver: Unmatched message received: " + message.toString());
         }
     }
 
