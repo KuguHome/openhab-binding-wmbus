@@ -37,12 +37,12 @@
                 <required>true</required>
             </parameter>
             <parameter name="encryptionKeys" type="text">
-                <description>Encryption Keys in form ID:KEY;ID:KEY</description>
+                <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the JMBus message printer test program.</description>
                 <label>Encryption Keys</label>
                 <required>false</required>
             </parameter>
             <parameter name="deviceIDFilter" type="text">
-                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled.</description>
+                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled. Device ID in decumal format as shown in WMBus message prints and given out by the JMBus message printer test program.</description>
                 <label>Device Filter</label>
                 <required>false</required>
             </parameter>
