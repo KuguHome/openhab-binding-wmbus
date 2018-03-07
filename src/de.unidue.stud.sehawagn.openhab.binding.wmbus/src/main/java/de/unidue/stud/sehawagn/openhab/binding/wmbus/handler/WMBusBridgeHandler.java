@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -52,7 +53,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
-    private Map<SecondaryAddress, byte[]> encryptionKeys;
+    //TODO HashMap would be the unsynchronized version; differences see here: https://stackoverflow.com/questions/40471/differences-between-hashmap-and-hashtable#40878
+    private Map<SecondaryAddress, byte[]> encryptionKeys = new Hashtable<SecondaryAddress, byte[]>();
 
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -156,7 +158,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
             try {
                 logger.debug("Building/opening connection");
-                logger.debug("NOTE: if initialization does not progress from here, check system journal for Execptions -- probably native lib loaded by another ClassLoader = previous version of WMBus binding");
+                logger.debug("NOTE: if initialization does not progress from here, check systemd journal for Execptions -- probably native lib still loaded by another ClassLoader = previous version or instance of WMBus binding -> restart OpenHAB");
                 if (wmbusConnection != null) {
                     logger.debug("Connection already set, closing old");
                     wmbusConnection.close();
@@ -195,8 +197,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 logger.trace("Parsing given encryption keys");
                 parseKeys();
                 logger.trace("Encryption keys parsed");
-                logger.trace("Setting encryption keys in JMBus");
                 Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
+                logger.trace("Setting encryption keys in JMBus, count: " + encryptionKeys.size());
                 for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
                     wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
                 }
@@ -333,11 +335,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         for (String currentKey : idKeyPairs) {
             String[] idKeyPair = currentKey.split(":");
             if (idKeyPair.length != 2) {
-                logger.error("A key has to be a given as [secondary address]:[key].", true);
+                logger.error("parseKeys(): A key has to be a given as [secondary address]:[key].", true);
             } else {
                 int secondaryAddressLength = idKeyPair[0].length();
                 if (secondaryAddressLength != 16) {
-                    logger.error("The secondary address needs to be 16 digits long, but has " + secondaryAddressLength + '.', true);
+                    logger.error("parseKeys(): The secondary address needs to be 16 digits long, but has " + secondaryAddressLength + '.', true);
                 } else {
                     try {
                         byte[] secondaryAddressbytes = DatatypeConverter.parseHexBinary(idKeyPair[0]);
@@ -346,10 +348,10 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                             byte[] key = DatatypeConverter.parseHexBinary(idKeyPair[1]);
                             encryptionKeys.put(secondaryAddress, key);
                         } catch (IllegalArgumentException e) {
-                            logger.error("The key is not hexadecimal.", true);
+                            logger.error("parseKeys(): The key is not hexadecimal.", true);
                         }
                     } catch (NumberFormatException e) {
-                        logger.error("The secondary address is not hexadecimal.", true);
+                        logger.error("parseKeys(): The secondary address is not hexadecimal.", true);
                     }
                 }
             }
