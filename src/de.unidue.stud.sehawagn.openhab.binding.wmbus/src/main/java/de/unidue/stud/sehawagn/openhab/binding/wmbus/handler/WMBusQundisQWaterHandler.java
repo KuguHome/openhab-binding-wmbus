@@ -107,6 +107,7 @@ public class WMBusQundisQWaterHandler extends BaseThingHandler implements WMBusM
                             Date date = (java.util.Date) record.getDataValue();
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
+                            cal.set(Calendar.MILLISECOND, 0);   // throw away millisecond value to avoid, eg. [...]_previous_date changed from 2018-02-28T00:00:00.353+0100 to 2018-02-28T00:00:00.159+0100
                             newState = new DateTimeType(cal);
                         } else {
                             logger.trace("WMBusQundisQWaterHandler: handleCommand(): record not found in message or not of type date");
@@ -168,6 +169,7 @@ public class WMBusQundisQWaterHandler extends BaseThingHandler implements WMBusM
                             Date date = (java.util.Date) record.getDataValue();
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
+                            cal.set(Calendar.MILLISECOND, 0);   // throw away millisecond value to avoid, eg. [...]_previous_date changed from 2018-02-28T00:00:00.353+0100 to 2018-02-28T00:00:00.159+0100
                             newState = new DateTimeType(cal);
                         } else {
                             logger.trace("WMBusQundisQWaterHandler: handleCommand(): record not found in message or not of type date");
@@ -191,6 +193,7 @@ public class WMBusQundisQWaterHandler extends BaseThingHandler implements WMBusM
                             Date date = (java.util.Date) record.getDataValue();
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
+                            cal.set(Calendar.MILLISECOND, 0);   // throw away millisecond value to avoid, eg. [...]_previous_date changed from 2018-02-28T00:00:00.353+0100 to 2018-02-28T00:00:00.159+0100
                             newState = new DateTimeType(cal);
                         } else {
                             logger.trace("WMBusQundisQWaterHandler: handleCommand(): record not found in message or not of type date");
