@@ -232,14 +232,86 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             techemDevice = wmBusDevice;
             logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): yes");
-            // refresh all channels -> handleCommand()
-            logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): inform all channels to refresh");
-            for (Channel curChan : getThing().getChannels()) {
-                handleCommand(curChan.getUID(), RefreshType.REFRESH);
+            // in between the good messages, there are messages with unvalid values -> filter these out
+            if (!this.checkMessage(wmBusDevice)) {
+                logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): this is a malformed message, ignoring this message");
+            } else {
+                // refresh all channels -> handleCommand()
+                logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): inform all channels to refresh");
+                for (Channel curChan : getThing().getChannels()) {
+                    handleCommand(curChan.getUID(), RefreshType.REFRESH);
+                }
             }
         } else {
             logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): no");
         }
         logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): return");
+    }
+
+    // in between the good messages, there are messages with unvalid values, filter these.
+    //  previous date in the future
+    //  any of the Wh values are negative
+    //  number of data records is 0 -> leads to channels being set to NULL
+    // -> filter these out
+    private boolean checkMessage(WMBusDevice wmBusDevice) {
+        DataRecord record;
+
+        // check for number of records being too low to be valid
+        if (wmBusDevice.getOriginalMessage().getVariableDataResponse().getDataRecords().size() <= 1) {
+            // unplausibly low number of records
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: record count <= 1");
+            return false;
+        }
+
+        // check for date in the past
+        record = findRecord(new byte[] { 0x42 }, new byte[] { 0x6c });
+        if (record == null) {
+            // date is missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous measurement date missing");
+            return false;
+        } else if (record.getDataValueType() == DataValueType.DATE) {
+            Date date = (java.util.Date) record.getDataValue();
+            Calendar calNow = Calendar.getInstance(); // now, here
+            Calendar calPrevious = Calendar.getInstance();
+            calPrevious.setTime(date);
+            if (!calPrevious.before(calNow)) {
+                // previous date > now
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous measurement date in the future");
+                return false;
+            }
+        }
+
+        // check for negative values in the Wh records
+        // current
+        record = findRecord(new byte[] { 0x03 }, new byte[] { 0x06 });
+        if (record == null) {
+            // Wh value missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: current Wh value missing");
+            return false;
+        } else {
+            Double currentWh = record.getScaledDataValue();
+            if (currentWh < 0) {
+                // negative Wh value
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: current Wh value negative");
+                return false;
+            }
+        }
+        // previous
+        record = findRecord(new byte[] { 0x43 }, new byte[] { 0x06 });
+        if (record == null) {
+            // Wh value missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous Wh value missing");
+            return false;
+        } else {
+            Double currentWh = record.getScaledDataValue();
+            if (currentWh < 0) {
+                // negative Wh value
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous Wh value negative");
+                return false;
+            }
+        }
+
+        // passed all checks
+        return true;
     }
 }
