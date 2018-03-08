@@ -110,7 +110,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: CURRENTENERGYTOTAL");
                         DataRecord record = findRecord(new byte[] { 0x03 }, new byte[] { 0x06 });
                         if (record != null) {
-                            newState = new DecimalType(record.getScaledDataValue());
+                            newState = new DecimalType(record.getScaledDataValue() / 1000); // Wh to kWh (usual value unit)
                         } else {
                             logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): record not found in message");
                         }
@@ -144,7 +144,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: PREVIOUSENERGYTOTAL");
                         DataRecord record = findRecord(new byte[] { 0x43 }, new byte[] { 0x06 });
                         if (record != null) {
-                            newState = new DecimalType(record.getScaledDataValue());
+                            newState = new DecimalType(record.getScaledDataValue() / 1000); // Wh to kWh (usual value unit)
                         } else {
                             logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): record not found in message");
                         }
