@@ -127,6 +127,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         break;
                     }
                     // NOTE: device does not publish current date - using now
+                    //TODO refactor: can be safely removed - OpenHAB keeps current time for a value change anyway in persistence table (MySQL etc.)
                     case CHANNEL_CURRENTDATE: {
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: CURRENTDATE");
                         // if the main reading is set, then also return a current date, otherwise this would return the current date on every channel refresh
