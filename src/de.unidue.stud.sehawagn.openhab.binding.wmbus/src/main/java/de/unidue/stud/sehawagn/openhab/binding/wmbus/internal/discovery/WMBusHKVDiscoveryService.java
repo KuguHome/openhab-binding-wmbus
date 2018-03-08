@@ -22,6 +22,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusMessageListene
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory;
 
+//TODO rename class to generic name (this class discovers not just HKV)
 public class WMBusHKVDiscoveryService extends AbstractDiscoveryService implements WMBusMessageListener {
 
     private final Logger logger = LoggerFactory.getLogger(WMBusHKVDiscoveryService.class);
