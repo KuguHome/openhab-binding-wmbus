@@ -60,7 +60,7 @@ public class TechemHKV extends WMBusDevice {
 //            history = HexConverter.bytesToHex(historyBytes);
 
         } else {
-            throw new DecodingException("No known Techem HKV message");
+            throw new DecodingException("No known Techem HKV message. ciField=" + ciField + ", Manufacturer=" + secondaryAddress.getManufacturerId());
         }
     }
 

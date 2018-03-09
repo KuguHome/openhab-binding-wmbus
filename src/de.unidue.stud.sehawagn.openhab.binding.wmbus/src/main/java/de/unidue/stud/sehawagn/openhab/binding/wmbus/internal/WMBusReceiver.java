@@ -60,87 +60,82 @@ public class WMBusReceiver implements WMBusListener {
     }
 
     public int[] getFilterIDs() {
-        logger.debug("receiver: get filter IDs: got " + Arrays.toString(filterIDs));
+        logger.debug("getFilterIDs(): got {}", Arrays.toString(filterIDs));
         return filterIDs;
     }
 
     public void setFilterIDs(int[] filterIDs) {
-        logger.debug("receiver: setFilterIDs to " + Arrays.toString(filterIDs));
+        logger.debug("setFilterIDs() to {}", Arrays.toString(filterIDs));
         this.filterIDs = filterIDs;
     }
 
     boolean filterMatch(int inQuestion) {
-        logger.trace("receiver: filterMatch(): do we know device: " + Integer.toString(inQuestion));
+        logger.trace("filterMatch(): are we interested in device {}?", Integer.toString(inQuestion));
         if (filterIDs.length == 0) {
-            logger.trace("receiver: filterMatch(): length is zero -> yes");
+            logger.trace("filterMatch(): length is zero -> yes");
             return true;
         }
         for (int i = 0; i < filterIDs.length; i++) {
             if (filterIDs[i] == inQuestion) {
-                logger.debug("receiver: filterMatch(): found the device");
+                logger.debug("filterMatch(): found the device -> yes");
                 return true;
             }
         }
-        logger.trace("receiver: filterMatch(): not found");
+        logger.trace("filterMatch(): not found");
         return false;
     }
 
-    @Override
     /*
      * Handle incoming WMBus message from radio module.
      *
      * @see org.openmuc.jmbus.WMBusListener#newMessage(org.openmuc.jmbus.WMBusMessage)
      */
+    @Override
     public void newMessage(WMBusMessage message) {
-        logger.trace("receiver: new message received");
-        // TODO does nothing at the moment - filter devices at some point
-        // TODO add device ID filter as early as possible
+        logger.trace("newMessage(): new message received");
         WMBusDevice device = null;
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
+            logger.trace("newMessage(): Matched message received: {}", message.toString());
             // print basic info
-            logger.debug("receiver: control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
+            logger.debug("newMessage(): control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
             // decode VDR
             VariableDataStructure vdr = message.getVariableDataResponse();
             try {
                 vdr.decode();
-                logger.debug("receiver: variable data response decoded");
+                logger.trace("newMessage(): variable data response decoded");
                 // VDR needs to be decoded for correct header information
-                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
-                // TODO decrypt here - need to have decryption keys available here
+                logger.trace("newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
                 for (DataRecord record : vdr.getDataRecords()) {
-                    logger.debug("> record: " + record.toString());
+                    logger.trace("> record: {}", record.toString());
                 }
                 device = new WMBusDevice(message);
             } catch (DecodingException e) {
-                logger.debug("receiver: access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
-                logger.debug("receiver: could not decode variable data response: " + e.getMessage());
+                logger.debug("newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
+                logger.debug("newMessage(): could not decode as standard WMBus application layer message: {}", e.getMessage());
                 device = new TechemHKV(message);
                 try {
-                    logger.debug("receiver: try to decode as Techem Message:");
+                    logger.trace("newMessage(): try to decode as Techem message");
                     device.decode();
                     wmBusBridgeHandler.processMessage(device);
                 } catch (DecodingException e1) {
-                    logger.debug("receiver: could not decode as Techem Message: " + e1.getMessage());
-                    e1.printStackTrace();
+                    logger.debug("newMessage(): could not decode as Techem Message: {}, original message: {}", e1.getMessage(), message.toString());
                 }
             }
-            // print it
-            logger.trace("receiver: Matched message received: " + message.toString());
             wmBusBridgeHandler.processMessage(device);
-            logger.trace("receiver: Forwarded to handler.processMessage()");
+            logger.trace("newMessage(): Forwarded to handler.processMessage()");
         } else {
-            logger.trace("receiver: Unmatched message received: " + message.toString());
+            logger.trace("newMessage(): Unmatched message received: {}", message.toString());
         }
     }
 
     @Override
     public void discardedBytes(byte[] bytes) {
-        logger.debug("receiver: Bytes discarded by radio module: " + HexConverter.bytesToHex(bytes));
+        logger.debug("Bytes discarded by radio module: {}", HexConverter.bytesToHex(bytes));
     }
 
     @Override
     public void stoppedListening(IOException e) {
-        logger.debug("receiver: Stopped listening for new messages. Reason: {}", e.getMessage());
+        logger.debug("Stopped listening for new messages. Reason: {}", e.getMessage());
         e.printStackTrace();
     }
 
