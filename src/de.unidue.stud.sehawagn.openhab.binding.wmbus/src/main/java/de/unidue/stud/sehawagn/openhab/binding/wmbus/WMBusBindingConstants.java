@@ -41,13 +41,13 @@ public class WMBusBindingConstants {
     // measurement readings
     public static final String CHANNEL_CURRENTREADING = "current_reading";
     public static final String CHANNEL_CURRENTPOWER = "current_power_w";
-    public static final String CHANNEL_CURRENTENERGYTOTAL = "current_energy_total_wh";
+    public static final String CHANNEL_CURRENTENERGYTOTAL = "current_energy_total_kwh";
     public static final String CHANNEL_CURRENTVOLUMEFLOW = "current_volume_flow_m3h";
     public static final String CHANNEL_CURRENTVOLUMETOTAL = "current_volume_total_m3";
     public static final String CHANNEL_CURRENTDATE = "current_date";
 
     public static final String CHANNEL_PREVIOUSREADING = "previous_reading";
-    public static final String CHANNEL_PREVIOUSENERGYTOTAL = "previous_energy_total_wh";
+    public static final String CHANNEL_PREVIOUSENERGYTOTAL = "previous_energy_total_kwh";
     public static final String CHANNEL_PREVIOUSDATE = "previous_date";
 
     public static final String CHANNEL_LASTREADING = "last_reading";

@@ -110,7 +110,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: CURRENTENERGYTOTAL");
                         DataRecord record = findRecord(new byte[] { 0x03 }, new byte[] { 0x06 });
                         if (record != null) {
-                            newState = new DecimalType(record.getScaledDataValue());
+                            newState = new DecimalType(record.getScaledDataValue() / 1000); // Wh to kWh (usual value unit)
                         } else {
                             logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): record not found in message");
                         }
@@ -127,6 +127,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         break;
                     }
                     // NOTE: device does not publish current date - using now
+                    //TODO refactor: can be safely removed - OpenHAB keeps current time for a value change anyway in persistence table (MySQL etc.)
                     case CHANNEL_CURRENTDATE: {
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: CURRENTDATE");
                         // if the main reading is set, then also return a current date, otherwise this would return the current date on every channel refresh
@@ -144,7 +145,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                         logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): (4/5): got a valid channel: PREVIOUSENERGYTOTAL");
                         DataRecord record = findRecord(new byte[] { 0x43 }, new byte[] { 0x06 });
                         if (record != null) {
-                            newState = new DecimalType(record.getScaledDataValue());
+                            newState = new DecimalType(record.getScaledDataValue() / 1000); // Wh to kWh (usual value unit)
                         } else {
                             logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): record not found in message");
                         }
@@ -157,6 +158,7 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
                             Date date = (java.util.Date) record.getDataValue();
                             Calendar cal = Calendar.getInstance();
                             cal.setTime(date);
+                            cal.set(Calendar.MILLISECOND, 0); // throw away millisecond value to avoid, eg. [...]_previous_date changed from 2018-02-28T00:00:00.353+0100 to 2018-02-28T00:00:00.159+0100
                             newState = new DateTimeType(cal);
                         } else {
                             logger.trace("WMBusKamstrupMultiCal302Handler: handleCommand(): record not found in message or not of type date");
@@ -232,14 +234,86 @@ public class WMBusKamstrupMultiCal302Handler extends BaseThingHandler implements
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             techemDevice = wmBusDevice;
             logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): yes");
-            // refresh all channels -> handleCommand()
-            logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): inform all channels to refresh");
-            for (Channel curChan : getThing().getChannels()) {
-                handleCommand(curChan.getUID(), RefreshType.REFRESH);
+            // in between the good messages, there are messages with unvalid values -> filter these out
+            if (!this.checkMessage(wmBusDevice)) {
+                logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): this is a malformed message, ignoring this message");
+            } else {
+                // refresh all channels -> handleCommand()
+                logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): inform all channels to refresh");
+                for (Channel curChan : getThing().getChannels()) {
+                    handleCommand(curChan.getUID(), RefreshType.REFRESH);
+                }
             }
         } else {
             logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): no");
         }
         logger.trace("WMBusKamstrupMultiCal302Handler: onChangedWMBusDevice(): return");
+    }
+
+    // in between the good messages, there are messages with unvalid values, filter these.
+    //  previous date in the future
+    //  any of the Wh values are negative
+    //  number of data records is 0 -> leads to channels being set to NULL
+    // -> filter these out
+    private boolean checkMessage(WMBusDevice wmBusDevice) {
+        DataRecord record;
+
+        // check for number of records being too low to be valid
+        if (wmBusDevice.getOriginalMessage().getVariableDataResponse().getDataRecords().size() <= 1) {
+            // unplausibly low number of records
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: record count <= 1");
+            return false;
+        }
+
+        // check for date in the past
+        record = findRecord(new byte[] { 0x42 }, new byte[] { 0x6c });
+        if (record == null) {
+            // date is missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous measurement date missing");
+            return false;
+        } else if (record.getDataValueType() == DataValueType.DATE) {
+            Date date = (java.util.Date) record.getDataValue();
+            Calendar calNow = Calendar.getInstance(); // now, here
+            Calendar calPrevious = Calendar.getInstance();
+            calPrevious.setTime(date);
+            if (!calPrevious.before(calNow)) {
+                // previous date > now
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous measurement date in the future");
+                return false;
+            }
+        }
+
+        // check for negative values in the Wh records
+        // current
+        record = findRecord(new byte[] { 0x03 }, new byte[] { 0x06 });
+        if (record == null) {
+            // Wh value missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: current Wh value missing");
+            return false;
+        } else {
+            Double currentWh = record.getScaledDataValue();
+            if (currentWh < 0) {
+                // negative Wh value
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: current Wh value negative");
+                return false;
+            }
+        }
+        // previous
+        record = findRecord(new byte[] { 0x43 }, new byte[] { 0x06 });
+        if (record == null) {
+            // Wh value missing
+            logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous Wh value missing");
+            return false;
+        } else {
+            Double currentWh = record.getScaledDataValue();
+            if (currentWh < 0) {
+                // negative Wh value
+                logger.trace("WMBusKamstrupMultiCal302Handler: checkMessage(): malformed message: previous Wh value negative");
+                return false;
+            }
+        }
+
+        // passed all checks
+        return true;
     }
 }
