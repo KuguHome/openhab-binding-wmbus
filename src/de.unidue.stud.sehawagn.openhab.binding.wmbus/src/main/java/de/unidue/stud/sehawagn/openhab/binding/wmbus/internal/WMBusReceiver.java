@@ -70,7 +70,7 @@ public class WMBusReceiver implements WMBusListener {
 		if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
 			logger.trace("newMessage(): Matched message received: {}", message.toString());
 			// print basic info
-			logger.debug("newMessage(): control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
+			logger.trace("newMessage(): control field: {}, secondary address: {}", message.getControlField(), message.getSecondaryAddress().toString());
 			// decode VDR
 			VariableDataStructure vdr = message.getVariableDataResponse();
 			try {
@@ -83,8 +83,8 @@ public class WMBusReceiver implements WMBusListener {
 				}
 				device = new WMBusDevice(message);
 			} catch (DecodingException e) {
-				logger.debug("newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
-				logger.debug("newMessage(): could not decode as standard WMBus application layer message: {}", e.getMessage());
+				logger.trace("newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}", vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(), vdr.getNumberOfEncryptedBlocks());
+				logger.trace("newMessage(): could not decode as standard WMBus application layer message: {}", e.getMessage());
 				device = new TechemHKV(message);
 				try {
 					logger.trace("newMessage(): try to decode as Techem message");

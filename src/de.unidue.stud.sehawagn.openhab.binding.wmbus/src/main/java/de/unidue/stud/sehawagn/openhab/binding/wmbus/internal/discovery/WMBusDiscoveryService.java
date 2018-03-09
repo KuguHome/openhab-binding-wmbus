@@ -82,7 +82,6 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
 			Map<String, Object> properties = new HashMap<>(1);
 			properties.put(PROPERTY_DEVICE_ID, wmBusDevice.getDeviceId().toString());
 
-			// TODO label according to uid
 			DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
 					.withRepresentationProperty(wmBusDevice.getDeviceId().toString())
 					.withBridge(bridgeUID)
@@ -116,14 +115,14 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
 
 	private ThingTypeUID getThingTypeUID(WMBusDevice wmBusDevice) {
 		String typeIdString = getTypeID(wmBusDevice);
-		logger.debug("getThingTypeUID(): This device has typeID " + typeIdString
+		logger.trace("getThingTypeUID(): This device has typeID " + typeIdString
 				+ " -- supported device types are "
 				+ Arrays.toString(WMBusDiscoveryService.TYPE_TO_WMBUS_ID_MAP.keySet().toArray()));
 		String thingTypeId = TYPE_TO_WMBUS_ID_MAP.get(typeIdString);
 		return thingTypeId != null ? new ThingTypeUID(BINDING_ID, thingTypeId) : null;
 	}
 
-	// this ID is needed for add new devices
+	// this ID is needed to add new devices
 	private String getTypeID(WMBusDevice wmBusDevice) {
 		return wmBusDevice.getOriginalMessage().getControlField() + "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getManufacturerId()
 				+ "" + wmBusDevice.getOriginalMessage().getSecondaryAddress().getVersion() + ""
