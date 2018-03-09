@@ -22,13 +22,13 @@ import com.google.common.collect.Sets;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
 // Device/thing handler for the Qundis Qheat 5 water heat meter (Wärmemengenzähler)
-public class WMBusQundisQHeatHandler extends WMBusDeviceHandler {
+public class QundisQHeatHandler extends WMBusDeviceHandler {
 
 	// set this when adding new device handler
 	public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_QUNDIS_QHEAT_5);
-	private final Logger logger = LoggerFactory.getLogger(WMBusQundisQHeatHandler.class);
+	private final Logger logger = LoggerFactory.getLogger(QundisQHeatHandler.class);
 
-	public WMBusQundisQHeatHandler(Thing thing) {
+	public QundisQHeatHandler(Thing thing) {
 		super(thing);
 	}
 

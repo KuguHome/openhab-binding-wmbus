@@ -25,11 +25,11 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.RecordType;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
 // Device/thing handler for the Kamstrup MultiCal 302 heat meter (Wärmezähler)
-public class WMBusKamstrupMultiCal302Handler extends WMBusDeviceHandler {
+public class KamstrupMultiCal302Handler extends WMBusDeviceHandler {
 
 	// set this when adding new device handler
 	public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_KAMSTRUP_MULTICAL_302);
-	final Logger logger = LoggerFactory.getLogger(WMBusKamstrupMultiCal302Handler.class);
+	final Logger logger = LoggerFactory.getLogger(KamstrupMultiCal302Handler.class);
 
 	/*
 	 * DIB:03, VIB:06 -> descr:ENERGY, function:INST_VAL, scaled value:0.0, unit:WATT_HOUR, Wh -- current energy total reading in Wh
@@ -47,7 +47,7 @@ public class WMBusKamstrupMultiCal302Handler extends WMBusDeviceHandler {
 	private static final RecordType TYPE_PREVIOUS_DATE = new RecordType(0x42, 0x6c);
 //	private static final RecordType TYPE_MANUFACTURER_SPECIFIC = new RecordType(new byte[] { 0x01 }, new byte[] { (byte) 0xFF, 0x21 });
 
-	public WMBusKamstrupMultiCal302Handler(Thing thing) {
+	public KamstrupMultiCal302Handler(Thing thing) {
 		super(thing);
 	}
 

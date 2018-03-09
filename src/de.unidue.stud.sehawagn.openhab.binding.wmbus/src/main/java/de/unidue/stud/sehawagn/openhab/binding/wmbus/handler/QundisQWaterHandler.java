@@ -19,14 +19,16 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.Sets;
 
-// Device/thing handler for the Qundis Qcaloric 5,5 heat cost allocator (Heizkostenverteiler)
-public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
+
+//Device/thing handler for the Qundis Qwater 5,5 water flow meter (Wasserzähler)
+public class QundisQWaterHandler extends WMBusDeviceHandler {
 
 	// set this when adding new device handler
-	public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_QUNDIS_QCALORIC_5_5);
-	private final Logger logger = LoggerFactory.getLogger(WMBusQundisQCaloricHandler.class);
+	public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_QUNDIS_QWATER_5_5);
+	private final Logger logger = LoggerFactory.getLogger(QundisQWaterHandler.class);
 
-	public WMBusQundisQCaloricHandler(Thing thing) {
+	public QundisQWaterHandler(Thing thing) {
 		super(thing);
 	}
 
@@ -37,16 +39,20 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 			logger.trace("handleCommand(): (2/5) command.refreshtype == REFRESH");
 			State newState = UnDefType.NULL;
 
+			// TODO manche VIB-DIB-Kombinationen wiederholen sich -> siehe JMbus-Bibliothek-Dokumentation betreffend DataRecord, wies das kodiert ist
+			// -> ev. Verallgemeinerung auf 1 Klasse je Typ möglich (WATER_METER, HEAT_COST_ALLOCATOR, HEAT_METER usw.)
+
 			if (wmbusDevice != null) {
 				logger.trace("handleCommand(): (3/5) deviceMessage != null");
 				/*
-				 * DIB:0B, VIB:6E -> descr:HCA, function:INST_VAL, value:000000, unit:RESERVED -- current reading / measurement value
-				 * DIB:4B, VIB:6E -> descr:HCA, function:INST_VAL, storage:1, value:000000, unit:RESERVED -- reading before previous one over last year
+				 * DIB:0C, VIB:13 -> descr:VOLUME, function:INST_VAL, scaled value:99999.999, unit:CUBIC_METRE, m³ -- current reading / measurement value
+				 * DIB:4C, VIB:13 -> descr:VOLUME, function:INST_VAL, storage:1, scaled value:99999.999, unit:CUBIC_METRE, m³ -- reading before previous one over last year
 				 * DIB:42, VIB:6C -> descr:DATE, function:INST_VAL, storage:1, value:Sun Dec 31 00:00:00 CET 2017 -- reading before previous one
-				 * DIB:CB08, VIB:6E -> descr:HCA, function:INST_VAL, storage:17, value:000000, unit:RESERVED  -- previous reading
-				 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Wed Feb 28 00:00:00 CET 2018 -- previous reading over last month
-				 * DIB:32, VIB:6C -> descr:DATE, function:ERROR_VAL, value:Sat Sep 23 00:00:00 CEST 2017 -- time of last error
-				 * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 12:23:00 CET 2018 -- timestamp of current / latest reading
+				 * DIB:CC08, VIB:13 -> descr:VOLUME, function:INST_VAL, storage:17, scaled value:99999.999, unit:CUBIC_METRE, m³  -- previous reading over last month
+				 * DIB:C208, VIB:6C -> descr:DATE, function:INST_VAL, storage:17, value:Wed Feb 28 00:00:00 CET 2018  -- previous reading
+				 * DIB:02, VIB:BB56 -> descr:VOLUME_FLOW, function:INST_VAL, scaled value:0.0, unit:CUBIC_METRE_PER_HOUR, m³/h -- also a current reading / measurement value
+				 * DIB:32, VIB:6C -> descr:DATE, function:ERROR_VAL, value:Wed Mar 31 00:00:00 CEST 2128 -- time of last error
+				 * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 17:13:00 CET 2018 -- timestamp of current / latest reading
 				 */
 				switch (channelUID.getId()) {
 				case CHANNEL_RECEPTION: {
@@ -57,7 +63,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				// TODO do not instantiate new byte arrays each time (re-use / convert to constants)
 				case CHANNEL_ERRORDATE: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: ERRORDATE");
-					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x32 }, new byte[] { 0x6c });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x32 }, new byte[] { 0x6c }); // TODO same as for Qundis Qcaloric 5,5
 					if (record != null && record.getDataValueType() == DataValueType.DATE) {
 						newState = convertDate(record.getDataValue());
 					} else {
@@ -65,9 +71,21 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 					}
 					break;
 				}
+				// TODO change current reading to specific channel value (volume_total with proper unit in format)
 				case CHANNEL_CURRENTREADING: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: CURRENTREADING");
-					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x0b }, new byte[] { 0x6e });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x0c }, new byte[] { 0x13 });
+					if (record != null) {
+						newState = new DecimalType(record.getScaledDataValue());
+					} else {
+						logger.trace("handleCommand(): record not found in message");
+					}
+					break;
+				}
+				case CHANNEL_CURRENTVOLUMEFLOW: {
+					logger.trace("handleCommand(): (4/5): got a valid channel: CURRENTVOLUMEFLOW");
+					// TODO why is type cast at 0xbb required? 0xbb already is a byte, right?
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x02 }, new byte[] { (byte) 0xbb, 0x56 });
 					if (record != null) {
 						newState = new DecimalType(record.getScaledDataValue());
 					} else {
@@ -77,7 +95,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				}
 				case CHANNEL_CURRENTDATE: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: CURRENTDATE");
-					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x04 }, new byte[] { 0x6d });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x04 }, new byte[] { 0x6d }); // TODO same as for Qcaloric 5,5
 					if (record != null && record.getDataValueType() == DataValueType.DATE) {
 						newState = convertDate(record.getDataValue());
 					} else {
@@ -89,7 +107,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				case CHANNEL_PREVIOUSREADING: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: PREVIOUSREADING");
 					// TODO why is type cast at 0xCB required? 0xCB already is a byte, right?
-					DataRecord record = wmbusDevice.findRecord(new byte[] { (byte) 0xCB, 0x08 }, new byte[] { 0x6e });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { (byte) 0xCC, 0x08 }, new byte[] { 0x13 });
 					if (record != null) {
 						newState = new DecimalType(record.getScaledDataValue());
 					} else {
@@ -100,7 +118,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				case CHANNEL_PREVIOUSDATE: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: PREVIOUSDATE");
 					// TODO why is type cast at 0xC2 required? 0xC2 already is a byte, right?
-					DataRecord record = wmbusDevice.findRecord(new byte[] { (byte) 0xC2, 0x08 }, new byte[] { 0x6c });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { (byte) 0xC2, 0x08 }, new byte[] { 0x6c }); // TODO same as for Qundis Qcaloric 5,5
 					if (record != null && record.getDataValueType() == DataValueType.DATE) {
 						newState = convertDate(record.getDataValue());
 					} else {
@@ -110,7 +128,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				}
 				case CHANNEL_LASTREADING: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: LASTREADING");
-					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x4b }, new byte[] { 0x6e });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x4c }, new byte[] { 0x13 });
 					if (record != null) {
 						newState = new DecimalType(record.getScaledDataValue());
 					} else {
@@ -120,7 +138,7 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				}
 				case CHANNEL_LASTDATE: {
 					logger.trace("handleCommand(): (4/5): got a valid channel: LASTDATE");
-					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x42 }, new byte[] { 0x6c });
+					DataRecord record = wmbusDevice.findRecord(new byte[] { 0x42 }, new byte[] { 0x6c }); // TODO same as for Qundis Qcaloric 5,5
 					if (record != null && record.getDataValueType() == DataValueType.DATE) {
 						newState = convertDate(record.getDataValue());
 					} else {
@@ -136,5 +154,23 @@ public class WMBusQundisQCaloricHandler extends WMBusDeviceHandler {
 				updateState(channelUID.getId(), newState);
 			}
 		}
+	}
+
+	@Override
+	boolean checkMessage(WMBusDevice receivedDevice) {
+		// in between the standard OMS format messages, this device sends out messages in manufcaturer-specific format -> filter these out
+		// these messages are missing the usual values -> would lead to channels being set to NULL
+		/*
+		 * DIB:0D, VIB:FF5F -> descr:MANUFACTURER_SPECIFIC, function:INST_VAL, value:/
+		 * DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Mon Mar 05 12:33:00 CET 2018
+		 * (no other records in these messages)
+		 */
+		// TODO why is type cast at 0xff required? 0xff already is a byte, right?
+		DataRecord record = receivedDevice.findRecord(new byte[] { 0x0d }, new byte[] { (byte) 0xff, 0x5f });
+		if (record != null) {
+			logger.trace("onChangedWMBusDevice(): this is a message with non-OMS manufacturer-specific value, ignoring this message");
+			return false;
+		}
+		return true;
 	}
 }
