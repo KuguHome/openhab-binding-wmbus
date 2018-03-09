@@ -19,77 +19,77 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.TechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusKamstrupMultiCal302Handler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQCaloricHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQHeatHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusQundisQWaterHandler;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusTechemHKVHandler;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusHKVDiscoveryService;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusDiscoveryService;
 
 /*
  * This class is the main entry point of the binding.
  */
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
-    // add new devices here
-    //TODO make this nicer instead of cascading
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusTechemHKVHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusQundisQCaloricHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusQundisQWaterHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusKamstrupMultiCal302Handler.SUPPORTED_THING_TYPES, WMBusQundisQHeatHandler.SUPPORTED_THING_TYPES)))));
+	// add new devices here
+	// TODO make this nicer instead of cascading
+	public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = Sets.union(WMBusBridgeHandler.SUPPORTED_THING_TYPES, Sets.union(TechemHKVHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusQundisQCaloricHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusQundisQWaterHandler.SUPPORTED_THING_TYPES, Sets.union(WMBusKamstrupMultiCal302Handler.SUPPORTED_THING_TYPES, WMBusQundisQHeatHandler.SUPPORTED_THING_TYPES)))));
 
-    private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+	private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
 
-    // OpenHAB logger
-    private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
+	// OpenHAB logger
+	private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
 
-    public WMBusHandlerFactory() {
-        logger.debug("WMBusHandlerFactory: wmbus binding starting up.");
-    }
+	public WMBusHandlerFactory() {
+		logger.debug("wmbus binding starting up.");
+	}
 
-    @Override
-    public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
-    }
+	@Override
+	public boolean supportsThingType(ThingTypeUID thingTypeUID) {
+		return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+	}
 
-    @Override
-    protected ThingHandler createHandler(Thing thing) {
-        ThingTypeUID thingTypeUID = thing.getThingTypeUID();
+	@Override
+	protected ThingHandler createHandler(Thing thing) {
+		ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
-            // create handler for WMBus bridge
-            logger.debug("Creating (handler for) WMBus bridge.");
-            if (thing instanceof Bridge) {
-                WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing);
-                registerDiscoveryService(handler);
-                return handler;
-            } else {
-                return null;
-            }
-            // add new devices here
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
-            logger.debug("Creating (handler for) TechemHKV device.");
-            return new WMBusTechemHKVHandler(thing);
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QCALORIC_5_5)) {
-            logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
-            return new WMBusQundisQCaloricHandler(thing);
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QWATER_5_5)) {
-            logger.debug("Creating (handler for) Qundis Qwater 5,5 device.");
-            return new WMBusQundisQWaterHandler(thing);
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QHEAT_5)) {
-            logger.debug("Creating (handler for) Qundis Qheat 5 device.");
-            return new WMBusQundisQHeatHandler(thing);
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
-            logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
-            return new WMBusKamstrupMultiCal302Handler(thing);
-        } else {
-            return null;
-        }
-    }
+		if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
+			// create handler for WMBus bridge
+			logger.debug("Creating (handler for) WMBus bridge.");
+			if (thing instanceof Bridge) {
+				WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing);
+				registerDiscoveryService(handler);
+				return handler;
+			} else {
+				return null;
+			}
+			// add new devices here
+		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
+			logger.debug("Creating (handler for) TechemHKV device.");
+			return new TechemHKVHandler(thing);
+		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QCALORIC_5_5)) {
+			logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
+			return new WMBusQundisQCaloricHandler(thing);
+		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QWATER_5_5)) {
+			logger.debug("Creating (handler for) Qundis Qwater 5,5 device.");
+			return new WMBusQundisQWaterHandler(thing);
+		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QHEAT_5)) {
+			logger.debug("Creating (handler for) Qundis Qheat 5 device.");
+			return new WMBusQundisQHeatHandler(thing);
+		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
+			logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
+			return new WMBusKamstrupMultiCal302Handler(thing);
+		} else {
+			return null;
+		}
+	}
 
-    private synchronized void registerDiscoveryService(WMBusBridgeHandler bridgeHandler) {
-        logger.debug("Registering discovery service.");
-        WMBusHKVDiscoveryService discoveryService = new WMBusHKVDiscoveryService(bridgeHandler);
-        discoveryService.activate();
-        this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext.registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
-    }
+	private synchronized void registerDiscoveryService(WMBusBridgeHandler bridgeHandler) {
+		logger.debug("Registering discovery service.");
+		WMBusDiscoveryService discoveryService = new WMBusDiscoveryService(bridgeHandler);
+		discoveryService.activate();
+		this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext.registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
+	}
 
 }

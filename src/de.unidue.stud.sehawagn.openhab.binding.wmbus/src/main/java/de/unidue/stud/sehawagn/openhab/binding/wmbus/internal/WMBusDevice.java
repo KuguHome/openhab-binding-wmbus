@@ -32,4 +32,8 @@ public class WMBusDevice {
 		}
 		return null;
 	}
+
+	public DataRecord findRecord(byte[] dib, byte[] vib) {
+		return findRecord(new RecordType(dib, vib));
+	}
 }
