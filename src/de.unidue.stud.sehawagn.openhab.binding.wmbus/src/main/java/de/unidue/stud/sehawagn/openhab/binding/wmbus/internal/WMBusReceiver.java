@@ -108,7 +108,7 @@ public class WMBusReceiver implements WMBusListener {
 
 	@Override
 	public void stoppedListening(IOException e) {
-		logger.debug("Stopped listening for new messages. Reason: {}", e.getMessage());
+		logger.debug("Stopped listening for new messages. Reason: {} {}", e.getClass().getSimpleName(), e.getMessage());
 		e.printStackTrace();
 	}
 

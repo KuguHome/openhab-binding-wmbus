@@ -165,6 +165,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 			}
 			logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
 			connectionBuilder.setMode(radioMode);
+			connectionBuilder.setTimeout(0); // infinite
 
 			try {
 				logger.debug("Building/opening connection");
@@ -235,8 +236,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 			return WMBusManufacturer.IMST;
 		default:
 			return null;
-		// this.cliPrinter.printError("Not supported transceiver.", true);
-		// throw new RuntimeException();
 		}
 	}
 
