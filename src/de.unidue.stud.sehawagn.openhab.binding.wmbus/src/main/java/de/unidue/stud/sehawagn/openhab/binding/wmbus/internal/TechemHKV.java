@@ -97,6 +97,9 @@ public class TechemHKV extends WMBusDevice {
 	}
 
 	int parseBigEndianInt(int i) {
+		if (getOriginalMessage().asBlob().length <= i + 1) {
+			return 0;
+		}
 		return (getOriginalMessage().asBlob()[i] & 0xFF) + ((getOriginalMessage().asBlob()[i + 1] & 0xFF) << 8);
 	}
 
