@@ -36,13 +36,19 @@
                 </options>
                 <required>true</required>
             </parameter>
+            <parameter name="startupDelay" type="integer">
+                <description>Delay the startup of the serial connection for this many seconds. Use to avoid race conditions with e.g. Z-Wave binding. Set to 0 to deactivate waiting.</description>
+                <label>Startup Delay</label>
+                <required>true</required>
+                <default>60</default>
+            </parameter>
             <parameter name="encryptionKeys" type="text">
-                <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the JMBus message printer test program.</description>
+                <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the jMBus message printer test program.</description>
                 <label>Encryption Keys</label>
                 <required>false</required>
             </parameter>
             <parameter name="deviceIDFilter" type="text">
-                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled. Device ID in decumal format as shown in WMBus message prints and given out by the JMBus message printer test program.</description>
+                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled. Device ID in decumal format as shown in WMBus message prints and given out by the jMBus message printer test program.</description>
                 <label>Device Filter</label>
                 <required>false</required>
             </parameter>

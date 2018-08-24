@@ -26,8 +26,8 @@
 		</channels>
 
 		<config-description>
-            <parameter name="hkvId" type="text">
-                <label>Heat Cost Allocator ID</label>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
                 <description>The heat cost allocator identifier identifies one certain heat cost allocator light.</description>
                 <required>true</required>
             </parameter>
@@ -59,10 +59,9 @@
         </channels>
 
         <config-description>
-            <!-- TODO change to generic "wmbusDeviceId" -->
-            <parameter name="hkvId" type="text">
-                <label>Heat Cost Allocator ID</label>
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
                 <required>true</required>
             </parameter>
         </config-description>
@@ -94,10 +93,9 @@
         </channels>
 
         <config-description>
-            <!-- TODO change to generic "wmbusDeviceId" -->
-            <parameter name="hkvId" type="text">
-                <label>Heat Cost Allocator ID</label>
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
                 <required>true</required>
             </parameter>
         </config-description>
@@ -122,10 +120,9 @@
         </channels>
 
         <config-description>
-            <!-- TODO change to generic "wmbusDeviceId" -->
-            <parameter name="hkvId" type="text">
-                <label>Heat Cost Allocator ID</label>
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
                 <required>true</required>
             </parameter>
         </config-description>
@@ -155,10 +152,9 @@
         </channels>
 
         <config-description>
-            <!-- TODO change to generic "wmbusDeviceId" -->
-            <parameter name="hkvId" type="text">
-                <label>Heat Cost Allocator ID</label>   <!-- TODO this is not a HKV -->
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light. This is the WMBus device ID field.</description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
                 <required>true</required>
             </parameter>
         </config-description>
