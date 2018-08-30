@@ -4,6 +4,6 @@
       <provide interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
       <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
    </service>
-   <reference cardinality="1..1" field="adeunisGasMeterHandler" interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.ADEUNISGasMeterHandler" name="adeunisGasMeterHandler" policy="dynamic"/>
+   <reference cardinality="1..1" field="adeunisGasMeter" interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.device.ADEUNISGasMeter" name="adeunisGasMeter" policy="dynamic"/>
    <implementation class="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
 </scr:component>

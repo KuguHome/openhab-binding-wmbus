@@ -27,7 +27,7 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.ImmutableSet;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.ADEUNISGasMeterHandler;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.ADEUNISGasMeter;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQHeatHandler;
@@ -87,9 +87,9 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
             logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
             return new KamstrupMultiCal302Handler(thing);
-        } else if (thingTypeUID.equals(ADEUNISGasMeterHandler.THING_TYPE_ADEUNIS_GAS_METER_3)) {
+        } else if (thingTypeUID.equals(ADEUNISGasMeter.getThingType())) {
             logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
-            return new ADEUNISGasMeterHandler(thing);
+            return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
         } else {
             return null;
         }
@@ -109,7 +109,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 .of(WMBusBridgeHandler.SUPPORTED_THING_TYPES, TechemHKVHandler.SUPPORTED_THING_TYPES,
                         QundisQCaloricHandler.SUPPORTED_THING_TYPES, QundisQWaterHandler.SUPPORTED_THING_TYPES,
                         QundisQHeatHandler.SUPPORTED_THING_TYPES, KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES,
-                        adeunisGasMeterHandler.getSupportedThingTypes())
+                        adeunisGasMeter.getSupportedThingTypes())
                 .stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
@@ -118,5 +118,5 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     }
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-    volatile protected ADEUNISGasMeterHandler adeunisGasMeterHandler;
+    volatile protected ADEUNISGasMeter adeunisGasMeter;
 }
