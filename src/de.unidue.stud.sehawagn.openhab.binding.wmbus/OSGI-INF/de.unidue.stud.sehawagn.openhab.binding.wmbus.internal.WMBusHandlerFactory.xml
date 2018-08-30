@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" name="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory">
+   <service>
+      <provide interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
+   </service>
+   <reference cardinality="1..1" field="adeunisGasMeterHandler" interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.ADEUNISGasMeterHandler" name="adeunisGasMeterHandler" policy="dynamic"/>
+   <implementation class="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+</scr:component>

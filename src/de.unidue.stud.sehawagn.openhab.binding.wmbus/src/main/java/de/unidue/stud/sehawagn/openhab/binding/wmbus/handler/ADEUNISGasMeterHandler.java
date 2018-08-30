@@ -22,10 +22,13 @@ import org.slf4j.LoggerFactory;
 import com.google.common.collect.Sets;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.RecordType;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusDevice;
 
 @Component(service = { ADEUNISGasMeterHandler.class,
         WMBusDeviceHandler.class }, properties = "OSGI-INF/adeunis_rf.properties")
 public class ADEUNISGasMeterHandler extends WMBusDeviceHandler {
+
+    protected WMBusDevice wmbusDevice;
 
     public static String THING_TYPE_NAME_ADEUNIS_GAS_METER_3;
     private Set<ThingTypeUID> supportedThingTypes;

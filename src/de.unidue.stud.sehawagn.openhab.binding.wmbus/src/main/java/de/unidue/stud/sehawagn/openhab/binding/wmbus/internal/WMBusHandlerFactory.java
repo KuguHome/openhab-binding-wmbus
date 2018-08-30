@@ -43,7 +43,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusDis
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    private Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS;
+    public static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS;
 
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
