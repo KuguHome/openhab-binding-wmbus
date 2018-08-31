@@ -27,21 +27,14 @@
 			<version>3.13.0</version>
 		</dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.openmuc/jrxtx -->
-		<dependency>
-			<groupId>org.openmuc</groupId>
-			<artifactId>jrxtx</artifactId>
-			<version>1.0.1</version>
-		</dependency>
-
 		<!-- https://mvnrepository.com/artifact/org.openmuc/jmbus -->
-		<!--
+		
 		<dependency>
 			<groupId>org.openmuc</groupId>
 			<artifactId>jmbus</artifactId>
-			<version>3.0.2</version>
+			<version>3.1.1</version>
 		</dependency>
-		-->
+		
 		<!-- TODO as soon as C-mode is incorporated upstream -->
 
         <!-- https://mvnrepository.com/artifact/org.eclipse.jdt/org.eclipse.jdt.annotation -->
