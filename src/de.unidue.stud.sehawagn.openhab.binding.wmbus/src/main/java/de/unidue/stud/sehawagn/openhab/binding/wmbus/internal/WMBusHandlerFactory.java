@@ -87,7 +87,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
             logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
             return new KamstrupMultiCal302Handler(thing);
-        } else if (thingTypeUID.equals(ADEUNISGasMeter.getThingType())) {
+        } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
             logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
             return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
         } else {

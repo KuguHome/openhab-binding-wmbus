@@ -25,13 +25,11 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusDeviceHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.RecordType;
 
 @Component(service = { ADEUNISGasMeter.class }, properties = "OSGI-INF/adeunis_rf.properties")
-public class ADEUNISGasMeter {
+public class ADEUNISGasMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(ADEUNISGasMeter.class);
 
     public static String THING_TYPE_NAME_ADEUNIS_GAS_METER_3;
-    private Set<ThingTypeUID> supportedThingTypes;
-    public static ThingTypeUID thingType;
     public static String CHANNEL_CURRENT_VOLUME_INST_VAL;
 
     private static RecordType TYPE_CURRENT_VOLUME_INST_VAL;
@@ -58,7 +56,7 @@ public class ADEUNISGasMeter {
         return supportedThingTypes;
     }
 
-    public static ThingTypeUID getThingType() {
+    public ThingTypeUID getThingType() {
         return thingType;
     }
 
