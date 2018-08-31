@@ -3,6 +3,7 @@
    <service>
       <provide interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
       <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
    </service>
    <reference cardinality="1..1" field="adeunisGasMeter" interface="de.unidue.stud.sehawagn.openhab.binding.wmbus.device.ADEUNISGasMeter" name="adeunisGasMeter" policy="dynamic"/>
    <implementation class="de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>

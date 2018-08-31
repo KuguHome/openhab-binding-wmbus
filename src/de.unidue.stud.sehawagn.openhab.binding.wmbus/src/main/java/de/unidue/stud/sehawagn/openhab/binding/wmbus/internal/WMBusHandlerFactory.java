@@ -14,7 +14,9 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
+import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -39,7 +41,7 @@ import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusDis
 /*
  * This class is the main entry point of the binding.
  */
-@Component(service = { WMBusHandlerFactory.class, BaseThingHandlerFactory.class })
+@Component(service = { WMBusHandlerFactory.class, BaseThingHandlerFactory.class, ThingHandlerFactory.class })
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
@@ -103,8 +105,10 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
     }
 
+    @Override
     @Activate
-    protected void activate(Map<String, String> properties) {
+    protected void activate(ComponentContext componentContext) {
+        super.activate(componentContext);
         SUPPORTED_THING_TYPES_UIDS = ImmutableSet
                 .of(WMBusBridgeHandler.SUPPORTED_THING_TYPES, TechemHKVHandler.SUPPORTED_THING_TYPES,
                         QundisQCaloricHandler.SUPPORTED_THING_TYPES, QundisQWaterHandler.SUPPORTED_THING_TYPES,
@@ -113,8 +117,10 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 .stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
+    @Override
     @Deactivate
-    protected void deactivate() {
+    protected void deactivate(ComponentContext componentContext) {
+        super.deactivate(componentContext);
     }
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
