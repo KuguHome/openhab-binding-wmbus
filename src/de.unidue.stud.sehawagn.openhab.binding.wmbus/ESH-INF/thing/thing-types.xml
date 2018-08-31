@@ -166,7 +166,7 @@
             <bridge-type-ref id="wmbusbridge" />
         </supported-bridge-type-refs>
 
-        <label>ADEUNIS_RF Gas Meter_v3</label>
+        <label>ADEUNIS_RF Gas Meter v3</label>
         <description>A gas meter model ADEUNIS_RF v3 by ADEUNIS_RF.</description>
 
         <channels>
