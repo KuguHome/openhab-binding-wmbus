@@ -1,5 +1,7 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.internal;
 
+import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants.*;
+
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -26,6 +28,7 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
@@ -99,7 +102,21 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     private synchronized void registerDiscoveryService(WMBusBridgeHandler bridgeHandler) {
         logger.debug("Registering discovery service.");
-        WMBusDiscoveryService discoveryService = new WMBusDiscoveryService(bridgeHandler);
+        Map<String, String> typeToWMBUSIdMap = new ImmutableMap.Builder<String, String>()
+                .put("68TCH97255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
+                // whether
+                // they
+                // work
+                .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV).put("68TCH116255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
+                // whether
+                // they
+                // work
+                .put("68TCH118255", THING_TYPE_NAME_TECHEM_HKV) // find out, if they work
+                .put("68KAM484", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_NAME_QUNDIS_QHEAT_5)
+                .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5).put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
+                .put(adeunisGasMeter.getThingTypeId(), adeunisGasMeter.getThingTypeName()).build();
+
+        WMBusDiscoveryService discoveryService = new WMBusDiscoveryService(bridgeHandler, typeToWMBUSIdMap);
         discoveryService.activate();
         this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext
                 .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));

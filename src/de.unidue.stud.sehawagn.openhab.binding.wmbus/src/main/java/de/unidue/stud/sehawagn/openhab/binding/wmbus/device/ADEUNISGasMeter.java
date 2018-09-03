@@ -1,7 +1,6 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.device;
 
 import java.util.Map;
-import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.library.types.DecimalType;
@@ -29,7 +28,6 @@ public class ADEUNISGasMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(ADEUNISGasMeter.class);
 
-    public static String THING_TYPE_NAME_ADEUNIS_GAS_METER_3;
     public static String CHANNEL_CURRENT_VOLUME_INST_VAL;
 
     private static RecordType TYPE_CURRENT_VOLUME_INST_VAL;
@@ -42,22 +40,15 @@ public class ADEUNISGasMeter extends Meter {
         this.dib = Integer.valueOf(properties.get("volume.dib"));
         this.vib = Integer.valueOf(properties.get("volume.vib"));
         TYPE_CURRENT_VOLUME_INST_VAL = new RecordType(dib, vib);
-        THING_TYPE_NAME_ADEUNIS_GAS_METER_3 = properties.get("thing.type");
-        thingType = new ThingTypeUID(properties.get("binding.id"), THING_TYPE_NAME_ADEUNIS_GAS_METER_3);
+        thingTypeName = properties.get("thing.type.name");
+        thingTypeId = properties.get("thing.type.id");
+        thingType = new ThingTypeUID(properties.get("binding.id"), thingTypeName);
         supportedThingTypes = Sets.newHashSet(thingType);
         CHANNEL_CURRENT_VOLUME_INST_VAL = properties.get("channel.volume");
     }
 
     @Deactivate
     protected void deactivate() {
-    }
-
-    public Set<ThingTypeUID> getSupportedThingTypes() {
-        return supportedThingTypes;
-    }
-
-    public ThingTypeUID getThingType() {
-        return thingType;
     }
 
     public class ADEUNISGasMeterHandler extends WMBusDeviceHandler {
