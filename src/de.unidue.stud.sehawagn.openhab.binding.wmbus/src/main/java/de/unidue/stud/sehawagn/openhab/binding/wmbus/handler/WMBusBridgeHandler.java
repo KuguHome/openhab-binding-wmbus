@@ -165,7 +165,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 			}
 			logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
 			connectionBuilder.setMode(radioMode);
-			connectionBuilder.setTimeout(0); // infinite
+//			connectionBuilder.setTimeout(0); // infinite
 
 			try {
 				logger.debug("Building/opening connection");
