@@ -9,6 +9,7 @@ import com.google.common.collect.ImmutableSet;
 public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
+    public static final String BINDINGV_ID = "wmbusv";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
     public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
     public static final String THING_TYPE_NAME_VIRTUAL = "wmbusvirtualthing";
@@ -28,10 +29,10 @@ public class WMBusBindingConstants {
 
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
-    public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
+    public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDINGV_ID,
             THING_TYPE_NAME_VIRTUAL_BRIDGE);
     // add new devices here
-    public final static ThingTypeUID THING_TYPE_VIRTUAL = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_VIRTUAL);
+    public final static ThingTypeUID THING_TYPE_VIRTUAL = new ThingTypeUID(BINDINGV_ID, THING_TYPE_NAME_VIRTUAL);
     public final static ThingTypeUID THING_TYPE_TECHEM_HKV = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_TECHEM_HKV);
     public final static ThingTypeUID THING_TYPE_KAMSTRUP_MULTICAL_302 = new ThingTypeUID(BINDING_ID,
             THING_TYPE_NAME_KAMSTRUP_MULTICAL_302);

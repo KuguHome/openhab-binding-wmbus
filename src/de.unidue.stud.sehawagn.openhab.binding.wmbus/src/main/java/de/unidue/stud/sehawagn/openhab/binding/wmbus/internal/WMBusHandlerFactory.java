@@ -143,12 +143,15 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     @Activate
     protected void activate(ComponentContext componentContext) {
         super.activate(componentContext);
-        SUPPORTED_THING_TYPES_UIDS = ImmutableSet
-                .of(WMBusBridgeHandler.SUPPORTED_THING_TYPES, TechemHKVHandler.SUPPORTED_THING_TYPES,
-                        QundisQCaloricHandler.SUPPORTED_THING_TYPES, QundisQWaterHandler.SUPPORTED_THING_TYPES,
-                        QundisQHeatHandler.SUPPORTED_THING_TYPES, KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES,
-                        adeunisGasMeter.getSupportedThingTypes())
-                .stream().flatMap(Collection::stream).collect(Collectors.toSet());
+        SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(WMBusBridgeHandler.SUPPORTED_THING_TYPES,
+                TechemHKVHandler.SUPPORTED_THING_TYPES, QundisQCaloricHandler.SUPPORTED_THING_TYPES,
+                QundisQWaterHandler.SUPPORTED_THING_TYPES, QundisQHeatHandler.SUPPORTED_THING_TYPES,
+                KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES, WMBusVirtualBridgeHandler.SUPPORTED_THING_TYPES,
+                adeunisGasMeter.getSupportedThingTypes()/*
+                                                         * ,
+                                                         * unknownMeter.getSupportedThingTypes()
+                                                         */).stream().flatMap(Collection::stream)
+                .collect(Collectors.toSet());
     }
 
     @Override

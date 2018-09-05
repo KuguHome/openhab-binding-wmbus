@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="wmbusv"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+  
+    <bridge-type id="wmbusvirtualbridge">
+        <label>WMBus Vitrual Bridge</label>
+        <description>WMBus Vitrual Bridge for testing</description>
+
+        <config-description>
+            <parameter name="bytes" type="text">
+                <description>Bytes to decode from WMBus message</description>
+                <label>Bytes to decode</label>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </bridge-type>
+
+</thing:thing-descriptions>
