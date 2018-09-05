@@ -26,6 +26,7 @@ public class WMBusReceiver implements WMBusListener {
     public static String VENDOR_QUNDIS = "QDS";
     public static String VENDOR_KAMSTRUP = "KAM";
     public static String VENDOR_ADEUNIS = "ARF";
+    public static String VENDOR_ENGELMANN = "EFE";
 
     private final Logger logger = LoggerFactory.getLogger(WMBusReceiver.class);
 

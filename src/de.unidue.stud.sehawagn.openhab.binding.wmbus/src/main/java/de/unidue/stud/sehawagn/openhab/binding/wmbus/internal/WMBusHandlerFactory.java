@@ -33,12 +33,14 @@ import com.google.common.collect.ImmutableSet;
 
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.ADEUNISGasMeter;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.UnknownMeter;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQHeatHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQWaterHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.TechemHKVHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusBridgeHandler;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusVirtualBridgeHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.discovery.WMBusDiscoveryService;
 
 /*
@@ -77,6 +79,21 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 return null;
             }
             // add new devices here
+        }
+        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE)) {
+            // create handler for WMBus bridge
+            logger.debug("Creating (handler for) WMBus virtual bridge.");
+            if (thing instanceof Bridge) {
+                WMBusBridgeHandler handler = new WMBusVirtualBridgeHandler((Bridge) thing);
+                registerDiscoveryService(handler);
+                return handler;
+            } else {
+                return null;
+            }
+            // add new devices here
+        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL)) {
+            logger.debug("Creating (handler for) Virtual device.");
+            return unknownMeter.new UnknownMeterHandler(thing);
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
             logger.debug("Creating (handler for) TechemHKV device.");
             return new TechemHKVHandler(thing);
@@ -142,4 +159,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
     volatile protected ADEUNISGasMeter adeunisGasMeter;
+
+    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
+    volatile protected UnknownMeter unknownMeter;
 }

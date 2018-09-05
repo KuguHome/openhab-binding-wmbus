@@ -54,5 +54,18 @@
             </parameter>
         </config-description>
     </bridge-type>
+    
+    <bridge-type id="wmbusvirtualbridge">
+        <label>WMBus Vitrual Bridge</label>
+        <description>The WMBus bridge represents the USB stick used to receive WMBus messages. There are three different sticks supported by the underlying jMBus library: Amber Wireless AMB8465-M, Radiocrafts RC1180-MBUS and IMST iM871A-USB</description>
+
+        <config-description>
+            <parameter name="bytes" type="text">
+                <description>Bytes to decode from WMBus message</description>
+                <label>Bytes to decode</label>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </bridge-type>
 
 </thing:thing-descriptions>

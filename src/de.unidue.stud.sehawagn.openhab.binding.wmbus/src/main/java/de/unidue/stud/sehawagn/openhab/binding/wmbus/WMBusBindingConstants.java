@@ -10,6 +10,8 @@ public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
+    public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
+    public static final String THING_TYPE_NAME_VIRTUAL = "wmbusvirtualthing";
     // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before
     // constructor
     public static final String THING_TYPE_NAME_TECHEM_HKV = "techem_hkv"; // heat cost allocator (Heizkostenverteiler)
@@ -26,7 +28,10 @@ public class WMBusBindingConstants {
 
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
+    public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
+            THING_TYPE_NAME_VIRTUAL_BRIDGE);
     // add new devices here
+    public final static ThingTypeUID THING_TYPE_VIRTUAL = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_VIRTUAL);
     public final static ThingTypeUID THING_TYPE_TECHEM_HKV = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_TECHEM_HKV);
     public final static ThingTypeUID THING_TYPE_KAMSTRUP_MULTICAL_302 = new ThingTypeUID(BINDING_ID,
             THING_TYPE_NAME_KAMSTRUP_MULTICAL_302);
@@ -66,7 +71,7 @@ public class WMBusBindingConstants {
     // add new devices here
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
             THING_TYPE_TECHEM_HKV, THING_TYPE_KAMSTRUP_MULTICAL_302, THING_TYPE_QUNDIS_QHEAT_5,
-            THING_TYPE_QUNDIS_QWATER_5_5, THING_TYPE_QUNDIS_QCALORIC_5_5);
+            THING_TYPE_QUNDIS_QWATER_5_5, THING_TYPE_QUNDIS_QCALORIC_5_5, THING_TYPE_VIRTUAL_BRIDGE);
 
     // Bridge config properties
     public static final String CONFKEY_STICK_MODEL = "stickModel";
