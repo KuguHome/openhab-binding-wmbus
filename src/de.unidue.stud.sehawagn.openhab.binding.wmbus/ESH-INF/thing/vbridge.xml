@@ -24,7 +24,7 @@
         <label>Code Bytes</label>
         <description>Code Bytes in HEX</description>
         <category>Text</category>
-        <state readOnly="true">
+        <state readOnly="false">
         </state>
     </channel-type>
 
