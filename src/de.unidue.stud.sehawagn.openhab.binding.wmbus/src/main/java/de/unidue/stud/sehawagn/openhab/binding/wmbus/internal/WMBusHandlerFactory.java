@@ -112,6 +112,9 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
             logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
             return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
+        } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
+            logger.debug("Creating (handler for) Unknown Meter (Virtual) device.");
+            return unknownMeter.new UnknownMeterHandler(thing);
         } else {
             return null;
         }

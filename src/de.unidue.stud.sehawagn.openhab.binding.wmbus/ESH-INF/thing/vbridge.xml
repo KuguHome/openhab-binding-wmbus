@@ -7,7 +7,9 @@
     <bridge-type id="wmbusvirtualbridge">
         <label>WMBus Vitrual Bridge</label>
         <description>WMBus Vitrual Bridge for testing</description>
-
+        <channels>
+            <channel id="wmbusvirtualbridge_code" typeId="bytes_code" />
+        </channels>
         <config-description>
             <parameter name="bytes" type="text">
                 <description>Bytes to decode from WMBus message</description>
@@ -15,6 +17,15 @@
                 <required>true</required>
             </parameter>
         </config-description>
+        
     </bridge-type>
+        <channel-type id="bytes_code">
+        <item-type>String</item-type>
+        <label>Code Bytes</label>
+        <description>Code Bytes in HEX</description>
+        <category>Text</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
 
 </thing:thing-descriptions>

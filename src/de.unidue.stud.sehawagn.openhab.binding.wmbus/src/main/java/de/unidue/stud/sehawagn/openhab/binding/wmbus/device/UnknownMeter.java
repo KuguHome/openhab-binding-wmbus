@@ -25,7 +25,7 @@ public class UnknownMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(UnknownMeter.class);
 
-    public static String CHANNEL_CURRENT_VOLUME_INST_VAL;
+    public static final String CHANNEL_CODE_VIRTUAL_BRIDGE = "wmbusvirtualbridge_code";
 
     private static RecordType TYPE_CURRENT_VOLUME_INST_VAL;
 
@@ -56,7 +56,7 @@ public class UnknownMeter extends Meter {
                 State newState = UnDefType.NULL;
                 if (wmbusDevice != null) {
                     logger.trace("handleCommand(): (3/5) deviceMessage != null");
-                    if (CHANNEL_CURRENT_VOLUME_INST_VAL.equals(channelUID.getId())) {
+                    if (CHANNEL_CODE_VIRTUAL_BRIDGE.equals(channelUID.getId())) {
                         logger.trace("handleCommand(): (4/5): got a valid channel: VOLUME_INST_VAL");
                         DataRecord record = wmbusDevice.findRecord(TYPE_CURRENT_VOLUME_INST_VAL);
                         if (record != null) {
