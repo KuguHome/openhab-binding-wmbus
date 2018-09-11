@@ -93,7 +93,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             // add new devices here
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL)) {
             logger.debug("Creating (handler for) Virtual device.");
-            return unknownMeter.new UnknownMeterHandler(thing);
+            return unknownMeter.new UnknownWMBusMeterHandler(thing);
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
             logger.debug("Creating (handler for) TechemHKV device.");
             return new TechemHKVHandler(thing);
@@ -114,7 +114,7 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
         } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
             logger.debug("Creating (handler for) Unknown Meter (Virtual) device.");
-            return unknownMeter.new UnknownMeterHandler(thing);
+            return unknownMeter.new UnknownWMBusMeterHandler(thing);
         } else {
             return null;
         }

@@ -16,6 +16,21 @@
                 <label>Bytes to decode</label>
                 <required>true</required>
             </parameter>
+            <parameter name="address" type="text">
+                <description>Secondary Address</description>
+                <label>Address</label>
+                <required>true</required>
+            </parameter>
+            <parameter name="control_field" type="text">
+                <description>control field</description>
+                <label>control field</label>
+                <required>true</required>
+            </parameter>
+            <parameter name="rssi" type="text">
+                <description>Received_signal_strength_indication</description>
+                <label>RSSI</label>
+                <required>true</required>
+            </parameter>
         </config-description>
         
     </bridge-type>

@@ -82,7 +82,10 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_DEVICEID_FILTER = "deviceIDFilter";
     public static final String CONFKEY_STARTUP_DELAY = "startupDelay";
 
+    public static final String CONFKEY_VIRTUAL_CF = "control_field";
     public static final String CONFKEY_VIRTUAL_BYTES = "bytes";
+    public static final String CONFKEY_VIRTUAL_ADDRESS = "address";
+    public static final String CONFKEY_VIRTUAL_RSSI = "rssi";
 
     // device config properties
     public static final String PROPERTY_DEVICE_ID = "deviceId";
