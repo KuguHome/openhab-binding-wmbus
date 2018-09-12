@@ -28,7 +28,7 @@ cache:
 build:
   before_script:
     - cd src/de.unidue.stud.sehawagn.openhab.binding.wmbus.p2site
-    - mvn clean install p2:site
+    - mvn $MAVEN_CLI_OPTS clean install p2:site
     - cd ../../
   script:
     - cd src
