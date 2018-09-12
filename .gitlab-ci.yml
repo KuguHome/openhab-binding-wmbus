@@ -23,6 +23,7 @@ cache:
   key: m2repo
   paths:
     - src/.m2/repository
+    - src/de.unidue.stud.sehawagn.openhab.binding.wmbus.p2site/.m2/repository
 
 build:
   before_script:
