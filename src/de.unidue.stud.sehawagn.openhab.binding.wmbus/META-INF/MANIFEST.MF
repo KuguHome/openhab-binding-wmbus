@@ -21,4 +21,6 @@ Import-Package: com.google.common.collect,
  org.eclipse.smarthome.core.thing.binding,
  org.eclipse.smarthome.core.types,
  org.osgi.framework,
- org.slf4j
+ org.slf4j,
+ org.osgi.service.component,
+ org.osgi.service.component.annotations;resolution:=optional

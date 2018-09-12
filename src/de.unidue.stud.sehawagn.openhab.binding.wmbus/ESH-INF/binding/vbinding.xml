@@ -1,0 +1,10 @@
+<binding:binding id="wmbusv"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:binding="http://eclipse.org/smarthome/schemas/binding/v1.0.0"
+        xsi:schemaLocation="http://eclipse.org/smarthome/schemas/binding/v1.0.0 http://eclipse.org/smarthome/schemas/binding-1.0.0.xsd">
+
+    <name>WMBus Binding</name>
+    <description>WMBus Virtual Binding</description>
+    <author>Roman Malyugin</author>
+
+</binding:binding>

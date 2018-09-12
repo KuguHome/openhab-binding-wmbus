@@ -160,6 +160,27 @@
         </config-description>
     </thing-type>
 
+    <!-- thing definition for adeunis_rf gas meter_v3 -->
+    <thing-type id="adeunis_rf_gas_meter_v3">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>ADEUNIS_RF Gas Meter v3</label>
+        <description>A gas meter model ADEUNIS_RF v3 by ADEUNIS_RF.</description>
+
+        <channels>
+            <channel id="current_volume_total_m3" typeId="current_gas_volume_reading" />   <!-- TODO make more specific channel types -->
+        </channels>
+
+        <config-description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
 
     <!-- channel definitions for all WMBus devices -->
     <channel-type id="room_temperature">
@@ -186,6 +207,14 @@
 		<state readOnly="true" pattern="%.2f">
 		</state>
 	</channel-type>
+    <channel-type id="current_gas_volume_reading">    <!-- TODO change reading to own channel type of what it actually is -->
+        <item-type>Number</item-type>
+        <label>Current Reading</label>
+        <description>Current gas cost allocation reading.</description>
+        <category>Gas</category>
+        <state readOnly="true" pattern="%.2f m³">
+        </state>
+    </channel-type>	
     <channel-type id="current_volume_flow_m3h">
         <item-type>Number</item-type>
         <label>Current Reading (Volume Flow)</label>

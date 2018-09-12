@@ -47,7 +47,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
 	private Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
 
-	private WMBusReceiver wmbusReceiver = null;
+	protected WMBusReceiver wmbusReceiver = null;
 	private WMBusConnection wmbusConnection = null;
 
 	private Map<String, WMBusDevice> knownDevices = new HashMap<>();
