@@ -34,7 +34,7 @@ import com.google.common.collect.ImmutableSet;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.ADEUNISGasMeter;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.EngelmannHeatMeter;
-import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.UnknownMeter;
+import de.unidue.stud.sehawagn.openhab.binding.wmbus.device.UnknownDevice;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.QundisQHeatHandler;
@@ -92,9 +92,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 				return null;
 			}
 			// add new devices here
-		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL)) {
-			logger.debug("Creating (handler for) Virtual device.");
-			return unknownMeter.new UnknownWMBusMeterHandler(thing);
 		} else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
 			logger.debug("Creating (handler for) TechemHKV device.");
 			return new TechemHKVHandler(thing);
@@ -117,8 +114,8 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 			logger.debug("Creating (handler for) Engelmann Heat Meter device.");
 			return engelmannHeatMeter.new EngelmannHeatMeterHandler(thing);
 		} else if (thingTypeUID.equals(unknownMeter.getThingType())) {
-			logger.debug("Creating (handler for) Unknown Meter (Virtual) device.");
-			return unknownMeter.new UnknownWMBusMeterHandler(thing);
+			logger.debug("Creating (handler for) Unknown device.");
+			return unknownMeter.new UnknownWMBusDeviceHandler(thing);
 		} else {
 			return null;
 		}
@@ -176,5 +173,5 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 	volatile protected EngelmannHeatMeter engelmannHeatMeter;
 
 	@Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-	volatile protected UnknownMeter unknownMeter;
+	volatile protected UnknownDevice unknownMeter;
 }
