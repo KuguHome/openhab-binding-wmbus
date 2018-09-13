@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledFuture;
+import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.DatatypeConverter;
 
@@ -49,6 +51,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
 	protected WMBusReceiver wmbusReceiver = null;
 	private WMBusConnection wmbusConnection = null;
+	private ScheduledFuture<?> initFuture;
 
 	private Map<String, WMBusDevice> knownDevices = new HashMap<>();
 
@@ -82,23 +85,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 		logger.debug("WMBusBridgeHandler: initialize()");
 
 		// check stick model
-		if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_STARTUP_DELAY) || getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY) == null) {
-			logger.error("Cannot open WMBus device. Startup delay not given.");
-			updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Startup delay not given.");
-			return;
-		}
-		int startupDelay = ((BigDecimal) getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY)).intValue();
-		if (startupDelay > 0) {
-			logger.debug("WMBusBridgeHandler: waiting {} seconds to let other bindings using serial interfaces start up.", startupDelay);
-
-			try {
-				Thread.sleep(1000 * startupDelay);
-			} catch (InterruptedException e) {
-				logger.debug("WMBusHandlerFactory: returned early out of thread sleep :-(");
-			}
-		}
-
-		// check stick model
 		if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_STICK_MODEL) || getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL)).isEmpty()) {
 			logger.error("Cannot open WMBus device. Stick model not given.");
 			updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Stick model not given.");
@@ -118,108 +104,119 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 			updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Radio mode not given.");
 			return;
 		}
-
-		// set up WMBus receiver = handler for radio telegrams
-		if (wmbusReceiver == null) {
-			String stickModel = (String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL);
-			String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
-			String radioModeStr = (String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE);
-
-			// connect to the radio module / open WMBus connection
-			logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName, radioModeStr);
-
-			WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel);
-			if (wmBusManufacturer == null) {
-				logger.error("Cannot open WMBus device. Unknown manufacturer given: " + stickModel + ". Expected 'amber' or 'imst' or 'rc'.");
-				updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown manufacturer given: " + stickModel + ". Expected 'amber' or 'imst' or 'rc'.");
-				return;
-			}
-			logger.debug("Building new connection");
-
-			wmbusReceiver = new WMBusReceiver(this);
-
-			if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) || getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).isEmpty()) {
-				logger.debug("Device ID filter is empty.");
-			} else {
-				wmbusReceiver.setFilterIDs(parseDeviceIDFilter());
-			}
-
-			WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver, interfaceName);
-
-			WMBusMode radioMode;
-			// check and convert radio mode
-			switch (radioModeStr) {
-			case "S":
-				radioMode = WMBusMode.S;
-				break;
-			case "T":
-				radioMode = WMBusMode.T;
-				break;
-			case "C":
-				radioMode = WMBusMode.C;
-				break;
-			default:
-				logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
-				updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
-				return;
-			}
-			logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
-			connectionBuilder.setMode(radioMode);
-//			connectionBuilder.setTimeout(0); // infinite
-
-			try {
-				logger.debug("Building/opening connection");
-				logger.debug("NOTE: if initialization does not progress from here, check systemd journal for Execptions -- probably native lib still loaded by another ClassLoader = previous version or instance of WMBus binding -> restart OpenHAB");
-				if (wmbusConnection != null) {
-					logger.debug("Connection already set, closing old");
-					wmbusConnection.close();
-					wmbusConnection = null;
+        
+        BigDecimal startupDelay = (BigDecimal) getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY);
+        if (startupDelay != null && startupDelay.intValue() >= 0) {
+            logger.debug("WMBusBridgeHandler: waiting {} seconds to let other bindings using serial interfaces start up.",
+                         startupDelay);
+        } else {
+            startupDelay = BigDecimal.valueOf(60);
+        }
+        
+        updateStatus(ThingStatus.UNKNOWN);
+        initFuture = scheduler.schedule(() -> {
+			// set up WMBus receiver = handler for radio telegrams
+			if (wmbusReceiver == null) {
+				String stickModel = (String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL);
+				String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
+				String radioModeStr = (String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE);
+	
+				// connect to the radio module / open WMBus connection
+				logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName, radioModeStr);
+	
+				WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel);
+				if (wmBusManufacturer == null) {
+					logger.error("Cannot open WMBus device. Unknown manufacturer given: " + stickModel + ". Expected 'amber' or 'imst' or 'rc'.");
+					updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown manufacturer given: " + stickModel + ". Expected 'amber' or 'imst' or 'rc'.");
+					return;
 				}
-				wmbusConnection = connectionBuilder.build();
-			} catch (IOException e) {
-				logger.error("Cannot open WMBus device. Connection builder returned: " + e.getMessage());
-				updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Connection builder returned: " + e.getMessage());
-				return;
-			}
-
-			logger.debug("Connected to WMBus serial port");
-
-			// close WMBus connection on shutdown
-			logger.trace("Setting shutdown hook");
-			Runtime.getRuntime().addShutdownHook(new Thread() {
-				@Override
-				public void run() {
+				logger.debug("Building new connection");
+	
+				wmbusReceiver = new WMBusReceiver(this);
+	
+				if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) || getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).isEmpty()) {
+					logger.debug("Device ID filter is empty.");
+				} else {
+					wmbusReceiver.setFilterIDs(parseDeviceIDFilter());
+				}
+	
+				WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver, interfaceName);
+	
+				WMBusMode radioMode;
+				// check and convert radio mode
+				switch (radioModeStr) {
+				case "S":
+					radioMode = WMBusMode.S;
+					break;
+				case "T":
+					radioMode = WMBusMode.T;
+					break;
+				case "C":
+					radioMode = WMBusMode.C;
+					break;
+				default:
+					logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
+					updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr + ". Expected 'S', 'T', or 'C'.");
+					return;
+				}
+				logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
+				connectionBuilder.setMode(radioMode);
+	//			connectionBuilder.setTimeout(0); // infinite
+	
+				try {
+					logger.debug("Building/opening connection");
+					logger.debug("NOTE: if initialization does not progress from here, check systemd journal for Execptions -- probably native lib still loaded by another ClassLoader = previous version or instance of WMBus binding -> restart OpenHAB");
 					if (wmbusConnection != null) {
-						try {
-							logger.debug("Closing connection to WMBus radio device");
-							wmbusConnection.close();
-						} catch (IOException e) {
-							logger.error("Cannot close connection to WMBus radio module: " + e.getMessage());
-							updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot close connection to WMBus radio module: " + e.getMessage());
-							return;
+						logger.debug("Connection already set, closing old");
+						wmbusConnection.close();
+						wmbusConnection = null;
+					}
+					wmbusConnection = connectionBuilder.build();
+				} catch (IOException e) {
+					logger.error("Cannot open WMBus device. Connection builder returned: " + e.getMessage());
+					updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot open WMBus device. Connection builder returned: " + e.getMessage());
+					return;
+				}
+	
+				logger.debug("Connected to WMBus serial port");
+	
+				// close WMBus connection on shutdown
+				logger.trace("Setting shutdown hook");
+				Runtime.getRuntime().addShutdownHook(new Thread() {
+					@Override
+					public void run() {
+						if (wmbusConnection != null) {
+							try {
+								logger.debug("Closing connection to WMBus radio device");
+								wmbusConnection.close();
+							} catch (IOException e) {
+								logger.error("Cannot close connection to WMBus radio module: " + e.getMessage());
+								updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR, "Cannot close connection to WMBus radio module: " + e.getMessage());
+								return;
+							}
 						}
 					}
+				});
+	
+				if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
+					logger.debug("No encryption keys given.");
+				} else {
+					logger.trace("Parsing given encryption keys");
+					parseKeys();
+					logger.trace("Encryption keys parsed");
+					Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
+					logger.trace("Setting encryption keys in JMBus, count: " + encryptionKeys.size());
+					for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
+						wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
+					}
+					logger.trace("Keys successfully set");
 				}
-			});
-
-			if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
-				logger.debug("No encryption keys given.");
-			} else {
-				logger.trace("Parsing given encryption keys");
-				parseKeys();
-				logger.trace("Encryption keys parsed");
-				Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
-				logger.trace("Setting encryption keys in JMBus, count: " + encryptionKeys.size());
-				for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
-					wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
-				}
-				logger.trace("Keys successfully set");
-			}
-
-			// success
-			logger.debug("WMBusBridgeHandler: Initialization done! Setting bridge online");
-			updateStatus(ThingStatus.ONLINE);
-		}
+	
+				// success
+				logger.debug("WMBusBridgeHandler: Initialization done! Setting bridge online");
+				updateStatus(ThingStatus.ONLINE);
+	        }
+        }, startupDelay.intValue(), TimeUnit.SECONDS);
 	}
 
 	private Map<SecondaryAddress, byte[]> getEncryptionKeys() {
@@ -288,7 +285,12 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 	public void dispose() {
 		logger.debug("WMBus bridge Handler disposed.");
 
-		if (wmbusConnection != null) {
+        if (initFuture != null && !initFuture.isDone()) {
+            initFuture.cancel(true);
+        }
+        initFuture = null;
+
+        if (wmbusConnection != null) {
 			logger.debug("Close serial device connection");
 			try {
 				wmbusConnection.close();
