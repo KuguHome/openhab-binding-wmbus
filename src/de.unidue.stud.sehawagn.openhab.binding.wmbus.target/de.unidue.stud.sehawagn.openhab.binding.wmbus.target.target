@@ -28,7 +28,7 @@
     </location>
 <!--
     <location includeAllPlatforms="false" includeConfigurePhase="true" includeMode="planner" includeSource="true" type="InstallableUnit">
-        <unit id="org.openmuc.jmbus" version="3.1.1.sp1"/>
+        <unit id="org.openmuc.jmbus" version="3.1.1.sp2"/>
         <repository location="file:de.unidue.stud.sehawagn.openhab.binding.wmbus.p2site/target/repository"/>
     </location>
 -->

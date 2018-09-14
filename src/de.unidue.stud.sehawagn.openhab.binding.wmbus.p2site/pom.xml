@@ -18,9 +18,9 @@
                <configuration>
                   <groupId>org.openmuc</groupId>
                   <artifactId>jmbus</artifactId>
-                  <version>3.1.1.sp1</version>
+                  <version>3.1.1.sp2</version>
                   <packaging>jar</packaging>
-                  <file>../de.unidue.stud.sehawagn.openhab.binding.wmbus/lib/jmbus-3.1.1.sp1.jar</file>
+                  <file>../de.unidue.stud.sehawagn.openhab.binding.wmbus/lib/jmbus-3.1.1.sp2.jar</file>
                   <!--  <generatePom>true</generatePom>-->
                </configuration>
                <executions>
@@ -43,7 +43,7 @@
                         <phase>validate</phase>
                         <configuration>
                             <artifacts>
-                                <artifact><id>org.openmuc:jmbus:3.1.1.sp1</id></artifact>
+                                <artifact><id>org.openmuc:jmbus:3.1.1.sp2</id></artifact>
                             </artifacts>
                         </configuration>
                     </execution>
