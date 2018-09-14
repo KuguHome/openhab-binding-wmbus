@@ -181,6 +181,35 @@
             </parameter>
         </config-description>
     </thing-type>
+    
+    <thing-type id="engelmann_heat_meter_v0">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Engelmann SensoStar2C</label>
+        <description>A heat meter model SensoStar2C by Engelmann Sensor GmbH.</description>
+
+        <channels>
+            <channel id="reception" typeId="reception" />
+            <channel id="current_date" typeId="current_date" />
+            <channel id="current_energy_total_kwh" typeId="current_reading" />
+            <channel id="error_flags" typeId="error_flags" />
+            <channel id="current_volume_total_m3" typeId="current_reading" />
+            <channel id="current_volume_flow_m3h" typeId="current_volume_flow_m3h" />
+            <channel id="current_power_w" typeId="current_reading" />
+            <channel id="return_temperature" typeId="room_temperature" />   <!-- TODO make more specific channel types -->
+            <channel id="temperature_difference" typeId="room_temperature" />   <!-- TODO make more specific channel types -->
+        </channels>
+
+        <config-description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>This is the WMBus device ID field.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
 
     <!-- channel definitions for all WMBus devices -->
     <channel-type id="room_temperature">

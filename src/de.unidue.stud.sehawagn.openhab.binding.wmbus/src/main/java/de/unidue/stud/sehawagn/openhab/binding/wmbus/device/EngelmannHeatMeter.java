@@ -1,156 +1,109 @@
 package de.unidue.stud.sehawagn.openhab.binding.wmbus.device;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.security.NoSuchAlgorithmException;
-import java.security.Provider;
-import java.security.SecureRandom;
-import java.util.Optional;
+import static de.unidue.stud.sehawagn.openhab.binding.wmbus.WMBusBindingConstants.*;
 
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.IvParameterSpec;
+import java.util.Map;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openmuc.jmbus.DataRecord;
-import org.openmuc.jmbus.wireless.WMBusListener;
-import org.openmuc.jmbus.wireless.WMBusMessage;
+import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.Sets;
+
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.handler.WMBusDeviceHandler;
 import de.unidue.stud.sehawagn.openhab.binding.wmbus.internal.RecordType;
 
+/*
+control field: 0x44
+Secondary Address -> manufacturer ID: EFE, device ID: 64084076, device version: 0, device type: HEAT_METER, as bytes: C514764008640004
+Variable Data Response:
+VariableDataResponse has not been decoded. Bytes:
+7A3A2000202F2F046D1A2F4C290407909E000001FD17000414190A2400043C38000000042C9A020000025F33000461EC0300
+control field: 68, secondary address: manufacturer ID: EFE, device ID: 64084076, device version: 0, device type: HEAT_METER, as bytes: C514764008640004
+access number: 58, status: 32, encryption mode: NONE, number of encrypted blocks: 0
+record: DIB:04, VIB:6D -> descr:DATE_TIME, function:INST_VAL, value:Wed Sep 12 15:26:00 CEST 2018
+record: DIB:04, VIB:07 -> descr:ENERGY, function:INST_VAL, scaled value:4.0592E8, value:40592.0, exponent:4, unit:WATT_HOUR, Wh
+record: DIB:01, VIB:FD17 -> descr:ERROR_FLAGS, function:INST_VAL, value:0
+record: DIB:04, VIB:14 -> descr:VOLUME, function:INST_VAL, scaled value:23618.81, value:2361881.0, exponent:-2, unit:CUBIC_METRE, m³
+record: DIB:04, VIB:3C -> descr:VOLUME_FLOW, function:INST_VAL, scaled value:0.56, value:56.0, exponent:-2, unit:CUBIC_METRE_PER_HOUR, m³/h
+record: DIB:04, VIB:2C -> descr:POWER, function:INST_VAL, scaled value:6660.0, value:666.0, exponent:1, unit:WATT, W
+record: DIB:02, VIB:5F -> descr:RETURN_TEMPERATURE, function:INST_VAL, value:51, unit:DEGREE_CELSIUS, °C
+record: DIB:04, VIB:61 -> descr:TEMPERATURE_DIFFERENCE, function:INST_VAL, scaled value:10.040000000000001, value:1004.0, exponent:-2, unit:KELVIN, S
+*/
+
 @Component(service = { EngelmannHeatMeter.class }, properties = "OSGI-INF/engelmann.properties")
-public class EngelmannHeatMeter extends Meter implements WMBusListener {
+public class EngelmannHeatMeter extends Meter {
 
-    public static final Logger logger = LoggerFactory.getLogger(EngelmannHeatMeter.class);
+	@Activate
+	protected void activate(Map<String, String> properties) {
+		thingTypeName = THING_TYPE_NAME_ENGELMANN_SENSOSTAR;
+		thingTypeId = "68EFE04";
+		thingType = new ThingTypeUID(BINDING_ID, thingTypeName);
+		supportedThingTypes = Sets.newHashSet(thingType);
+	}
 
-    public static SecretKey createKey(final String algorithm, final int keysize, final Optional<Provider> provider,
-            final Optional<SecureRandom> rng) throws NoSuchAlgorithmException {
-        final KeyGenerator keyGenerator;
-        if (provider.isPresent()) {
-            keyGenerator = KeyGenerator.getInstance(algorithm, provider.get());
-        } else {
-            keyGenerator = KeyGenerator.getInstance(algorithm);
-        }
+	public static final Logger logger = LoggerFactory.getLogger(EngelmannHeatMeter.class);
 
-        if (rng.isPresent()) {
-            keyGenerator.init(keysize, rng.get());
-        } else {
-            // not really needed for the Sun provider which handles null OK
-            keyGenerator.init(keysize);
-        }
+	private Map<String, RecordType> channels = new ImmutableMap.Builder<String, RecordType>()
+			.put(CHANNEL_CURRENTDATE, new RecordType(0x04, 0x6D))
+			.put(CHANNEL_CURRENTENERGYTOTAL, new RecordType(0x04, 0x07))
+			.put(CHANNEL_ERRORFLAGS, new RecordType(0x01, 0xFD17))
+			.put(CHANNEL_CURRENTVOLUMETOTAL, new RecordType(0x04, 0x14))
+			.put(CHANNEL_CURRENTVOLUMEFLOW, new RecordType(0x04, 0x3C))
+			.put(CHANNEL_CURRENTPOWER, new RecordType(0x04, 0x2C))
+			.put(CHANNEL_RETURNTEMPERATURE, new RecordType(0x04, 0x5F))
+			.put(CHANNEL_TEMPERATUREDIFFERENCE, new RecordType(0x04, 0x61))
+			.build();
 
-        return keyGenerator.generateKey();
-    }
+	public class EngelmannHeatMeterHandler extends WMBusDeviceHandler {
 
-    public static IvParameterSpec createIV(final int ivSizeBytes, final Optional<SecureRandom> rng) {
-        final byte[] iv = new byte[ivSizeBytes];
-        final SecureRandom theRNG = rng.orElse(new SecureRandom());
-        theRNG.nextBytes(iv);
-        return new IvParameterSpec(iv);
-    }
+		public EngelmannHeatMeterHandler(Thing thing) {
+			super(thing);
+		}
 
-    public static IvParameterSpec readIV(final int ivSizeBytes, final InputStream is) throws IOException {
-        final byte[] iv = new byte[ivSizeBytes];
-        int offset = 0;
-        while (offset < ivSizeBytes) {
-            final int read = is.read(iv, offset, ivSizeBytes - offset);
-            if (read == -1) {
-                throw new IOException("Too few bytes for IV in input stream");
-            }
-            offset += read;
-        }
-        return new IvParameterSpec(iv);
-    }
+		@Override
+		public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
+			logger.trace("handleCommand(): (1/5) command for channel " + channelUID.toString() + " command: " + command.toString());
 
-    public static String CHANNEL_CURRENT_VOLUME_INST_VAL;
-    private static RecordType TYPE_CURRENT_VOLUME_INST_VAL;
+			if (command == RefreshType.REFRESH) {
+				logger.trace("handleCommand(): (2/5) command.refreshtype == REFRESH");
+				State newState = UnDefType.NULL;
+				if (wmbusDevice != null) {
+					logger.trace("handleCommand(): (3/5) deviceMessage != null");
 
-    public class EngelmannHeatMeterHandler extends WMBusDeviceHandler {
+					RecordType recordType = channels.get(channelUID.getId());
 
-        public EngelmannHeatMeterHandler(Thing thing) {
-            super(thing);
-        }
+					if (recordType != null) {
+						logger.trace("handleCommand(): (4/5): got a valid channel: {} with matching RecordType {}", channelUID.getId(), recordType);
+						DataRecord record = wmbusDevice.findRecord(recordType);
+						if (record != null) {
+							newState = convertRecordData(record);
+						} else {
+							logger.trace("handleCommand(): record not found in message");
+						}
+					} else {
+						logger.debug("handleCommand(): (4/5): no value for channel {} found", channelUID.getId());
+					}
+					logger.trace("handleCommand(): (5/5) assigning new state to channel '" + channelUID.getId().toString() + "': " + newState.toString());
+					updateState(channelUID.getId(), newState);
 
-        @Override
-        public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
-            logger.trace("handleCommand(): (1/5) command for channel " + channelUID.toString() + " command: "
-                    + command.toString());
+				}
 
-            if (command == RefreshType.REFRESH) {
-                logger.trace("handleCommand(): (2/5) command.refreshtype == REFRESH");
-                State newState = UnDefType.NULL;
-                if (wmbusDevice != null) {
-                    logger.trace("handleCommand(): (3/5) deviceMessage != null");
-                    if (CHANNEL_CURRENT_VOLUME_INST_VAL.equals(channelUID.getId())) {
-                        logger.trace("handleCommand(): (4/5): got a valid channel: VOLUME_INST_VAL");
-                        DataRecord record = wmbusDevice.findRecord(TYPE_CURRENT_VOLUME_INST_VAL);
-                        if (record != null) {
-                            newState = new DecimalType(record.getScaledDataValue());
-                        } else {
-                            logger.trace("handleCommand(): record not found in message");
-                        }
-                    } else {
-                        logger.debug("handleCommand(): (4/5): no channel to put this value into found: "
-                                + channelUID.getId());
-                    }
-                    logger.trace("handleCommand(): (5/5) assigning new state to channel '"
-                            + channelUID.getId().toString() + "': " + newState.toString());
-                    updateState(channelUID.getId(), newState);
+			}
 
-                }
+		}
 
-            }
+	}
 
-        }
-
-    }
-
-    @Override
-    public void discardedBytes(byte[] arg0) {
-        // TODO Auto-generated method stub
-
-    }
-
-    @Override
-    public void newMessage(WMBusMessage wmBusMessage) {
-
-        final byte[] decrypted;
-        // {
-        // final ByteArrayInputStream bais = new ByteArrayInputStream(ciphertext);
-        //
-        // final Cipher aesCBC = Cipher.getInstance("AES/CBC/PKCS5Padding");
-        // final IvParameterSpec ivForCBC = readIV(aesCBC.getBlockSize(), bais);
-        // aesCBC.init(Cipher.DECRYPT_MODE, aesKey, ivForCBC);
-        //
-        // final byte[] buf = new byte[1_024];
-        // try (final CipherInputStream cis = new CipherInputStream(bais, aesCBC);
-        // final ByteArrayOutputStream baos = new ByteArrayOutputStream()) {
-        // int read;
-        // while ((read = cis.read(buf)) != -1) {
-        // baos.write(buf, 0, read);
-        // }
-        // decrypted = baos.toByteArray();
-        // }
-        // }
-
-        // wmBusMessage.getVariableDataResponse().decryptMessage(key)
-
-    }
-
-    @Override
-    public void stoppedListening(IOException arg0) {
-        // TODO Auto-generated method stub
-
-    }
 }

@@ -54,4 +54,44 @@
         </config-description>
     </bridge-type>
     
+    <bridge-type id="wmbusvirtualbridge">
+        <label>WMBus Virtual Bridge</label>
+        <description>WMBus Virtual Bridge for testing</description>
+        <channels>
+            <channel id="wmbusvirtualbridge_code" typeId="bytes_code" />
+        </channels>
+        <config-description>
+            <parameter name="bytes" type="text">
+                <description>Bytes to decode from WMBus message</description>
+                <label>Bytes to decode</label>
+                <required>true</required>
+            </parameter>
+            <parameter name="address" type="text">
+                <description>Secondary Address</description>
+                <label>Address</label>
+                <required>true</required>
+            </parameter>
+            <parameter name="control_field" type="text">
+                <description>control field</description>
+                <label>control field</label>
+                <required>true</required>
+            </parameter>
+            <parameter name="rssi" type="text">
+                <description>Received_signal_strength_indication</description>
+                <label>RSSI</label>
+                <required>true</required>
+            </parameter>
+        </config-description>
+        
+    </bridge-type>
+    
+    <channel-type id="bytes_code">
+        <item-type>String</item-type>
+        <label>Code Bytes</label>
+        <description>Code Bytes in HEX</description>
+        <category>Text</category>
+        <state readOnly="false">
+        </state>
+    </channel-type>
+    
 </thing:thing-descriptions>
