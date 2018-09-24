@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.3.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.wmbus.internal.WMBusHandlerFactory">
+   <service>
+      <provide interface="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
+   </service>
+   <reference cardinality="1..1" field="adeunisGasMeter" interface="org.openhab.binding.wmbus.device.ADEUNISGasMeter" name="adeunisGasMeter" policy="dynamic"/>
+   <reference cardinality="1..1" field="engelmannHeatMeter" interface="org.openhab.binding.wmbus.device.EngelmannHeatMeter" name="engelmannHeatMeter" policy="dynamic"/>
+   <reference cardinality="1..1" field="unknownMeter" interface="org.openhab.binding.wmbus.device.UnknownDevice" name="unknownMeter" policy="dynamic"/>
+   <implementation class="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+</scr:component>

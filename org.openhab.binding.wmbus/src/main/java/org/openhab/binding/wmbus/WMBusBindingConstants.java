@@ -98,7 +98,6 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_RADIO_MODE = "radioMode";
     public static final String CONFKEY_ENCRYPTION_KEYS = "encryptionKeys";
     public static final String CONFKEY_DEVICEID_FILTER = "deviceIDFilter";
-    public static final String CONFKEY_STARTUP_DELAY = "startupDelay";
 
     public static final String CONFKEY_VIRTUAL_CF = "control_field";
     public static final String CONFKEY_VIRTUAL_BYTES = "bytes";

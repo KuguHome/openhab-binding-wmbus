@@ -10,7 +10,6 @@
 package org.openhab.binding.wmbus.handler;
 
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -128,15 +127,6 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Radio mode not given.");
             return;
-        }
-
-        BigDecimal startupDelay = (BigDecimal) getConfig().get(WMBusBindingConstants.CONFKEY_STARTUP_DELAY);
-        if (startupDelay != null && startupDelay.intValue() >= 0) {
-            logger.debug(
-                    "WMBusBridgeHandler: waiting {} seconds to let other bindings using serial interfaces start up.",
-                    startupDelay);
-        } else {
-            startupDelay = BigDecimal.valueOf(60);
         }
 
         updateStatus(ThingStatus.UNKNOWN);
@@ -257,7 +247,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
                 logger.debug("WMBusBridgeHandler: Initialization done! Setting bridge online");
                 updateStatus(ThingStatus.ONLINE);
             }
-        }, startupDelay.intValue(), TimeUnit.SECONDS);
+        }, 0, TimeUnit.SECONDS);
     }
 
     private Map<SecondaryAddress, byte[]> getEncryptionKeys() {
