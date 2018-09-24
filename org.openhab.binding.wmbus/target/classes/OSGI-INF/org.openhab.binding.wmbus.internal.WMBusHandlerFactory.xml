@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.wmbus.internal.WMBusHandlerFactory" activate="activate" deactivate="deactivate">
+    <service servicefactory="false">
+        <provide interface="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+        <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
+        <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
+    </service>
+    <implementation class="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+</scr:component>

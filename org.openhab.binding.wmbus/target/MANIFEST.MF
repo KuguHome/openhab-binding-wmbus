@@ -1,0 +1,22 @@
+Manifest-Version: 1.0
+Bundle-SymbolicName: org.openhab.binding.wmbus
+Export-Package: org.openhab.binding.wmbus;x-internal:=true,org.openhab
+ .binding.wmbus.device;x-internal:=true,org.openhab.binding.wmbus.hand
+ ler;x-internal:=true,org.openmuc.jmbus.wireless;x-internal:=true
+Bundle-Name: WMBus Binding
+Bundle-Version: 2.4.0
+Bundle-ClassPath: .,lib/jmbus-3.1.1.sp2.jar
+Bundle-ManifestVersion: 2
+Bundle-RequiredExecutionEnvironment: JavaSE-1.8
+Bundle-ActivationPolicy: lazy
+Bundle-Vendor: KUGU Home GmbH
+Import-Package: com.google.common.collect,org.apache.commons.io,org.ap
+ ache.commons.lang,org.eclipse.jdt.annotation;resolution:=optional,org
+ .eclipse.smarthome.config.core,org.eclipse.smarthome.config.core.stat
+ us,org.eclipse.smarthome.config.discovery,org.eclipse.smarthome.core.
+ library.types,org.eclipse.smarthome.core.thing,org.eclipse.smarthome.
+ core.thing.binding,org.eclipse.smarthome.core.types,org.osgi.framewor
+ k,org.slf4j,org.osgi.service.component,org.osgi.service.component.ann
+ otations;resolution:=optional,gnu.io
+Service-Component: OSGI-INF/*.xml
+
