@@ -32,12 +32,6 @@
                 </options>
                 <required>true</required>
             </parameter>
-            <parameter name="startupDelay" type="integer">
-                <description>Delay the startup of the serial connection for this many seconds. Use to avoid race conditions with e.g. Z-Wave binding. Set to 0 to deactivate waiting.</description>
-                <label>Startup Delay</label>
-                <default>60</default>
-                <advanced>true</advanced>
-            </parameter>
             <parameter name="encryptionKeys" type="text">
                 <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the jMBus message printer test program.</description>
                 <label>Encryption Keys</label>
