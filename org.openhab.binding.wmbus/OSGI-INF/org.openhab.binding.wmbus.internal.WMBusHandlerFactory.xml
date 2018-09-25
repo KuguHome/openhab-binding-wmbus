@@ -7,6 +7,6 @@
    </service>
    <reference cardinality="1..1" field="adeunisGasMeter" interface="org.openhab.binding.wmbus.device.ADEUNISGasMeter" name="adeunisGasMeter" policy="dynamic"/>
    <reference cardinality="1..1" field="engelmannHeatMeter" interface="org.openhab.binding.wmbus.device.EngelmannHeatMeter" name="engelmannHeatMeter" policy="dynamic"/>
-   <reference cardinality="1..1" field="unknownMeter" interface="org.openhab.binding.wmbus.device.UnknownDevice" name="unknownMeter" policy="dynamic"/>
+   <reference cardinality="1..1" field="unknownMeter" interface="org.openhab.binding.wmbus.device.UnknownMeter" name="unknownMeter" policy="dynamic"/>
    <implementation class="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
 </scr:component>

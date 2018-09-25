@@ -29,7 +29,7 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.device.ADEUNISGasMeter;
 import org.openhab.binding.wmbus.device.EngelmannHeatMeter;
-import org.openhab.binding.wmbus.device.UnknownDevice;
+import org.openhab.binding.wmbus.device.UnknownMeter;
 import org.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import org.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import org.openhab.binding.wmbus.handler.QundisQHeatHandler;
@@ -93,7 +93,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             // add new devices here
         }
         if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE)) {
-            // create handler for WMBus bridge
             logger.debug("Creating (handler for) WMBus virtual bridge.");
             if (thing instanceof Bridge) {
                 WMBusBridgeHandler handler = new WMBusVirtualBridgeHandler((Bridge) thing);
@@ -124,11 +123,9 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         } else if (thingTypeUID.equals(engelmannHeatMeter.getThingType())) {
             logger.debug("Creating (handler for) Engelmann Heat Meter device.");
             return engelmannHeatMeter.new EngelmannHeatMeterHandler(thing);
-        } else if (thingTypeUID.equals(unknownMeter.getThingType())) {
+        } else {
             logger.debug("Creating (handler for) Unknown device.");
             return unknownMeter.new UnknownWMBusDeviceHandler(thing);
-        } else {
-            return null;
         }
     }
 
@@ -184,5 +181,5 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     volatile protected EngelmannHeatMeter engelmannHeatMeter;
 
     @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-    volatile protected UnknownDevice unknownMeter;
+    volatile protected UnknownMeter unknownMeter;
 }
