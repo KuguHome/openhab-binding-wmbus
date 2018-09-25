@@ -54,28 +54,31 @@ public class TechemHKV extends WMBusDevice {
         vdr = getOriginalMessage().getVariableDataResponse();
 
         int offset = 10;
-
-        ciField = hkvBuffer[offset + 0] & 0xff;
-
-        if ((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH")) {
-            byte[] temp = { hkvBuffer[offset + 1] };
-            status = HexConverter.bytesToHex(temp);
-            lastDate = parseLastDate(offset + 2);
-            curDate = parseCurrentDate(offset + 6);
-            lastVal = parseBigEndianInt(offset + 4);
-            curVal = parseBigEndianInt(offset + 8);
-            t1 = parseTemp(offset + 10);
-            t2 = parseTemp(offset + 12);
-
-            int historyLength = hkvBuffer.length - 24;
-            historyBytes = new byte[historyLength];
-
-            System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
-            history = HexConverter.bytesToHex(historyBytes);
-
+        if (hkvBuffer.length < 11) {
+            throw new DecodingException("No known Techem HKV message. hkvBuffer length = " + hkvBuffer.length);
         } else {
-            throw new DecodingException("No known Techem HKV message. ciField=" + ciField + ", Manufacturer="
-                    + secondaryAddress.getManufacturerId());
+            ciField = hkvBuffer[offset + 0] & 0xff;
+            int historyLength = hkvBuffer.length - 24;
+
+            if (((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH"))
+                    && historyLength > 0) {
+                byte[] temp = { hkvBuffer[offset + 1] };
+                status = HexConverter.bytesToHex(temp);
+                lastDate = parseLastDate(offset + 2);
+                curDate = parseCurrentDate(offset + 6);
+                lastVal = parseBigEndianInt(offset + 4);
+                curVal = parseBigEndianInt(offset + 8);
+                t1 = parseTemp(offset + 10);
+                t2 = parseTemp(offset + 12);
+
+                historyBytes = new byte[historyLength];
+
+                System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
+                history = HexConverter.bytesToHex(historyBytes);
+            } else {
+                throw new DecodingException("No known Techem HKV message. ciField=" + ciField + ", Manufacturer="
+                        + secondaryAddress.getManufacturerId());
+            }
         }
     }
 
