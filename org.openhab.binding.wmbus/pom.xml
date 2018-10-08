@@ -15,11 +15,11 @@
 	<packaging>eclipse-plugin</packaging>
 
 	<name>WMBus Binding</name>
-
-	<properties>
-		<report.fail.on.error>false</report.fail.on.error>
-	</properties>
-
+	
+    <properties>
+        <report.fail.on.error>false</report.fail.on.error>
+    </properties>
+    
 	<dependencies>
 
 		<!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
@@ -122,31 +122,42 @@
 
 		<plugins>
 			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-				<dependencies>
-					<dependency>
-						<groupId>org.osgi</groupId>
-						<artifactId>org.osgi.service.component.annotations</artifactId>
-						<version>1.3.0</version>
-					</dependency>
-				</dependencies>
-				<configuration>
-					<skip>true</skip>
-				</configuration>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.19.1</version>
 				<executions>
 					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<phase>none</phase>
+						<id>test</id>
+						<phase>test</phase>
+						<configuration>
+							<includes>
+								<include>**/*Test.java</include>
+							</includes>
+						</configuration>
 						<goals>
-							<goal>scr</goal>
+							<goal>test</goal>
 						</goals>
 					</execution>
 				</executions>
 			</plugin>
-			<!-- <plugin> <groupId>org.apache.felix</groupId> <artifactId>maven-scr-plugin</artifactId> <configuration> <skip>true</skip> 
-				<excludes>ADEUNISGasMeter,EngelmannHeatMeter,WMBusHandlerFactory</excludes> <processAnnotations>false</processAnnotations> 
-				</configuration> </plugin> -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.5.1</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+				<executions>
+					<execution>
+						<id>compiletests</id>
+						<phase>test-compile</phase>
+						<goals>
+							<goal>testCompile</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 		</plugins>
 	</build>
 </project>
