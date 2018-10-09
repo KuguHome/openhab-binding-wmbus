@@ -22,18 +22,13 @@ variables:
 cache:
   key: m2repo
   paths:
-    - src/.m2/repository
-    - src/de.unidue.stud.sehawagn.openhab.binding.wmbus.p2site/.m2/repository
+    - org.openhab.binding.wmbus/.m2/repository
 
 build:
-  before_script:
-    - cd src/de.unidue.stud.sehawagn.openhab.binding.wmbus.p2site
-    - mvn $MAVEN_CLI_OPTS clean install p2:site
-    - cd ../../
   script:
-    - cd src
+    - cd org.openhab.binding.wmbus
     - 'mvn $MAVEN_CLI_OPTS package'
   artifacts:
     paths:
-    - src/de.unidue.stud.sehawagn.openhab.binding.wmbus/target/*.jar
+    - org.openhab.binding.wmbus/target/*.jar
   image: maven:3.5-jdk-8

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.wmbus.device.ADEUNISGasMeter">
+   <properties entry="OSGI-INF/adeunis_rf.properties"/>
+   <service>
+      <provide interface="org.openhab.binding.wmbus.device.ADEUNISGasMeter"/>
+   </service>
+   <implementation class="org.openhab.binding.wmbus.device.ADEUNISGasMeter"/>
+</scr:component>
