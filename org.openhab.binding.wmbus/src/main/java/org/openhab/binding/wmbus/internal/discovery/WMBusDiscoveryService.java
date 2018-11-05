@@ -25,7 +25,6 @@ import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openhab.binding.wmbus.internal.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
-import org.openhab.binding.wmbus.internal.WMBusHandlerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -47,8 +46,9 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
 
     private WMBusBridgeHandler bridgeHandler;
 
-    public WMBusDiscoveryService(WMBusBridgeHandler bridgeHandler, Map<String, String> types) {
-        super(1);
+    public WMBusDiscoveryService(Set<ThingTypeUID> supportedThingTypes, WMBusBridgeHandler bridgeHandler,
+            Map<String, String> types) {
+        super(supportedThingTypes, 1);
         this.bridgeHandler = bridgeHandler;
         this.typeToWMBUSIdMap = types;
     }
@@ -61,9 +61,8 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
     @Override
     // add new devices there
     public Set<ThingTypeUID> getSupportedThingTypes() {
-        logger.trace("getSupportedThingTypes(): currently *implemented* are "
-                + WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS.toString());
-        return WMBusHandlerFactory.SUPPORTED_THING_TYPES_UIDS;
+        logger.trace("getSupportedThingTypes(): currently *implemented* are {}", super.getSupportedThingTypes());
+        return super.getSupportedThingTypes();
     }
 
     @Override

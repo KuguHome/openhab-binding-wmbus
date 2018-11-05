@@ -12,8 +12,10 @@ package org.openhab.binding.wmbus.internal;
 import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.LinkedHashSet;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -27,9 +29,8 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.device.ADEUNISGasMeter;
-import org.openhab.binding.wmbus.device.EngelmannHeatMeter;
-import org.openhab.binding.wmbus.device.UnknownMeter;
+import org.openhab.binding.wmbus.device.Meter;
+import org.openhab.binding.wmbus.device.UnknownMeter.UnknownWMBusDeviceHandler;
 import org.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import org.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import org.openhab.binding.wmbus.handler.QundisQHeatHandler;
@@ -51,6 +52,7 @@ import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
+import com.google.common.collect.Iterables;
 
 /**
  * The {@link WMBusHandlerFactory} class defines WMBusHandlerFactory. This class is the main entry point of the binding.
@@ -61,11 +63,13 @@ import com.google.common.collect.ImmutableSet;
 @Component(service = { WMBusHandlerFactory.class, BaseThingHandlerFactory.class, ThingHandlerFactory.class })
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
-    private Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    public static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS;
+    private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
+    private final Set<Meter> knownDeviceTypes = Collections.synchronizedSet(new LinkedHashSet<>());
 
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
+
+    private final Set<ThingTypeUID> supportedThingTypes = new LinkedHashSet<>();
 
     public WMBusHandlerFactory() {
         logger.debug("wmbus binding starting up.");
@@ -73,7 +77,28 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
+        return getSupportedThingTypes().contains(thingTypeUID);
+    }
+
+    protected Set<ThingTypeUID> getSupportedThingTypes() {
+        if (supportedThingTypes.isEmpty()) {
+            supportedThingTypes.addAll(calculateSupportedThingTypes());
+        }
+
+        return supportedThingTypes;
+    }
+
+    private Set<ThingTypeUID> calculateSupportedThingTypes() {
+        Set<ThingTypeUID> knownDevices = knownDeviceTypes.stream().map(Meter::getSupportedThingTypes)
+                .flatMap(Collection::stream).collect(Collectors.toSet());
+
+        return ImmutableSet.<ThingTypeUID> builder()
+                .addAll(Iterables.concat(WMBusBridgeHandler.SUPPORTED_THING_TYPES,
+                        TechemHKVHandler.SUPPORTED_THING_TYPES, QundisQCaloricHandler.SUPPORTED_THING_TYPES,
+                        QundisQWaterHandler.SUPPORTED_THING_TYPES, QundisQHeatHandler.SUPPORTED_THING_TYPES,
+                        KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES,
+                        WMBusVirtualBridgeHandler.SUPPORTED_THING_TYPES, knownDevices))
+                .build();
     }
 
     @Override
@@ -117,15 +142,15 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
             logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
             return new KamstrupMultiCal302Handler(thing);
-        } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
-            logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
-            return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
-        } else if (thingTypeUID.equals(engelmannHeatMeter.getThingType())) {
-            logger.debug("Creating (handler for) Engelmann Heat Meter device.");
-            return engelmannHeatMeter.new EngelmannHeatMeterHandler(thing);
+            // } else if (thingTypeUID.equals(adeunisGasMeter.getThingType())) {
+            // logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
+            // return adeunisGasMeter.new ADEUNISGasMeterHandler(thing);
+            // } else if (thingTypeUID.equals(engelmannHeatMeter.getThingType())) {
+            // logger.debug("Creating (handler for) Engelmann Heat Meter device.");
+            // return engelmannHeatMeter.new EngelmannHeatMeterHandler(thing);
         } else {
             logger.debug("Creating (handler for) Unknown device.");
-            return unknownMeter.new UnknownWMBusDeviceHandler(thing);
+            return new UnknownWMBusDeviceHandler(thing);
         }
     }
 
@@ -133,20 +158,20 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         logger.debug("Registering discovery service.");
         Map<String, String> typeToWMBUSIdMap = new ImmutableMap.Builder<String, String>()
                 .put("68TCH97255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
-                // whether
-                // they
-                // work
-                .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV).put("68TCH116255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
-                // whether
-                // they
-                // work
+                // whether they work
+                .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
+                // another techem
+                .put("68TCH116255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
+                // whether they work
                 .put("68TCH118255", THING_TYPE_NAME_TECHEM_HKV) // find out, if they work
                 .put("68KAM484", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_NAME_QUNDIS_QHEAT_5)
                 .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5).put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
-                .put(engelmannHeatMeter.getThingTypeId(), engelmannHeatMeter.getThingTypeName())
-                .put(adeunisGasMeter.getThingTypeId(), adeunisGasMeter.getThingTypeName()).build();
+                // .put(engelmannHeatMeter.getThingTypeId(), engelmannHeatMeter.getThingTypeName())
+                // .put(adeunisGasMeter.getThingTypeId(), adeunisGasMeter.getThingTypeName())
+                .build();
 
-        WMBusDiscoveryService discoveryService = new WMBusDiscoveryService(bridgeHandler, typeToWMBUSIdMap);
+        WMBusDiscoveryService discoveryService = new WMBusDiscoveryService(getSupportedThingTypes(), bridgeHandler,
+                typeToWMBUSIdMap);
         discoveryService.activate();
         this.discoveryServiceRegs.put(bridgeHandler.getThing().getUID(), bundleContext
                 .registerService(DiscoveryService.class.getName(), discoveryService, new Hashtable<String, Object>()));
@@ -156,16 +181,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     @Activate
     protected void activate(ComponentContext componentContext) {
         super.activate(componentContext);
-        SUPPORTED_THING_TYPES_UIDS = ImmutableSet
-                .of(WMBusBridgeHandler.SUPPORTED_THING_TYPES, TechemHKVHandler.SUPPORTED_THING_TYPES,
-                        QundisQCaloricHandler.SUPPORTED_THING_TYPES, QundisQWaterHandler.SUPPORTED_THING_TYPES,
-                        QundisQHeatHandler.SUPPORTED_THING_TYPES, KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES,
-                        WMBusVirtualBridgeHandler.SUPPORTED_THING_TYPES, engelmannHeatMeter.getSupportedThingTypes(),
-                        adeunisGasMeter.getSupportedThingTypes()/*
-                                                                 * ,
-                                                                 * unknownMeter.getSupportedThingTypes()
-                                                                 */)
-                .stream().flatMap(Collection::stream).collect(Collectors.toSet());
     }
 
     @Override
@@ -174,12 +189,15 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
         super.deactivate(componentContext);
     }
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-    volatile protected ADEUNISGasMeter adeunisGasMeter;
+    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
+    protected void addKnownDevice(Meter meter) {
+        knownDeviceTypes.add(meter);
+        supportedThingTypes.clear();
+    }
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-    volatile protected EngelmannHeatMeter engelmannHeatMeter;
+    protected void removeKnownDevice(Meter meter) {
+        knownDeviceTypes.remove(meter);
+        supportedThingTypes.clear();
+    }
 
-    @Reference(cardinality = ReferenceCardinality.MANDATORY, policy = ReferencePolicy.DYNAMIC)
-    volatile protected UnknownMeter unknownMeter;
 }

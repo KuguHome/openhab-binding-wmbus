@@ -44,7 +44,7 @@ public class UnknownMeter extends Meter {
     protected void deactivate() {
     }
 
-    public class UnknownWMBusDeviceHandler extends WMBusDeviceHandler {
+    public static class UnknownWMBusDeviceHandler extends WMBusDeviceHandler {
 
         public UnknownWMBusDeviceHandler(Thing thing) {
             super(thing);
