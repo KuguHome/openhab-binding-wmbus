@@ -56,7 +56,8 @@ record: DIB:04, VIB:61 -> descr:TEMPERATURE_DIFFERENCE, function:INST_VAL, scale
  * @author Hanno - Felix Wagner - Initial contribution
  */
 
-@Component(service = { EngelmannHeatMeter.class }, properties = "OSGI-INF/engelmann.properties")
+@Component(service = { EngelmannHeatMeter.class }, property = { "thing.type.id=68EFE04",
+        "thing.type.name=engelmann_heat_meter_v0" })
 public class EngelmannHeatMeter extends Meter {
 
     @Activate
@@ -69,7 +70,7 @@ public class EngelmannHeatMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(EngelmannHeatMeter.class);
 
-    private Map<String, RecordType> channels = new ImmutableMap.Builder<String, RecordType>()
+    private final Map<String, RecordType> channels = new ImmutableMap.Builder<String, RecordType>()
             .put(CHANNEL_CURRENTDATE, new RecordType(0x04, 0x6D))
             .put(CHANNEL_CURRENTENERGYTOTAL, new RecordType(0x04, 0x07))
             .put(CHANNEL_ERRORFLAGS, new RecordType(0x01, 0xFD17))

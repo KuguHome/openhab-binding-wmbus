@@ -37,7 +37,9 @@ import com.google.common.collect.Sets;
  * @author Roman Malyugin - Initial contribution
  */
 
-@Component(service = { ADEUNISGasMeter.class }, properties = "OSGI-INF/adeunis_rf.properties")
+@Component(service = { ADEUNISGasMeter.class }, property = { "volume.dib=4", "volume.vib=18",
+        "channel.volume=current_volume_total_m3", "binding.id=wmbus", "device.ids=10011104,20011104",
+        "thing.type.id=68ARF33", "thing.type.name=adeunis_rf_gas_meter_v3" })
 public class ADEUNISGasMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(ADEUNISGasMeter.class);
