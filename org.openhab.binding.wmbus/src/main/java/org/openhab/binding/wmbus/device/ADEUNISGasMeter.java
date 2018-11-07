@@ -67,7 +67,7 @@ public class ADEUNISGasMeter extends Meter {
     protected void deactivate() {
     }
 
-    public class ADEUNISGasMeterHandler extends WMBusDeviceHandler {
+    public static class ADEUNISGasMeterHandler extends WMBusDeviceHandler {
 
         public ADEUNISGasMeterHandler(Thing thing) {
             super(thing);

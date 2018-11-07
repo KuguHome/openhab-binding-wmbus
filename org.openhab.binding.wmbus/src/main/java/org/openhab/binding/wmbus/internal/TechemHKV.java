@@ -15,6 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.VariableDataStructure;
@@ -28,8 +29,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
 
 public class TechemHKV extends WMBusDevice {
 
-    public TechemHKV(WMBusMessage originalMessage) {
-        super(originalMessage);
+    public TechemHKV(WMBusMessage originalMessage, WMBusAdapter adapter) {
+        super(originalMessage, adapter);
     }
 
     int ciField;

@@ -12,10 +12,8 @@ package org.openhab.binding.wmbus.internal;
 import java.io.IOException;
 import java.util.Arrays;
 
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
-import org.openmuc.jmbus.DataRecord;
-import org.openmuc.jmbus.DecodingException;
-import org.openmuc.jmbus.VariableDataStructure;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
@@ -31,13 +29,7 @@ public class WMBusReceiver implements WMBusListener {
 
     int[] filterIDs = new int[] {};
 
-    private WMBusBridgeHandler wmBusBridgeHandler;
-
-    public static String VENDOR_TECHEM = "TCH";
-    public static String VENDOR_QUNDIS = "QDS";
-    public static String VENDOR_KAMSTRUP = "KAM";
-    public static String VENDOR_ADEUNIS = "ARF";
-    public static String VENDOR_ENGELMANN = "EFE";
+    private final WMBusBridgeHandler wmBusBridgeHandler;
 
     private final Logger logger = LoggerFactory.getLogger(WMBusReceiver.class);
 
@@ -78,48 +70,14 @@ public class WMBusReceiver implements WMBusListener {
      */
     @Override
     public void newMessage(WMBusMessage message) {
-        logger.trace("newMessage(): new message received");
-        WMBusDevice device = null;
+        logger.trace("Received WMBus message");
         if (filterMatch(message.getSecondaryAddress().getDeviceId().intValue())) {
-            logger.trace("newMessage(): Matched message received: {}", message.toString());
-            // print basic info
-            logger.trace("newMessage(): control field: {}, secondary address: {}", message.getControlField(),
-                    message.getSecondaryAddress().toString());
-            // decode VDR
-            VariableDataStructure vdr = message.getVariableDataResponse();
-            try {
-                vdr.decode();
-                logger.trace("newMessage(): variable data response decoded");
-                // VDR needs to be decoded for correct header information
-                logger.trace(
-                        "newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}",
-                        vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(),
-                        vdr.getNumberOfEncryptedBlocks());
-                for (DataRecord record : vdr.getDataRecords()) {
-                    logger.trace("> record: {}", record.toString());
-                }
-                device = new WMBusDevice(message);
-            } catch (DecodingException e) {
-                logger.trace(
-                        "newMessage(): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}",
-                        vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(),
-                        vdr.getNumberOfEncryptedBlocks());
-                logger.trace("newMessage(): could not decode as standard WMBus application layer message: {}",
-                        e.getMessage());
-                device = new TechemHKV(message);
-                try {
-                    logger.trace("newMessage(): try to decode as Techem message");
-                    device.decode();
-                    wmBusBridgeHandler.processMessage(device);
-                } catch (DecodingException e1) {
-                    logger.debug("newMessage(): could not decode as Techem Message: {}, original message: {}",
-                            e1.getMessage(), message.toString());
-                }
-            }
+            WMBusDevice device = new WMBusDevice(message, wmBusBridgeHandler);
+
+            logger.trace("Forwarding message to further processing: {}", HexUtils.bytesToHex(message.asBlob()));
             wmBusBridgeHandler.processMessage(device);
-            logger.trace("newMessage(): Forwarded to handler.processMessage()");
         } else {
-            logger.trace("newMessage(): Unmatched message received: {}", message.toString());
+            logger.trace("Unmatched message received: {}", HexUtils.bytesToHex(message.asBlob()));
         }
     }
 
@@ -130,8 +88,7 @@ public class WMBusReceiver implements WMBusListener {
 
     @Override
     public void stoppedListening(IOException e) {
-        logger.debug("Stopped listening for new messages. Reason: {} {}", e.getClass().getSimpleName(), e.getMessage());
-        logger.error(e.getCause().getMessage());
+        logger.warn("Stopped listening for new messages. Reason: {}", e);
     }
 
 }

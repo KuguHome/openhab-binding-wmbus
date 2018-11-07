@@ -9,6 +9,8 @@
 
 package org.openhab.binding.wmbus.internal;
 
+import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -21,14 +23,20 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
 
 public class WMBusDevice {
 
-    private WMBusMessage originalMessage;
+    private final WMBusMessage originalMessage;
+    private final WMBusAdapter adapter;
 
-    public WMBusDevice(WMBusMessage originalMessage) {
+    public WMBusDevice(WMBusMessage originalMessage, WMBusAdapter adapter) {
         this.originalMessage = originalMessage;
+        this.adapter = adapter;
     }
 
     public WMBusMessage getOriginalMessage() {
         return originalMessage;
+    }
+
+    public WMBusAdapter getAdapter() {
+        return adapter;
     }
 
     public void decode() throws DecodingException {
@@ -50,5 +58,21 @@ public class WMBusDevice {
 
     public DataRecord findRecord(byte[] dib, byte[] vib) {
         return findRecord(new RecordType(dib, vib));
+    }
+
+    public String getDeviceAddress() {
+        return HexUtils.bytesToHex(getOriginalMessage().getSecondaryAddress().asByteArray());
+    }
+
+    public String getDeviceType() {
+        return getOriginalMessage().getControlField() + ""
+                + getOriginalMessage().getSecondaryAddress().getManufacturerId() + ""
+                + getOriginalMessage().getSecondaryAddress().getVersion() + ""
+                + getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
+    }
+
+    @Override
+    public String toString() {
+        return getOriginalMessage().getSecondaryAddress().toString();
     }
 }

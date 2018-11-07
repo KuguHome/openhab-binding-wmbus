@@ -5,6 +5,27 @@
 
     <!-- add new devices here -->
 
+    <!-- thing definition for universal meter -->
+    <thing-type id="meter">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>WMBus device</label>
+        <description>Universal WMBus device/</description>
+
+        <channels>
+        </channels>
+
+        <config-description>
+            <parameter name="deviceId" type="text">
+                <label>WMBus device ID</label>
+                <description>Identifier which lets to find device.</description>
+                <required>true</required>
+            </parameter>
+        </config-description>
+    </thing-type>
+
     <!-- thing definition for Techem HKV -->
     <thing-type id="techem_hkv">
 		<supported-bridge-type-refs>

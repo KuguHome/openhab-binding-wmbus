@@ -21,14 +21,16 @@ public interface WMBusMessageListener {
 
     /**
      *
+     * @param adapter Adapter which received message.
      * @param device The message which was received.
      */
-    public void onNewWMBusDevice(WMBusDevice device);
+    public void onNewWMBusDevice(WMBusAdapter adapter, WMBusDevice device);
 
     /**
      *
+     * @param adapter WMBusAdapter adapter who discovered change,
      * @param device The message which was received.
      */
-    public void onChangedWMBusDevice(WMBusDevice device);
+    public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice device);
 
 }

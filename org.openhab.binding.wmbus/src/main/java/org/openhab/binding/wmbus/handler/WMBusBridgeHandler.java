@@ -30,11 +30,11 @@ import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.internal.WMBusDevice;
-import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusConnection;
@@ -51,7 +51,7 @@ import org.slf4j.LoggerFactory;
  * @author Hanno - Felix Wagner - Initial contribution
  */
 
-public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
+public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMBusAdapter {
 
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .singleton(WMBusBindingConstants.THING_TYPE_BRIDGE);
@@ -60,19 +60,19 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
 
     private static final String DEVICE_STATE_CHANGED = "changed";
 
-    private Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
 
     protected WMBusReceiver wmbusReceiver = null;
     private WMBusConnection wmbusConnection = null;
     private ScheduledFuture<?> initFuture;
 
-    private Map<String, WMBusDevice> knownDevices = new HashMap<>();
+    private final Map<String, WMBusDevice> knownDevices = new HashMap<>();
 
-    private List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
+    private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
     // TODO HashMap would be the unsynchronized version; differences see here:
     // https://stackoverflow.com/questions/40471/differences-between-hashmap-and-hashtable#40878
-    private Map<SecondaryAddress, byte[]> encryptionKeys = new Hashtable<SecondaryAddress, byte[]>();
+    private final Map<SecondaryAddress, byte[]> encryptionKeys = new Hashtable<SecondaryAddress, byte[]>();
 
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
@@ -267,17 +267,18 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
         }
     }
 
-    public boolean registerWMBusMessageListener(WMBusMessageListener wmBusMessageListener) throws WMBusException {
+    public boolean registerWMBusMessageListener(WMBusMessageListener wmBusMessageListener) {
         if (wmBusMessageListener == null) {
-            throw new WMBusException("It's not allowed to pass a null WMBusMessageListener.");
+            return false;
         }
+
         logger.debug("register listener: Adding");
         boolean result = wmBusMessageListeners.add(wmBusMessageListener);
         logger.debug("register listener: Success");
         if (result) {
             // inform the listener initially about all devices and their states
             for (WMBusDevice device : knownDevices.values()) {
-                wmBusMessageListener.onNewWMBusDevice(device);
+                wmBusMessageListener.onNewWMBusDevice(this, device);
             }
         }
         return result;
@@ -294,11 +295,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             try {
                 switch (type) {
                     case DEVICE_STATE_ADDED: {
-                        wmBusMessageListener.onNewWMBusDevice(device);
+                        wmBusMessageListener.onNewWMBusDevice(this, device);
                         break;
                     }
                     case DEVICE_STATE_CHANGED: {
-                        wmBusMessageListener.onChangedWMBusDevice(device);
+                        wmBusMessageListener.onChangedWMBusDevice(this, device);
                         break;
                     }
                     default: {
@@ -398,6 +399,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler {
             idInts[i] = Integer.valueOf(curID);
         }
         return idInts;
+    }
+
+    @Override
+    public ThingUID getUID() {
+        return getThing().getUID();
     }
 
 }

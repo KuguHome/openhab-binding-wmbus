@@ -68,19 +68,18 @@ public class EngelmannHeatMeter extends Meter {
         supportedThingTypes = Sets.newHashSet(thingType);
     }
 
-    public static final Logger logger = LoggerFactory.getLogger(EngelmannHeatMeter.class);
+    public static class EngelmannHeatMeterHandler extends WMBusDeviceHandler {
+        public static final Logger logger = LoggerFactory.getLogger(EngelmannHeatMeter.class);
 
-    private final Map<String, RecordType> channels = new ImmutableMap.Builder<String, RecordType>()
-            .put(CHANNEL_CURRENTDATE, new RecordType(0x04, 0x6D))
-            .put(CHANNEL_CURRENTENERGYTOTAL, new RecordType(0x04, 0x07))
-            .put(CHANNEL_ERRORFLAGS, new RecordType(0x01, 0xFD17))
-            .put(CHANNEL_CURRENTVOLUMETOTAL, new RecordType(0x04, 0x14))
-            .put(CHANNEL_CURRENTVOLUMEFLOW, new RecordType(0x04, 0x3C))
-            .put(CHANNEL_CURRENTPOWER, new RecordType(0x04, 0x2C))
-            .put(CHANNEL_RETURNTEMPERATURE, new RecordType(0x04, 0x5F))
-            .put(CHANNEL_TEMPERATUREDIFFERENCE, new RecordType(0x04, 0x61)).build();
-
-    public class EngelmannHeatMeterHandler extends WMBusDeviceHandler {
+        private final Map<String, RecordType> channels = new ImmutableMap.Builder<String, RecordType>()
+                .put(CHANNEL_CURRENTDATE, new RecordType(0x04, 0x6D))
+                .put(CHANNEL_CURRENTENERGYTOTAL, new RecordType(0x04, 0x07))
+                .put(CHANNEL_ERRORFLAGS, new RecordType(0x01, 0xFD17))
+                .put(CHANNEL_CURRENTVOLUMETOTAL, new RecordType(0x04, 0x14))
+                .put(CHANNEL_CURRENTVOLUMEFLOW, new RecordType(0x04, 0x3C))
+                .put(CHANNEL_CURRENTPOWER, new RecordType(0x04, 0x2C))
+                .put(CHANNEL_RETURNTEMPERATURE, new RecordType(0x04, 0x5F))
+                .put(CHANNEL_TEMPERATUREDIFFERENCE, new RecordType(0x04, 0x61)).build();
 
         public EngelmannHeatMeterHandler(Thing thing) {
             super(thing);

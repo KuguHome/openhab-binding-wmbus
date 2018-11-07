@@ -31,6 +31,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.wmbus.internal.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openmuc.jmbus.DataRecord;
+import org.openmuc.jmbus.DecodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -38,13 +39,15 @@ import org.slf4j.LoggerFactory;
  * The {@link WMBusDeviceHandler} class defines abstract WMBusDeviceHandler
  *
  * @author Hanno - Felix Wagner - Initial contribution
+ * @author Łukasz Dywicki - Added possibility to customise message parsing.
  */
 
-public abstract class WMBusDeviceHandler extends BaseThingHandler implements WMBusMessageListener {
+public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThingHandler
+        implements WMBusMessageListener {
     private final Logger logger = LoggerFactory.getLogger(WMBusDeviceHandler.class);
     protected String deviceId;
     private WMBusBridgeHandler bridgeHandler;
-    protected WMBusDevice wmbusDevice;
+    protected T wmbusDevice;
 
     public WMBusDeviceHandler(Thing thing) {
         super(thing);
@@ -53,20 +56,20 @@ public abstract class WMBusDeviceHandler extends BaseThingHandler implements WMB
 
     // entry point - gets device here
     @Override
-    public void onNewWMBusDevice(WMBusDevice wmBusDevice) {
+    public void onNewWMBusDevice(WMBusAdapter adapter, WMBusDevice wmBusDevice) {
         logger.trace("onNewWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             logger.trace("onNewWMBusDevice(): yes it's me");
             logger.trace("onNewWMBusDevice(): updating status to online");
             updateStatus(ThingStatus.ONLINE);
             logger.trace("onNewWMBusDevice(): calling onChangedWMBusDevice()");
-            onChangedWMBusDevice(wmBusDevice);
+            onChangedWMBusDevice(adapter, wmBusDevice);
         }
         logger.trace("onNewWMBusDevice(): no");
     }
 
     @Override
-    public void onChangedWMBusDevice(WMBusDevice receivedDevice) {
+    public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice receivedDevice) {
         logger.trace("onChangedWMBusDevice(): is it me?");
         if (receivedDevice.getDeviceId().equals(deviceId)) {
             logger.trace("onChangedWMBusDevice(): yes");
@@ -74,9 +77,13 @@ public abstract class WMBusDeviceHandler extends BaseThingHandler implements WMB
             if (!checkMessage(receivedDevice)) {
                 logger.trace("onChangedWMBusDevice(): this is a malformed message, ignoring this message");
             } else {
-                wmbusDevice = receivedDevice;
-                logger.trace("onChangedWMBusDevice(): inform all channels to refresh");
-                triggerRefresh();
+                try {
+                    wmbusDevice = parseDevice(receivedDevice);
+                    logger.trace("onChangedWMBusDevice(): inform all channels to refresh");
+                    triggerRefresh();
+                } catch (DecodingException e) {
+                    logger.debug("onChangedWMBusDevice(): could not decode frame", e);
+                }
             }
         } else {
             logger.trace("onChangedWMBusDevice(): no");
@@ -120,19 +127,29 @@ public abstract class WMBusDeviceHandler extends BaseThingHandler implements WMB
     @Override
     public void initialize() {
         logger.debug("Initializing handler.");
+        updateStatus(ThingStatus.UNKNOWN);
+
         Configuration config = getConfig();
         deviceId = (String) config.getProperties().get(PROPERTY_DEVICE_ID);
         try {
             wmbusDevice = getDevice();
+            if (wmbusDevice != null) {
+                initialize(wmbusDevice);
+            }
         } catch (WMBusException e) {
-            logger.error(e.getCause().getMessage());
+            logger.error("Could not obtain Wireless M-Bus device information", e);
         }
+    }
+
+    protected void initialize(T device) {
         updateStatus(ThingStatus.ONLINE);
     }
 
     @Override
     public void dispose() {
         logger.debug("Disposing handler.");
+        this.deviceId = null;
+        this.wmbusDevice = null;
     }
 
     protected synchronized WMBusBridgeHandler getBridgeHandler() throws WMBusException {
@@ -154,18 +171,38 @@ public abstract class WMBusDeviceHandler extends BaseThingHandler implements WMB
         return bridgeHandler;
     }
 
-    protected WMBusDevice getDevice() throws WMBusException {
+    protected T getDevice() throws WMBusException {
         logger.trace("getDevice() begin");
         WMBusBridgeHandler bridgeHandler = getBridgeHandler();
         if (bridgeHandler == null) {
-            logger.debug("thinghandler: getDevice() end: returning null");
+            logger.debug("Device handler is not linked with bridge, skipping call");
             return null;
         }
-        logger.trace("getDevice() end: returning devicebyid");
-        return bridgeHandler.getDeviceById(deviceId);
+
+        logger.trace("Lookup known devices by identifier {}", deviceId);
+        WMBusDevice device = bridgeHandler.getDeviceById(deviceId);
+        if (device != null) {
+            logger.trace("Found device matching given id {}, {}", deviceId, device);
+            try {
+                return parseDevice(device);
+            } catch (DecodingException e) {
+                logger.trace("Unable to parse received message {}", device, e);
+                return null;
+            }
+        }
+
+        logger.trace("Couldn't find device matching id {}", deviceId);
+        return null;
     }
 
     boolean checkMessage(WMBusDevice receivedDevice) {
         return true;
     }
+
+    @SuppressWarnings("unchecked")
+    protected T parseDevice(WMBusDevice device) throws DecodingException {
+        device.decode();
+        return (T) device;
+    }
+
 }

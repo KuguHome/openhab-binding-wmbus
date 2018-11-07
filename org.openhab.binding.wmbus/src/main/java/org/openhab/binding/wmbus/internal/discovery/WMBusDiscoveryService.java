@@ -21,15 +21,17 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openhab.binding.wmbus.internal.WMBusDevice;
-import org.openhab.binding.wmbus.internal.WMBusException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link WMBusDiscoveryService} class defines WMBusDiscoveryService
+ * The {@link WMBusDiscoveryService2} class defines WMBusDiscoveryService2
+ *
+ * FIXME: Left for backward compatibility verification.
  *
  * @author Hanno - Felix Wagner - Initial contribution
  */
@@ -72,7 +74,7 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
     }
 
     @Override
-    public void onNewWMBusDevice(WMBusDevice wmBusDevice) {
+    public void onNewWMBusDevice(WMBusAdapter adapter, WMBusDevice wmBusDevice) {
         logger.debug(
                 "onnewWMBusDevice(): new device " + wmBusDevice.getOriginalMessage().getSecondaryAddress().toString());
         onWMBusMessageReceivedInternal(wmBusDevice);
@@ -138,16 +140,11 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
     }
 
     public void activate() {
-        logger.debug("activate: registering as wmbusmessagelistener");
-        try {
-            bridgeHandler.registerWMBusMessageListener(this);
-        } catch (WMBusException e) {
-            logger.error(e.getCause().getMessage());
-        }
+        bridgeHandler.registerWMBusMessageListener(this);
     }
 
     @Override
-    public void onChangedWMBusDevice(WMBusDevice wmBusDevice) {
+    public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice wmBusDevice) {
         // nothing to do
     }
 

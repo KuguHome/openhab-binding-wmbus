@@ -10,21 +10,23 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.collect,
+ gnu.io,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.jdt.annotation;resolution:=optional,
  org.eclipse.smarthome.config.core,
  org.eclipse.smarthome.config.core.status,
  org.eclipse.smarthome.config.discovery,
+ org.eclipse.smarthome.core.common.registry,
  org.eclipse.smarthome.core.library.types,
  org.eclipse.smarthome.core.thing,
  org.eclipse.smarthome.core.thing.binding,
  org.eclipse.smarthome.core.types,
+ org.eclipse.smarthome.core.util,
  org.osgi.framework,
- org.slf4j,
  org.osgi.service.component,
  org.osgi.service.component.annotations;resolution:=optional,
- gnu.io
+ org.slf4j
 Export-Package: org.openhab.binding.wmbus;x-internal:=true,
  org.openhab.binding.wmbus.device;x-internal:=true,
  org.openhab.binding.wmbus.handler;x-internal:=true,
