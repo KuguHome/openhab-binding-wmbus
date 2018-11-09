@@ -137,7 +137,7 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         // valves and other standard accessory excluding repeaters and other special things.
         SecondaryAddress secondaryAddress = device.getOriginalMessage().getSecondaryAddress();
         if (!WMBusBindingConstants.SUPPORTED_DEVICE_TYPES.contains(secondaryAddress.getDeviceType())
-                || !device.getDeviceId().matches("[a-zA-Z0-9]")) {
+                || !device.getDeviceId().matches("^[a-zA-Z0-9]+$")) {
             logger.info("Discarded discovery of device {} which is unsupported by binding: {}", device.getDeviceType(),
                     secondaryAddress);
             return;
@@ -158,13 +158,16 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
             label += " (" + manufacturer + ")";
         }
 
-        ThingUID thingUID = new ThingUID(WMBusBindingConstants.THING_TYPE_METER, address);
+        ThingTypeUID typeUID = WMBusBindingConstants.WMBUS_TYPE_MAP.getOrDefault(device.getDeviceType(),
+                WMBusBindingConstants.THING_TYPE_METER);
+
+        ThingUID thingUID = new ThingUID(typeUID, address);
 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
-                // .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID)
-                .withBridge(adapter.getUID()).withThingType(WMBusBindingConstants.THING_TYPE_METER).withLabel(label)
-                .build();
+                .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withBridge(adapter.getUID())
+                .withThingType(typeUID).withLabel(label).build();
+
         thingDiscovered(discoveryResult);
     }
 

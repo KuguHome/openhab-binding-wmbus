@@ -121,18 +121,10 @@ public class WMBusBindingConstants {
     public static final String PROPERTY_DEVICE_ADDRESS = "address";
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
 
-    public static final Map<String, String> WMBUS_TYPE_MAP = new ImmutableMap.Builder<String, String>()
-            .put("68TCH97255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
-            // whether they work
-            .put("68TCH105255", THING_TYPE_NAME_TECHEM_HKV)
-            // another techem
-            .put("68TCH116255", THING_TYPE_NAME_TECHEM_HKV) // unsure,
-            // whether they work
-            .put("68TCH118255", THING_TYPE_NAME_TECHEM_HKV) // find out, if they work
-            .put("68KAM484", THING_TYPE_NAME_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_NAME_QUNDIS_QHEAT_5)
-            .put("68QDS227", THING_TYPE_NAME_QUNDIS_QWATER_5_5).put("68QDS528", THING_TYPE_NAME_QUNDIS_QCALORIC_5_5)
-            .put("68EFE04", THING_TYPE_NAME_ENGELMANN_SENSOSTAR).put("68ARF33", THING_TYPE_NAME_ADEUNIS_GAS_METER_3)
-            .build();
+    public static final Map<String, ThingTypeUID> WMBUS_TYPE_MAP = new ImmutableMap.Builder<String, ThingTypeUID>()
+            .put("68KAM484", THING_TYPE_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_QUNDIS_QHEAT_5)
+            .put("68QDS227", THING_TYPE_QUNDIS_QWATER_5_5).put("68QDS528", THING_TYPE_QUNDIS_QCALORIC_5_5)
+            .put("68EFE04", THING_TYPE_ENGELMANN_SENSOSTAR).put("68ARF33", THING_TYPE_ADEUNIS_GAS_METER_3).build();
 
     /**
      * Generic device types which are supported by binding.
