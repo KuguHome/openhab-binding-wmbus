@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="qloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <thing-type id="energycam_oil">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Q-Loud oil EnergyCam</label>
+        <description>Q-loud/Fast Forward EnergyCam</description>
+
+        <channels>
+            <channel id="volume" typeId="volume" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <thing-type id="energycam_electricity">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Q-Loud electricity EnergyCam</label>
+        <description>Q-loud/Fast Forward EnergyCam</description>
+
+        <channels>
+            <channel id="energy" typeId="energy" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <thing-type id="energycam_gas">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Q-Loud gas EnergyCam</label>
+        <description>Q-loud/Fast Forward EnergyCam</description>
+
+        <channels>
+            <channel id="volume" typeId="volume" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <thing-type id="energycam_water">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Q-Loud water EnergyCam</label>
+        <description>Q-loud/Fast Forward EnergyCam</description>
+
+        <channels>
+            <channel id="volume" typeId="volume" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <!-- channels -->
+
+    <channel-type id="energy">
+        <item-type>Number:Energy</item-type>
+        <label>Consumed energy</label>
+        <description>Current energy allocation reading.</description>
+        <category>Energy</category>
+        <state readOnly="true" pattern="%.2f">
+        </state>
+    </channel-type>
+
+    <channel-type id="volume">
+        <item-type>Number:Volume</item-type>
+        <label>Consumed medium volume</label>
+        <description>Current volume allocation reading.</description>
+        <category>Volume</category>
+        <state readOnly="true" pattern="%.2f">
+        </state>
+    </channel-type>
+
+</thing:thing-descriptions>
