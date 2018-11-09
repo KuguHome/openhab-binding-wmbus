@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: WMBus Binding
 Bundle-SymbolicName: org.openhab.binding.wmbus
-Bundle-Version: 2.4.0
+Bundle-Version: 2.3.0
 Bundle-ClassPath: .,
  lib/jmbus-3.1.1.sp2.jar
 Bundle-Vendor: KUGU Home GmbH
@@ -27,7 +27,9 @@ Import-Package: com.google.common.collect,
  org.osgi.service.component,
  org.osgi.service.component.annotations;resolution:=optional,
  org.slf4j
-Export-Package: org.openhab.binding.wmbus;x-internal:=true,
+Export-Package: org.openhab.binding.wmbus,
+ org.openhab.binding.wmbus.discovery,
+ org.openhab.binding.wmbus.handler,
+ org.openmuc.jmbus.wireless;x-internal:=true,
  org.openhab.binding.wmbus.device;x-internal:=true,
- org.openhab.binding.wmbus.handler;x-internal:=true,
- org.openmuc.jmbus.wireless;x-internal:=true
+ org.openhab.binding.wmbus.device.techem;x-internal:=true
