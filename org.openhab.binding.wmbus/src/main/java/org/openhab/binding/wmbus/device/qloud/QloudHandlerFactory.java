@@ -34,7 +34,7 @@ public class QloudHandlerFactory extends BaseThingHandlerFactory {
     private final Logger logger = LoggerFactory.getLogger(QloudHandlerFactory.class);
 
     public QloudHandlerFactory() {
-        logger.debug("Techem handler factory starting up.");
+        logger.debug("Q-loud handler factory starting up.");
     }
 
     @Override
