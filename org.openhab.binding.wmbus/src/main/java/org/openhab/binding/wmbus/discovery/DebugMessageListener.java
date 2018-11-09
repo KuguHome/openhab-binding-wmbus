@@ -1,5 +1,6 @@
 package org.openhab.binding.wmbus.discovery;
 
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openhab.binding.wmbus.internal.WMBusDevice;
@@ -39,6 +40,7 @@ public class DebugMessageListener implements WMBusMessageListener {
                         "Received telegram ({}): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}",
                         secondaryAddress, vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(),
                         vdr.getNumberOfEncryptedBlocks());
+                logger.debug("Message in hex: {}", HexUtils.bytesToHex(device.getOriginalMessage().asBlob()));
 
                 for (DataRecord record : vdr.getDataRecords()) {
                     logger.debug("> record: {}", record.toString());

@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.wmbus.device.techem;
 
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -33,6 +32,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.google.common.collect.ImmutableMap;
+import com.google.common.collect.ImmutableSet;
 
 /**
  * Discovers techem devices and decodes records which are broadcasted by it.
@@ -42,15 +42,15 @@ import com.google.common.collect.ImmutableMap;
 @Component(immediate = true)
 public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
-            .singleton(WMBusBindingConstants.THING_TYPE_TECHEM_HKV);
-
-    private static final Map<String, String> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<String, String> builder()
-            .put("68TCH97255", WMBusBindingConstants.THING_TYPE_NAME_TECHEM_HKV) // unsure,
-            .put("68TCH105255", WMBusBindingConstants.THING_TYPE_NAME_TECHEM_HKV)
-            .put("68TCH116255", WMBusBindingConstants.THING_TYPE_NAME_TECHEM_HKV) // unsure,
-            .put("68TCH118255", WMBusBindingConstants.THING_TYPE_NAME_TECHEM_HKV) // find out, if they work
+    private static final Map<String, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap
+            .<String, ThingTypeUID> builder().put("68TCH97255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // unsure,
+            .put("68TCH105255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV)
+            .put("68TCH116255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // unsure,
+            .put("68TCH118255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // find out, if they work
             .build();
+
+    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet
+            .copyOf(SUPPORTED_DEVICE_VARIANTS.values());
 
     private final Logger logger = LoggerFactory.getLogger(TechemDiscoveryParticipant.class);
 
@@ -63,9 +63,13 @@ public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipan
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
         WMBusMessage message = device.getOriginalMessage();
 
-        if (!"TCH".equals(message.getSecondaryAddress().getManufacturerId())
-                || !SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
+        if (!"TCH".equals(message.getSecondaryAddress().getManufacturerId())) {
             return null;
+        }
+
+        if (!SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
+            logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
+                    device.getDeviceType());
         }
 
         WMBusDevice techemDevice = new TechemHKV(message, device.getAdapter());
@@ -99,8 +103,8 @@ public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipan
             // Create the discovery result and add to the inbox
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
-                    .withThingType(WMBusBindingConstants.THING_TYPE_TECHEM_HKV).withBridge(device.getAdapter().getUID())
-                    .withLabel(label).build();
+                    .withThingType(SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
+                    .withBridge(device.getAdapter().getUID()).withLabel(label).build();
         }
 
         return null;

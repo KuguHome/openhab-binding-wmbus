@@ -138,7 +138,8 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         SecondaryAddress secondaryAddress = device.getOriginalMessage().getSecondaryAddress();
         if (!WMBusBindingConstants.SUPPORTED_DEVICE_TYPES.contains(secondaryAddress.getDeviceType())
                 || !device.getDeviceId().matches("[a-zA-Z0-9]")) {
-            logger.info("Discarded discovery of device which is unsupported by binding: {}", secondaryAddress);
+            logger.info("Discarded discovery of device {} which is unsupported by binding: {}", device.getDeviceType(),
+                    secondaryAddress);
             return;
         }
 

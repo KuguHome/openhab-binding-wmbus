@@ -27,7 +27,7 @@ public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscover
     }
 
     private String getDeviceID(WMBusDevice device) {
-        return device.getDeviceType();
+        return device.getDeviceId();
     }
 
     protected abstract ThingTypeUID getThingType();
