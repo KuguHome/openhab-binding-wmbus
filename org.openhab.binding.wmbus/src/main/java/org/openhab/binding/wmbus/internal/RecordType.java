@@ -11,12 +11,14 @@ package org.openhab.binding.wmbus.internal;
 
 import java.util.Arrays;
 
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openmuc.jmbus.DataRecord;
 
 /**
  * The {@link RecordType} class defines RecordType
  *
  * @author Hanno - Felix Wagner - Initial contribution
+ * @author Łukasz Dywicki - Hash/equality calculation and toString implementation.
  */
 
 public class RecordType {
@@ -43,6 +45,41 @@ public class RecordType {
 
     boolean matches(DataRecord record) {
         return Arrays.equals(record.getDib(), getDib()) && Arrays.equals(record.getVib(), getVib());
+    }
+
+    @Override
+    public String toString() {
+        return "RecordType DIB:" + HexUtils.bytesToHex(dib) + ", VIB:" + HexUtils.bytesToHex(vib);
+    }
+
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = 1;
+        result = prime * result + Arrays.hashCode(dib);
+        result = prime * result + Arrays.hashCode(vib);
+        return result;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        RecordType other = (RecordType) obj;
+        if (!Arrays.equals(dib, other.dib)) {
+            return false;
+        }
+        if (!Arrays.equals(vib, other.vib)) {
+            return false;
+        }
+        return true;
     }
 
 }
