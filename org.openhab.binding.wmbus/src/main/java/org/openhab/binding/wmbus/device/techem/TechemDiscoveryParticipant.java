@@ -64,7 +64,7 @@ public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipan
         WMBusMessage message = device.getOriginalMessage();
 
         if (!"TCH".equals(message.getSecondaryAddress().getManufacturerId())
-                || SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
+                || !SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
             return null;
         }
 
