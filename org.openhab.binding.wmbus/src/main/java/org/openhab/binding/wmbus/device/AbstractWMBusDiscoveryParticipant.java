@@ -23,13 +23,13 @@ public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscover
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
-        return new ThingUID(getThingType(), getDeviceID(device));
+        return new ThingUID(getThingType(device), getDeviceID(device));
     }
 
     private String getDeviceID(WMBusDevice device) {
         return device.getDeviceId();
     }
 
-    protected abstract ThingTypeUID getThingType();
+    protected abstract ThingTypeUID getThingType(WMBusDevice device);
 
 }

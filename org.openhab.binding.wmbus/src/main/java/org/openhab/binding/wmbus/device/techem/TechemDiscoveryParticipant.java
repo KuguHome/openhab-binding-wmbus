@@ -111,7 +111,7 @@ public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipan
     }
 
     @Override
-    protected ThingTypeUID getThingType() {
+    protected ThingTypeUID getThingType(WMBusDevice device) {
         return WMBusBindingConstants.THING_TYPE_TECHEM_HKV;
     }
 

@@ -14,9 +14,6 @@
         <label>WMBus device</label>
         <description>Universal WMBus device/</description>
 
-        <channels>
-        </channels>
-
         <config-description>
             <parameter name="deviceId" type="text">
                 <label>WMBus device ID</label>
