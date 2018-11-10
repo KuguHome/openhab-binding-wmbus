@@ -9,12 +9,6 @@
 
 package org.openhab.binding.wmbus.internal;
 
-import java.util.Collection;
-import java.util.Collections;
-import java.util.LinkedHashSet;
-import java.util.Set;
-import java.util.stream.Collectors;
-
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
@@ -24,14 +18,12 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.device.ADEUNISGasMeter.ADEUNISGasMeterHandler;
 import org.openhab.binding.wmbus.device.EngelmannHeatMeter.EngelmannHeatMeterHandler;
-import org.openhab.binding.wmbus.device.Meter;
 import org.openhab.binding.wmbus.device.UnknownMeter.UnknownWMBusDeviceHandler;
 import org.openhab.binding.wmbus.discovery.CompositeMessageListener;
 import org.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
 import org.openhab.binding.wmbus.handler.QundisQCaloricHandler;
 import org.openhab.binding.wmbus.handler.QundisQHeatHandler;
 import org.openhab.binding.wmbus.handler.QundisQWaterHandler;
-import org.openhab.binding.wmbus.handler.TechemHKVHandler;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openhab.binding.wmbus.handler.WMBusVirtualBridgeHandler;
@@ -45,9 +37,6 @@ import org.osgi.service.component.annotations.ReferencePolicy;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.google.common.collect.ImmutableSet;
-import com.google.common.collect.Iterables;
-
 /**
  * The {@link WMBusHandlerFactory} class defines WMBusHandlerFactory. This class is the main entry point of the binding.
  *
@@ -57,43 +46,18 @@ import com.google.common.collect.Iterables;
 @Component(service = { WMBusHandlerFactory.class, BaseThingHandlerFactory.class, ThingHandlerFactory.class })
 public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
-    // private final Map<ThingUID, ServiceRegistration<?>> discoveryServiceRegs = new HashMap<>();
-    private final Set<Meter> knownDeviceTypes = Collections.synchronizedSet(new LinkedHashSet<>());
-
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(WMBusHandlerFactory.class);
-
-    private final Set<ThingTypeUID> supportedThingTypes = new LinkedHashSet<>();
 
     private final CompositeMessageListener messageListener = new CompositeMessageListener();
 
     public WMBusHandlerFactory() {
-        logger.debug("wmbus binding starting up.");
+        logger.debug("wmbus handler factory is starting up.");
     }
 
     @Override
     public boolean supportsThingType(ThingTypeUID thingTypeUID) {
-        return getSupportedThingTypes().contains(thingTypeUID);
-    }
-
-    protected Set<ThingTypeUID> getSupportedThingTypes() {
-        if (supportedThingTypes.isEmpty()) {
-            supportedThingTypes.addAll(calculateSupportedThingTypes());
-        }
-
-        return supportedThingTypes;
-    }
-
-    private Set<ThingTypeUID> calculateSupportedThingTypes() {
-        Set<ThingTypeUID> knownDevices = knownDeviceTypes.stream().map(Meter::getSupportedThingTypes)
-                .flatMap(Collection::stream).collect(Collectors.toSet());
-
-        return ImmutableSet.<ThingTypeUID> builder()
-                .addAll(Iterables.concat(WMBusBridgeHandler.SUPPORTED_THING_TYPES,
-                        QundisQCaloricHandler.SUPPORTED_THING_TYPES, QundisQWaterHandler.SUPPORTED_THING_TYPES,
-                        QundisQHeatHandler.SUPPORTED_THING_TYPES, KamstrupMultiCal302Handler.SUPPORTED_THING_TYPES,
-                        WMBusVirtualBridgeHandler.SUPPORTED_THING_TYPES, knownDevices))
-                .build();
+        return WMBusBindingConstants.SUPPORTED_THING_TYPES_UIDS.contains(thingTypeUID);
     }
 
     @Override
@@ -120,9 +84,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
                 return null;
             }
             // add new devices here
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_TECHEM_HKV)) {
-            logger.debug("Creating (handler for) TechemHKV device.");
-            return new TechemHKVHandler(thing);
         } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QCALORIC_5_5)) {
             logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
             return new QundisQCaloricHandler(thing);
@@ -166,17 +127,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
 
     public void unregisterWMBusMessageListener(WMBusMessageListener wmBusMessageListener) {
         messageListener.removeMessageListener(wmBusMessageListener);
-    }
-
-    @Reference(cardinality = ReferenceCardinality.MULTIPLE, policy = ReferencePolicy.DYNAMIC)
-    protected void addKnownDevice(Meter meter) {
-        knownDeviceTypes.add(meter);
-        supportedThingTypes.clear();
-    }
-
-    protected void removeKnownDevice(Meter meter) {
-        knownDeviceTypes.remove(meter);
-        supportedThingTypes.clear();
     }
 
 }
