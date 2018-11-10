@@ -12,12 +12,12 @@ package org.openhab.binding.wmbus.handler;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
@@ -66,7 +66,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
     private WMBusConnection wmbusConnection = null;
     private ScheduledFuture<?> initFuture;
 
-    private final Map<String, WMBusDevice> knownDevices = new HashMap<>();
+    private final Map<String, WMBusDevice> knownDevices = new ConcurrentHashMap<>();
 
     private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
