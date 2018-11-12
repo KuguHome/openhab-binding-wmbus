@@ -106,6 +106,8 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
     @Override
     protected ThingTypeUID getThingType(WMBusDevice device) {
         switch (device.getOriginalMessage().getSecondaryAddress().getDeviceType()) {
+            case OIL_METER:
+                return QloudBindingConstants.THING_TYPE_ENERGYCAM_OIL;
             case ELECTRICITY_METER:
                 return QloudBindingConstants.THING_TYPE_ENERGYCAM_ELECTRICITY;
             case GAS_METER:
