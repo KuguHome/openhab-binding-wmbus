@@ -15,6 +15,7 @@ import javax.measure.Unit;
 
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.internal.RecordType;
 
 import com.google.common.collect.ImmutableMap;
@@ -33,17 +34,19 @@ public interface QloudBindingConstants {
     RecordType VOLUME_CUBIC_METRE = new RecordType(0x04, 0x15);
     RecordType ELECTRICITY_WATT_HOUR = new RecordType(0x04, 0x05);
 
-    String BINDING_ID = "qloud";
-
     String THING_TYPE_NAME_ENERGYCAM_OIL = "energycam_oil";
     String THING_TYPE_NAME_ENERGYCAM_ELECTRICITY = "energycam_electricity";
     String THING_TYPE_NAME_ENERGYCAM_GAS = "energycam_gas";
     String THING_TYPE_NAME_ENERGYCAM_WATER = "energycam_water";
 
-    ThingTypeUID THING_TYPE_ENERGYCAM_OIL = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_ENERGYCAM_OIL);
-    ThingTypeUID THING_TYPE_ENERGYCAM_ELECTRICITY = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_ENERGYCAM_ELECTRICITY);
-    ThingTypeUID THING_TYPE_ENERGYCAM_GAS = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_ENERGYCAM_GAS);
-    ThingTypeUID THING_TYPE_ENERGYCAM_WATER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_ENERGYCAM_WATER);
+    ThingTypeUID THING_TYPE_ENERGYCAM_OIL = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_ENERGYCAM_OIL);
+    ThingTypeUID THING_TYPE_ENERGYCAM_ELECTRICITY = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_ENERGYCAM_ELECTRICITY);
+    ThingTypeUID THING_TYPE_ENERGYCAM_GAS = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_ENERGYCAM_GAS);
+    ThingTypeUID THING_TYPE_ENERGYCAM_WATER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_ENERGYCAM_WATER);
 
     String CHANNEL_ENERGY = "energy";
     String CHANNEL_VOLUME = "volume";

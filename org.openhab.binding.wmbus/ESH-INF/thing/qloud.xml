@@ -1,11 +1,12 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<thing:thing-descriptions bindingId="qloud" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+<thing:thing-descriptions bindingId="wmbus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
     <thing-type id="energycam_oil">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Q-Loud oil EnergyCam</label>
@@ -21,6 +22,7 @@
     <thing-type id="energycam_electricity">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Q-Loud electricity EnergyCam</label>
@@ -36,6 +38,7 @@
     <thing-type id="energycam_gas">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Q-Loud gas EnergyCam</label>
@@ -51,6 +54,7 @@
     <thing-type id="energycam_water">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Q-Loud water EnergyCam</label>
