@@ -14,7 +14,7 @@
         <label>WMBus device</label>
         <description>Universal WMBus device/</description>
 
-        <config-description>
+        <config-description uri="wmbus:meter">
             <parameter name="deviceId" type="text">
                 <label>WMBus device ID</label>
                 <description>Identifier which lets to find device.</description>
