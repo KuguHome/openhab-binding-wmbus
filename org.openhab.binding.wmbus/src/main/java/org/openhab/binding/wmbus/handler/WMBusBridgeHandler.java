@@ -34,7 +34,7 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusConnection;

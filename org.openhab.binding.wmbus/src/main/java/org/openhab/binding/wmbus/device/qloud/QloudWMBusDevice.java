@@ -8,8 +8,8 @@
  */
 package org.openhab.binding.wmbus.device.qloud;
 
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 

@@ -14,7 +14,7 @@ import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.discovery.DiscoveryResult;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
+import org.openhab.binding.wmbus.WMBusDevice;
 
 /**
  * Discovery participant which is responsible for identification of WMBus device.

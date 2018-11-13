@@ -21,7 +21,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DataRecord.DataValueType;
 import org.slf4j.Logger;

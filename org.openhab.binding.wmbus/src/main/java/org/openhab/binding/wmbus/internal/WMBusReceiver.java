@@ -13,6 +13,7 @@ import java.io.IOException;
 import java.util.Arrays;
 
 import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;

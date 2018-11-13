@@ -28,7 +28,7 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;

@@ -11,9 +11,9 @@ package org.openhab.binding.wmbus.discovery;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
 
 /**
  * Listener backed by given set of other listeners.

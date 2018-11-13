@@ -9,7 +9,7 @@
 
 package org.openhab.binding.wmbus.handler;
 
-import org.openhab.binding.wmbus.internal.WMBusDevice;
+import org.openhab.binding.wmbus.WMBusDevice;
 
 /**
  * The {@link WMBusMessageListener} class defines interface WMBusMessageListener

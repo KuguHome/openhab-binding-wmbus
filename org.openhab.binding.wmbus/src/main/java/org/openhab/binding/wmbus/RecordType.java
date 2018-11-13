@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.wmbus.internal;
+package org.openhab.binding.wmbus;
 
 import java.util.Arrays;
 

@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.wmbus.internal;
+package org.openhab.binding.wmbus;
 
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;

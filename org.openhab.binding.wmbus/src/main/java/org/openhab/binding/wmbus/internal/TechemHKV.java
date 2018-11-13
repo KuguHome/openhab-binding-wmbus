@@ -15,6 +15,8 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
+import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
@@ -55,7 +57,7 @@ public class TechemHKV extends WMBusDevice {
         vdr = getOriginalMessage().getVariableDataResponse();
 
         int offset = 10;
-        if (hkvBuffer.length < 11) {
+        if (hkvBuffer.length < 11 || !secondaryAddress.getManufacturerId().equals("TCH")) {
             throw new DecodingException("No known Techem HKV message. hkvBuffer length = " + hkvBuffer.length);
         } else {
             ciField = hkvBuffer[offset + 0] & 0xff;
@@ -77,8 +79,9 @@ public class TechemHKV extends WMBusDevice {
                 System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
                 history = HexConverter.bytesToHex(historyBytes);
             } else {
-                throw new DecodingException("No known Techem HKV message. ciField=" + ciField + ", Manufacturer="
-                        + secondaryAddress.getManufacturerId());
+                throw new DecodingException("No known Techem HKV message. ciField=" + ciField + "(0x"
+                        + Integer.toHexString(ciField) + "), Manufacturer=" + secondaryAddress.getManufacturerId()
+                        + " messagea: " + HexUtils.bytesToHex(hkvBuffer));
             }
         }
     }

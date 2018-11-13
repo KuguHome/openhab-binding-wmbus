@@ -22,10 +22,10 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusCompanyIdentifiers;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -136,8 +136,10 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         // If earlier discovery participants didn't handle properly device we need to narrow scope to meters,
         // valves and other standard accessory excluding repeaters and other special things.
         SecondaryAddress secondaryAddress = device.getOriginalMessage().getSecondaryAddress();
-        if (!WMBusBindingConstants.SUPPORTED_DEVICE_TYPES.contains(secondaryAddress.getDeviceType())
-                || !device.getDeviceId().matches("^[a-zA-Z0-9]+$")) {
+        if (/*
+             * !WMBusBindingConstants.SUPPORTED_DEVICE_TYPES.contains(secondaryAddress.getDeviceType())
+             * ||
+             */ !device.getDeviceId().matches("^[a-zA-Z0-9]+$")) {
             logger.info("Discarded discovery of device {} which is unsupported by binding: {}", device.getDeviceType(),
                     secondaryAddress);
             return;

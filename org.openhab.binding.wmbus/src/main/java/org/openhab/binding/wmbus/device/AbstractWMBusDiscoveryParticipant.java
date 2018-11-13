@@ -11,8 +11,8 @@ package org.openhab.binding.wmbus.device;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
 
 /**
  * Base class for discovery participants.

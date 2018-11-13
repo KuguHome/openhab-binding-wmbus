@@ -1,9 +1,9 @@
 package org.openhab.binding.wmbus.discovery;
 
 import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
-import org.openhab.binding.wmbus.internal.WMBusDevice;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;

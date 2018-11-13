@@ -15,8 +15,8 @@ import javax.measure.Unit;
 
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.internal.RecordType;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
