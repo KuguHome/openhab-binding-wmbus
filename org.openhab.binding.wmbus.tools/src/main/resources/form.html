@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Frame injection tool</title>
+</head>
+<body>
+
+<h1>Frame injector</h1>
+
+<a href="/wmbus/collector">Collected frames</a>
+
+<form method="post" action="/wmbus">
+    <span style="color: red; ">__error__</span>
+
+    <p>Select adapter to inject:</p>
+    <select name="adapter" style="width: 150px">__adapters__</select>
+
+    <p>Enter hex encoded frame contents:</p>
+    <textarea name="frame" style="width: 500px; height: 400px">
+
+    </textarea>
+    <input type="submit">
+</form>
+
+</body>
+</html>
