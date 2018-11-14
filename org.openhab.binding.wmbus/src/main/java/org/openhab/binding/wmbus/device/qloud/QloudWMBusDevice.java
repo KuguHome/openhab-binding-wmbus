@@ -14,7 +14,7 @@ import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 
 /**
- * Representation of Q-lound/Fastforward device.
+ * Representation of Q-loud/Fastforward device.
  *
  * @author Łukasz Dywicki - Initial contribution.
  */
