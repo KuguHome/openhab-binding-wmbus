@@ -7,7 +7,7 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.wmbus.handler;
+package org.openhab.binding.wmbus.device.techem.handler;
 
 import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
@@ -22,7 +22,10 @@ import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.wmbus.WMBusDevice;
-import org.openhab.binding.wmbus.internal.TechemHKV;
+import org.openhab.binding.wmbus.device.techem.TechemDevice;
+import org.openhab.binding.wmbus.device.techem.TechemHKV;
+import org.openhab.binding.wmbus.device.techem.decoder.TechemFrameDecoder;
+import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
 import org.openmuc.jmbus.DecodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,9 +40,11 @@ import org.slf4j.LoggerFactory;
 public class TechemHKVHandler extends WMBusDeviceHandler<TechemHKV> {
 
     private final Logger logger = LoggerFactory.getLogger(TechemHKVHandler.class);
+    private final TechemFrameDecoder<TechemDevice> decoder;
 
-    public TechemHKVHandler(Thing thing) {
+    public TechemHKVHandler(Thing thing, TechemFrameDecoder<TechemDevice> decoder) {
         super(thing);
+        this.decoder = decoder;
     }
 
     @Override
@@ -52,8 +57,8 @@ public class TechemHKVHandler extends WMBusDeviceHandler<TechemHKV> {
     // if (receivedDevice.getDeviceId().equals(deviceId)) {
     // wmbusDevice = receivedDevice;
     //
-    // if (wmbusDevice instanceof TechemHKV) {
-    // techemDevice = (TechemHKV) wmbusDevice;
+    // if (wmbusDevice instanceof TechemDevice) {
+    // techemDevice = (TechemDevice) wmbusDevice;
     // triggerRefresh();
     // }
     // }

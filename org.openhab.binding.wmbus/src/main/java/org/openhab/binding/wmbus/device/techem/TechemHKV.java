@@ -7,18 +7,19 @@
  * http://www.eclipse.org/legal/epl-v10.html
  */
 
-package org.openhab.binding.wmbus.internal;
+package org.openhab.binding.wmbus.device.techem;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.smarthome.core.util.HexUtils;
-import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.VariableDataStructure;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -26,14 +27,12 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
 /**
  * The {@link TechemHKV} class Represents a Message of a Techem Heizkostenverteiler (heat cost allocator)
  *
+ * @deprecated This type is going to be removed over time as it contains logic related to frame parsing which is already
+ *             moved to specific types. Device representation is simplified to be just a container for records.
  * @author Hanno - Felix Wagner - Roman Malyugin - Initial contribution
  */
-
-public class TechemHKV extends WMBusDevice {
-
-    public TechemHKV(WMBusMessage originalMessage, WMBusAdapter adapter) {
-        super(originalMessage, adapter);
-    }
+@Deprecated()
+public class TechemHKV extends TechemDevice {
 
     int ciField;
     String status = "";
@@ -45,10 +44,13 @@ public class TechemHKV extends WMBusDevice {
     float t2 = -1;
     byte[] historyBytes = new byte[27];
     String history = "";
-
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     VariableDataStructure vdr;
+
+    public TechemHKV(WMBusMessage originalMessage, WMBusAdapter adapter) {
+        super(originalMessage, adapter, (byte) 0x00, DeviceType.HEAT_COST_ALLOCATOR, Collections.emptyList());
+    }
 
     @Override
     public void decode() throws DecodingException {
@@ -66,7 +68,7 @@ public class TechemHKV extends WMBusDevice {
             if (((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH"))
                     && historyLength > 0) {
                 byte[] temp = { hkvBuffer[offset + 1] };
-                status = HexConverter.bytesToHex(temp);
+                status = HexUtils.bytesToHex(temp);
                 lastDate = parseLastDate(offset + 2);
                 curDate = parseCurrentDate(offset + 6);
                 lastVal = parseBigEndianInt(offset + 4);
@@ -77,7 +79,7 @@ public class TechemHKV extends WMBusDevice {
                 historyBytes = new byte[historyLength];
 
                 System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
-                history = HexConverter.bytesToHex(historyBytes);
+                history = HexUtils.bytesToHex(historyBytes);
             } else {
                 throw new DecodingException("No known Techem HKV message. ciField=" + ciField + "(0x"
                         + Integer.toHexString(ciField) + "), Manufacturer=" + secondaryAddress.getManufacturerId()
@@ -176,7 +178,7 @@ public class TechemHKV extends WMBusDevice {
 
         StringBuilder builder = new StringBuilder();
         if (getOriginalMessage().getVariableDataResponse() == null) {
-            builder.append("TechemHKV: Message has not been decoded. Bytes of this message: ");
+            builder.append("TechemDevice: Message has not been decoded. Bytes of this message: ");
             // HexConverter.appendHexString(builder, originalMessage.asBlob(), 0, originalMessage.asBlob().length);
             return builder.toString();
         } else {
@@ -189,7 +191,7 @@ public class TechemHKV extends WMBusDevice {
                     .append(";").append(status).append(";").append(dateFormatter.format(lastDate)).append(";")
                     .append(lastVal).append(";").append(dateFormatter.format(curDate)).append(";").append(curVal)
                     .append(";").append(t1).append(";").append(t2).append(";").append(history).append(";")
-                    .append(HexConverter.bytesToHex(getOriginalMessage().asBlob()));
+                    .append(HexUtils.bytesToHex(getOriginalMessage().asBlob()));
             return builder.toString();
         }
     }

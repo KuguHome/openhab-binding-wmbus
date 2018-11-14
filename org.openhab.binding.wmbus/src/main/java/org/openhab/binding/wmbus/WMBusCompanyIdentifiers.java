@@ -17,6 +17,9 @@ import org.eclipse.jdt.annotation.Nullable;
 /**
  * Basic lookup table from 3 letter identifier code to full name of manufacturer.
  *
+ * Captured from http://www.dlms.com/organization/flagmanufacturesids/index.html.
+ * Last update June 2018.
+ *
  * @author Łukasz Dywicki - initial contribution.
  */
 @NonNullByDefault

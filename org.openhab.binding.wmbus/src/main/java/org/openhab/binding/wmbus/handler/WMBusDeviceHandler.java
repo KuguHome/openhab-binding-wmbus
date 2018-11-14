@@ -39,7 +39,7 @@ import org.slf4j.LoggerFactory;
  * The {@link WMBusDeviceHandler} class defines abstract WMBusDeviceHandler
  *
  * @author Hanno - Felix Wagner - Initial contribution
- * @author Łukasz Dywicki - Added possibility to customise message parsing.
+ * @author Łukasz Dywicki - Added possibility to customize message parsing.
  */
 
 public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThingHandler
@@ -51,7 +51,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
 
     public WMBusDeviceHandler(Thing thing) {
         super(thing);
-        logger.debug("new() for Thing" + thing.toString());
+        logger.debug("Created new handler for thing {}", thing.getUID());
     }
 
     // entry point - gets device here
@@ -79,9 +79,12 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
             } else {
                 try {
                     wmbusDevice = parseDevice(receivedDevice);
-                    logger.trace("onChangedWMBusDevice(): inform all channels to refresh");
-                    triggerRefresh();
+                    if (wmbusDevice != null) {
+                        logger.trace("onChangedWMBusDevice(): inform all channels to refresh");
+                        triggerRefresh();
+                    }
                 } catch (DecodingException e) {
+                    // FIXME decoding exception should not be necessary over time
                     logger.debug("onChangedWMBusDevice(): could not decode frame", e);
                 }
             }

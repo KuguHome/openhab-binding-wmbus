@@ -1,164 +1,183 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>org.openhab</groupId>
-		<artifactId>pom-tycho</artifactId>
-		<version>2.3.0-SNAPSHOT</version>
-		<relativePath></relativePath>
-	</parent>
+    <parent>
+        <groupId>org.openhab</groupId>
+        <artifactId>pom-tycho</artifactId>
+        <version>2.3.0-SNAPSHOT</version>
+        <relativePath></relativePath>
+    </parent>
 
-	<groupId>org.openhab.binding</groupId>
-	<artifactId>org.openhab.binding.wmbus</artifactId>
-	<version>2.3.0-SNAPSHOT</version>
-	<packaging>eclipse-plugin</packaging>
+    <groupId>org.openhab.binding</groupId>
+    <artifactId>org.openhab.binding.wmbus</artifactId>
+    <version>2.3.0-SNAPSHOT</version>
+    <packaging>eclipse-plugin</packaging>
 
-	<name>WMBus Binding</name>
-	
+    <name>WMBus Binding</name>
+    
     <properties>
         <report.fail.on.error>false</report.fail.on.error>
     </properties>
     
-	<dependencies>
+    <dependencies>
 
-		<!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
-		<dependency>
-			<groupId>com.neuronrobotics</groupId>
-			<artifactId>nrjavaserial</artifactId>
-			<version>3.13.0</version>
-		</dependency>
+        <!-- https://mvnrepository.com/artifact/com.neuronrobotics/nrjavaserial -->
+        <dependency>
+            <groupId>com.neuronrobotics</groupId>
+            <artifactId>nrjavaserial</artifactId>
+            <version>3.13.0</version>
+        </dependency>
 
-		<!-- https://mvnrepository.com/artifact/org.openmuc/jmbus -->
+        <!-- https://mvnrepository.com/artifact/org.openmuc/jmbus -->
 
-		<dependency>
-			<groupId>org.openmuc</groupId>
-			<artifactId>jmbus</artifactId>
-			<version>3.1.1</version>
-		</dependency>
-	</dependencies>
+        <dependency>
+            <groupId>org.openmuc</groupId>
+            <artifactId>jmbus</artifactId>
+            <version>3.1.1</version>
+        </dependency>
 
-	<repositories>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.12</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.assertj</groupId>
+            <artifactId>assertj-core</artifactId>
+            <version>3.11.1</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-simple</artifactId>
+            <version>1.7.2</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
 
-		<!-- releases -->
-		<repository>
-			<id>jcenter</id>
-			<name>JCenter Repository</name>
-			<url>https://jcenter.bintray.com/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+    <repositories>
 
-		<repository>
-			<id>openhab-artifactory-release</id>
-			<name>JFrog Artifactory Repository</name>
-			<url>https://openhab.jfrog.io/openhab/libs-release</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</repository>
+        <!-- releases -->
+        <repository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-		<!-- snapshots -->
-		<repository>
-			<id>openhab-artifactory-snapshot</id>
-			<name>JFrog Artifactory Repository</name>
-			<url>https://openhab.jfrog.io/openhab/libs-snapshot</url>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>always</updatePolicy>
-			</snapshots>
-		</repository>
+        <repository>
+            <id>openhab-artifactory-release</id>
+            <name>JFrog Artifactory Repository</name>
+            <url>https://openhab.jfrog.io/openhab/libs-release</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </repository>
 
-		<!-- openHAB dependencies p2 repository -->
-		<repository>
-			<id>p2-openhab-deps-repo</id>
-			<url>https://dl.bintray.com/openhab/p2/openhab-deps-repo/${ohdr.version}</url>
-			<layout>p2</layout>
-		</repository>
+        <!-- snapshots -->
+        <repository>
+            <id>openhab-artifactory-snapshot</id>
+            <name>JFrog Artifactory Repository</name>
+            <url>https://openhab.jfrog.io/openhab/libs-snapshot</url>
+            <releases>
+                <enabled>false</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+                <updatePolicy>always</updatePolicy>
+            </snapshots>
+        </repository>
 
-	</repositories>
+        <!-- openHAB dependencies p2 repository -->
+        <repository>
+            <id>p2-openhab-deps-repo</id>
+            <url>https://dl.bintray.com/openhab/p2/openhab-deps-repo/${ohdr.version}</url>
+            <layout>p2</layout>
+        </repository>
 
-	<pluginRepositories>
-		<pluginRepository>
-			<id>jcenter</id>
-			<name>JCenter Repository</name>
-			<url>https://jcenter.bintray.com/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-		<pluginRepository>
-			<id>artifactory</id>
-			<name>JFrog Artifactory Repository</name>
-			<url>https://openhab.jfrog.io/openhab/libs-release</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>never</updatePolicy>
-			</releases>
-			<snapshots>
-				<enabled>false</enabled>
-			</snapshots>
-		</pluginRepository>
-	</pluginRepositories>
+    </repositories>
 
-	<build>
-		<testSourceDirectory>src/test</testSourceDirectory>
+    <pluginRepositories>
+        <pluginRepository>
+            <id>jcenter</id>
+            <name>JCenter Repository</name>
+            <url>https://jcenter.bintray.com/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+        <pluginRepository>
+            <id>artifactory</id>
+            <name>JFrog Artifactory Repository</name>
+            <url>https://openhab.jfrog.io/openhab/libs-release</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>never</updatePolicy>
+            </releases>
+            <snapshots>
+                <enabled>false</enabled>
+            </snapshots>
+        </pluginRepository>
+    </pluginRepositories>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-surefire-plugin</artifactId>
-				<version>2.19.1</version>
-				<executions>
-					<execution>
-						<id>test</id>
-						<phase>test</phase>
-						<configuration>
-							<includes>
-								<include>**/*Test.java</include>
-							</includes>
-						</configuration>
-						<goals>
-							<goal>test</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.5.1</version>
-				<configuration>
-					<source>1.8</source>
-					<target>1.8</target>
-				</configuration>
-				<executions>
-					<execution>
-						<id>compiletests</id>
-						<phase>test-compile</phase>
-						<goals>
-							<goal>testCompile</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-		</plugins>
-	</build>
+    <build>
+        <testSourceDirectory>src/test</testSourceDirectory>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <version>2.19.1</version>
+                <executions>
+                    <execution>
+                        <id>test</id>
+                        <phase>test</phase>
+                        <configuration>
+                            <includes>
+                                <include>**/*Test.java</include>
+                            </includes>
+                        </configuration>
+                        <goals>
+                            <goal>test</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.5.1</version>
+                <configuration>
+                    <source>1.8</source>
+                    <target>1.8</target>
+                </configuration>
+                <executions>
+                    <execution>
+                        <id>compiletests</id>
+                        <phase>test-compile</phase>
+                        <goals>
+                            <goal>testCompile</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+    </build>
 </project>

@@ -23,35 +23,6 @@
         </config-description>
     </thing-type>
 
-    <!-- thing definition for Techem HKV -->
-    <thing-type id="techem_hkv">
-		<supported-bridge-type-refs>
-			<bridge-type-ref id="wmbusbridge" />
-		</supported-bridge-type-refs>
-
-		<label>Techem HKV</label>
-		<description>A heat cost allocator of Techem</description>
-
-		<channels>
-			<channel id="room_temperature" typeId="room_temperature" />
-			<channel id="radiator_temperature" typeId="radiator_temperature" />
-			<channel id="current_reading" typeId="current_reading" />
-			<channel id="last_reading" typeId="last_reading" />
-			<channel id="reception" typeId="reception" />
-			<channel id="last_date" typeId="last_date" />
-			<channel id="current_date" typeId="current_date" />
-			<channel id="almanac" typeId="almanac" />
-		</channels>
-
-		<config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>The heat cost allocator identifier identifies one certain heat cost allocator light.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
-	</thing-type>
-
 
     <!-- thing definition for Qundis Qcaloric 5,5 -->
     <thing-type id="qundis_qcaloric_5_5">

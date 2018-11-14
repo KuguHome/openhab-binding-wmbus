@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus.device.techem;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 
 import org.eclipse.jdt.annotation.NonNull;
@@ -21,76 +22,52 @@ import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
-import org.openhab.binding.wmbus.device.AbstractWMBusDiscoveryParticipant;
+import org.openhab.binding.wmbus.device.techem.decoder.TechemFrameDecoder;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
-import org.openhab.binding.wmbus.internal.TechemHKV;
-import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import com.google.common.collect.ImmutableMap;
-import com.google.common.collect.ImmutableSet;
 
 /**
  * Discovers techem devices and decodes records which are broadcasted by it.
  *
  * @author Łukasz Dywicki - extraction of logic from compound discovery service.
  */
-@Component(immediate = true)
-public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant implements WMBusDiscoveryParticipant {
-
-    private static final Map<String, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap
-            .<String, ThingTypeUID> builder().put("68TCH97255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // unsure,
-            .put("68TCH105255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV)
-            .put("68TCH116255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // unsure,
-            .put("68TCH118255", WMBusBindingConstants.THING_TYPE_TECHEM_HKV) // find out, if they work
-            .build();
-
-    private static final Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet
-            .copyOf(SUPPORTED_DEVICE_VARIANTS.values());
+@Component
+public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
     private final Logger logger = LoggerFactory.getLogger(TechemDiscoveryParticipant.class);
 
+    private TechemFrameDecoder<TechemDevice> techemFrameDecoder;
+
     @Override
     public @NonNull Set<ThingTypeUID> getSupportedThingTypeUIDs() {
-        return SUPPORTED_THING_TYPES;
+        return TechemBindingConstants.SUPPORTED_THING_TYPES;
     }
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
-        WMBusMessage message = device.getOriginalMessage();
+        return decodeDevice(device).map(TechemDevice::getDeviceType)
+                .map(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS::get)
+                .map(type -> new ThingUID(type, device.getDeviceId())).orElse(null);
 
-        if (!"TCH".equals(message.getSecondaryAddress().getManufacturerId())) {
-            return null;
-        }
-
-        if (!SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
-            logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
-                    device.getDeviceType());
-        }
-
-        WMBusDevice techemDevice = new TechemHKV(message, device.getAdapter());
-        try {
-            logger.trace("Attempt to decode as Techem message");
-            techemDevice.decode();
-
-            return super.getThingUID(techemDevice);
-        } catch (DecodingException e) {
-            logger.debug("Could not decode message '{}', not a techem device", message, e);
-        }
-
-        return null;
     }
 
     @Override
     public DiscoveryResult createResult(WMBusDevice device) {
-        ThingUID thingUID = getThingUID(device);
+        Optional<TechemDevice> decodeDevice = decodeDevice(device);
+        ThingUID thingUID = decodeDevice.map(this::getThingUID).orElse(null);
 
         if (thingUID != null) {
-            String label = "Heat cost allocator #" + device.getDeviceId() + " (" + device.getDeviceType() + ")";
+            String deviceTypeLabel = decodeDevice.map(TechemDevice::getTechemDeviceType)
+                    .map(WMBusBindingConstants.DEVICE_TYPE_TRANSFORMATION).orElse("Unknown");
+            String deviceTypeTag = decodeDevice.map(TechemDevice::getDeviceType)
+                    .orElseGet(() -> device.getDeviceType());
+
+            String label = "Techem " + deviceTypeLabel + " #" + device.getDeviceId() + " (" + deviceTypeTag + ")";
 
             Map<String, Object> properties = new HashMap<>();
             properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ID, device.getDeviceId());
@@ -103,16 +80,36 @@ public class TechemDiscoveryParticipant extends AbstractWMBusDiscoveryParticipan
             // Create the discovery result and add to the inbox
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
-                    .withThingType(SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
+                    .withThingType(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
                     .withBridge(device.getAdapter().getUID()).withLabel(label).build();
         }
 
         return null;
     }
 
-    @Override
-    protected ThingTypeUID getThingType(WMBusDevice device) {
-        return WMBusBindingConstants.THING_TYPE_TECHEM_HKV;
+    private final Optional<TechemDevice> decodeDevice(WMBusDevice device) {
+        WMBusMessage message = device.getOriginalMessage();
+
+        if (!"TCH".equals(message.getSecondaryAddress().getManufacturerId())) {
+            return Optional.empty();
+        }
+
+        if (!TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
+            logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
+                    device.getDeviceType());
+        }
+
+        logger.trace("Attempt to decode received Techem telegram");
+        return Optional.ofNullable(techemFrameDecoder.decode(device));
+    }
+
+    @Reference
+    public void setTechemFrameDecoder(TechemFrameDecoder<TechemDevice> techemFrameDecoder) {
+        this.techemFrameDecoder = techemFrameDecoder;
+    }
+
+    public void unsetTechemFrameDecoder(TechemFrameDecoder<TechemDevice> techemFrameDecoder) {
+        this.techemFrameDecoder = null;
     }
 
 }

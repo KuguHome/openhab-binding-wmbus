@@ -10,9 +10,9 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
 Bundle-ActivationPolicy: lazy
 Import-Package: com.google.common.collect,
- tec.uom.se.unit,
  gnu.io,
  javax.measure,
+ javax.measure.quantity,
  org.apache.commons.io,
  org.apache.commons.lang,
  org.eclipse.jdt.annotation;resolution:=optional,
@@ -29,7 +29,10 @@ Import-Package: com.google.common.collect,
  org.osgi.framework,
  org.osgi.service.component,
  org.osgi.service.component.annotations;resolution:=optional,
- org.slf4j
+ org.slf4j,
+ tec.uom.se.quantity,
+ tec.uom.se.spi,
+ tec.uom.se.unit
 Export-Package: org.openhab.binding.wmbus,
  org.openhab.binding.wmbus.discovery,
  org.openhab.binding.wmbus.handler,
