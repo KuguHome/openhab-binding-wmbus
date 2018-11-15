@@ -125,7 +125,7 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
         SecondaryAddress address = device.getOriginalMessage().getSecondaryAddress();
 
         if (!entries.containsKey(address)) {
-            entries.put(address, EvictingQueue.create(2000));
+            entries.put(address, EvictingQueue.create(50));
         }
 
         Entry entry = new Entry(System.currentTimeMillis(), device.getOriginalMessage().asBlob());
