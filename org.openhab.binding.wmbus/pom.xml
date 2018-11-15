@@ -19,6 +19,7 @@
     
     <properties>
         <report.fail.on.error>false</report.fail.on.error>
+        <checkstyle.skip>true</checkstyle.skip>
     </properties>
     
     <dependencies>
