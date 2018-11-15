@@ -26,10 +26,7 @@ cache:
 
 build:
   script:
-    - cd org.openhab.binding.wmbus
     - 'mvn $MAVEN_CLI_OPTS install'
-    - cd ../org.openhab.binding.wmbus.tools
-    - 'mvn $MAVEN_CLI_OPTS package'
   artifacts:
     paths:
     - org.openhab.binding.wmbus/target/*.jar
