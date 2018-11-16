@@ -26,6 +26,14 @@ public class RecordType {
     private final byte[] dib;
     private final byte[] vib;
 
+    public RecordType(byte[] dib, int vib) {
+        this(dib, new byte[] { (byte) vib });
+    }
+
+    public RecordType(int dib, byte[] vib) {
+        this(new byte[] { (byte) dib }, vib);
+    }
+
     public RecordType(byte[] dib, byte[] vib) {
         this.dib = dib;
         this.vib = vib;
