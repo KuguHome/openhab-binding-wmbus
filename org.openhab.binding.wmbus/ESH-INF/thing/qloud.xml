@@ -67,24 +67,4 @@
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
 
-    <!-- channels -->
-
-    <channel-type id="energy">
-        <item-type>Number:Energy</item-type>
-        <label>Consumed energy</label>
-        <description>Current energy allocation reading.</description>
-        <category>Energy</category>
-        <state readOnly="true" pattern="%.2f">
-        </state>
-    </channel-type>
-
-    <channel-type id="volume">
-        <item-type>Number:Volume</item-type>
-        <label>Consumed medium volume</label>
-        <description>Current volume allocation reading.</description>
-        <category>Volume</category>
-        <state readOnly="true" pattern="%.2f">
-        </state>
-    </channel-type>
-
 </thing:thing-descriptions>

@@ -281,22 +281,6 @@
         <state readOnly="true">
         </state>
     </channel-type>
-    <channel-type id="error_date">
-        <item-type>DateTime</item-type>
-        <label>Date of Last Error</label>
-        <description>The date, when the device last encountered an error. May be set to manufacturing date, installation date or sometime far in the future if none happened yet.</description>
-        <category>Date</category>
-        <state readOnly="true">
-        </state>
-    </channel-type>
-    <channel-type id="error_flags">
-        <item-type>Number</item-type>
-        <label>Current Error Flags</label>
-        <description>Current error flags value.</description>
-        <category>QualityOfService</category> <!-- TODO find better category -->
-        <state readOnly="true">
-        </state>
-    </channel-type>
     <channel-type id="reception">
         <item-type>Number</item-type>
         <label>Reception Signal Strength</label>
