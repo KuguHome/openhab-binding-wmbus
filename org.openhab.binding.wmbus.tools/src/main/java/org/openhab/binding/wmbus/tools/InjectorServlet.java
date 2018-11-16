@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingProvider;
+import org.eclipse.smarthome.core.thing.ThingRegistry;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
@@ -47,7 +47,7 @@ import org.osgi.service.http.NamespaceException;
 @Component
 public class InjectorServlet extends HttpServlet {
 
-    private ThingProvider thingProvider;
+    private ThingRegistry thingregistry;
     private HttpService httpService;
 
     @Override
@@ -92,7 +92,7 @@ public class InjectorServlet extends HttpServlet {
     }
 
     private Collection<Thing> adapters() {
-        return thingProvider.getAll().stream()
+        return thingregistry.getAll().stream()
                 .filter(thing -> WMBusBindingConstants.BINDING_ID.equals(thing.getUID().getBindingId()))
                 .filter(thing -> thing.getHandler() instanceof WMBusAdapter).collect(Collectors.toList());
     }
@@ -116,12 +116,12 @@ public class InjectorServlet extends HttpServlet {
     }
 
     @Reference
-    protected void setThingProvider(ThingProvider thingProvider) {
-        this.thingProvider = thingProvider;
+    protected void setThingRegistry(ThingRegistry thingRegistry) {
+        this.thingregistry = thingRegistry;
     }
 
-    protected void unsetThingProvider(ThingProvider thingProvider) {
-        this.thingProvider = null;
+    protected void unsetThingRegistry(ThingRegistry thingRegistry) {
+        this.thingregistry = null;
     }
 
     @Reference
