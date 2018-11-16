@@ -65,6 +65,7 @@ public class InjectorServlet extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         String adapterId = req.getParameter("adapter");
         String frame = req.getParameter("frame");
+        String aesKey = req.getParameter("aesKey");
 
         if (adapterId == null || frame == null || adapterId.trim().isEmpty() || frame.trim().isEmpty()) {
             doGet(req, resp);
@@ -75,7 +76,7 @@ public class InjectorServlet extends HttpServlet {
                 .filter(adapter -> adapterId.equals(adapter.getUID().toString())).findFirst();
 
         if (wmBusAdapter.isPresent()) {
-            inject((WMBusAdapter) wmBusAdapter.get().getHandler(), frame, req, resp);
+            inject((WMBusAdapter) wmBusAdapter.get().getHandler(), frame, req, resp, aesKey);
         }
 
         doGet(req, resp);
@@ -97,11 +98,16 @@ public class InjectorServlet extends HttpServlet {
                 .filter(thing -> thing.getHandler() instanceof WMBusAdapter).collect(Collectors.toList());
     }
 
-    private void inject(WMBusAdapter adapter, String frame, HttpServletRequest req, HttpServletResponse resp)
-            throws IOException {
+    private void inject(WMBusAdapter adapter, String frame, HttpServletRequest req, HttpServletResponse resp,
+            String aesKey) throws IOException {
         byte[] bytes = HexUtils.hexToBytes(frame.replace(" ", ""));
         try {
             WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
+            if (aesKey != null) {
+                byte[] key = HexUtils.hexToBytes(aesKey);
+                message = VirtualWMBusMessageHelper.decode(bytes, 0,
+                        Collections.singletonMap(message.getSecondaryAddress(), key));
+            }
             WMBusDevice device = new WMBusDevice(message, adapter);
             adapter.processMessage(device);
         } catch (DecodingException e) {
