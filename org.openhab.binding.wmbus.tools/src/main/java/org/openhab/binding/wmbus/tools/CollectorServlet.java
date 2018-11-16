@@ -8,7 +8,23 @@
  */
 package org.openhab.binding.wmbus.tools;
 
-import com.google.common.collect.EvictingQueue;
+import java.io.IOException;
+import java.time.Instant;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.LinkedHashMap;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Queue;
+import java.util.Set;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
@@ -22,15 +38,7 @@ import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.IOException;
-import java.time.Instant;
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.util.*;
+import com.google.common.collect.EvictingQueue;
 
 /**
  * Servlet which collects and displays all frames which been exchanged singe last start.
@@ -45,7 +53,8 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
     private HttpService httpService;
 
     // keep insertion order
-    private Map<SecondaryAddress, EvictingQueue<Entry>> entries = Collections.synchronizedMap(new LinkedHashMap<>());
+    private final Map<SecondaryAddress, EvictingQueue<Entry>> entries = Collections
+            .synchronizedMap(new LinkedHashMap<>());
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
@@ -53,8 +62,8 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
 
         table = table.replace("__rows__", getRows());
 
-
-        Optional<String> frameCount = entries.values().stream().map(Queue::size).reduce(Integer::sum).map(Object::toString);
+        Optional<String> frameCount = entries.values().stream().map(Queue::size).reduce(Integer::sum)
+                .map(Object::toString);
         table = table.replace("__devices__", "" + entries.size());
         table = table.replace("__frames__", frameCount.orElse("0"));
 
@@ -99,6 +108,10 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
     @Reference
     public void setHttpService(HttpService httpService) {
         this.httpService = httpService;
+    }
+
+    public void unsetHttpService(HttpService httpService) {
+        this.httpService = null;
     }
 
     @Activate

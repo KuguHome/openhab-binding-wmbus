@@ -8,30 +8,36 @@
  */
 package org.openhab.binding.wmbus.tools;
 
-import org.apache.commons.io.IOUtils;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingManager;
-import org.eclipse.smarthome.core.thing.ThingRegistry;
-import org.eclipse.smarthome.core.util.HexUtils;
-import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.handler.WMBusAdapter;
-import org.openhab.binding.wmbus.WMBusDevice;
-import org.openmuc.jmbus.DecodingException;
-import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
-import org.openmuc.jmbus.wireless.WMBusMessage;
-import org.osgi.service.component.annotations.*;
-import org.osgi.service.http.HttpService;
-import org.osgi.service.http.NamespaceException;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Hashtable;
+import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-import java.util.stream.Collectors;
+
+import org.apache.commons.io.IOUtils;
+import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.ThingProvider;
+import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.WMBusBindingConstants;
+import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
+import org.openmuc.jmbus.wireless.WMBusMessage;
+import org.osgi.service.component.annotations.Activate;
+import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Deactivate;
+import org.osgi.service.component.annotations.Reference;
+import org.osgi.service.http.HttpService;
+import org.osgi.service.http.NamespaceException;
 
 /**
  * Very basic servlet which allows to send a test frame to deployed binding.
@@ -41,7 +47,7 @@ import java.util.stream.Collectors;
 @Component
 public class InjectorServlet extends HttpServlet {
 
-    private ThingRegistry thingRegistry;
+    private ThingProvider thingProvider;
     private HttpService httpService;
 
     @Override
@@ -66,8 +72,7 @@ public class InjectorServlet extends HttpServlet {
         }
 
         Optional<Thing> wmBusAdapter = adapters().stream()
-            .filter(adapter -> adapterId.equals(adapter.getUID().toString()))
-            .findFirst();
+                .filter(adapter -> adapterId.equals(adapter.getUID().toString())).findFirst();
 
         if (wmBusAdapter.isPresent()) {
             inject((WMBusAdapter) wmBusAdapter.get().getHandler(), frame, req, resp);
@@ -77,10 +82,7 @@ public class InjectorServlet extends HttpServlet {
     }
 
     private String getError(HttpServletRequest req) {
-        return Optional.ofNullable(req.getAttribute("error"))
-                .map(e -> (Throwable) e)
-                .map(e -> render(e))
-                .orElse("");
+        return Optional.ofNullable(req.getAttribute("error")).map(e -> (Throwable) e).map(e -> render(e)).orElse("");
     }
 
     private String render(Throwable error) {
@@ -90,13 +92,13 @@ public class InjectorServlet extends HttpServlet {
     }
 
     private Collection<Thing> adapters() {
-        return thingRegistry.getAll().stream()
-            .filter(thing -> WMBusBindingConstants.BINDING_ID.equals(thing.getUID().getBindingId()))
-            .filter(thing -> thing.getHandler() instanceof WMBusAdapter)
-            .collect(Collectors.toList());
+        return thingProvider.getAll().stream()
+                .filter(thing -> WMBusBindingConstants.BINDING_ID.equals(thing.getUID().getBindingId()))
+                .filter(thing -> thing.getHandler() instanceof WMBusAdapter).collect(Collectors.toList());
     }
 
-    private void inject(WMBusAdapter adapter, String frame, HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    private void inject(WMBusAdapter adapter, String frame, HttpServletRequest req, HttpServletResponse resp)
+            throws IOException {
         byte[] bytes = HexUtils.hexToBytes(frame.replace(" ", ""));
         try {
             WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
@@ -108,19 +110,27 @@ public class InjectorServlet extends HttpServlet {
     }
 
     private String getAdapters() {
-        String options = adapters().stream()
-                .map(adapter -> "<option value=\"" + adapter.getUID() + "\">" + adapter.getUID().getBridgeIds() + " " + adapter.getLabel() + "</option>")
-                .collect(Collectors.joining());
+        String options = adapters().stream().map(adapter -> "<option value=\"" + adapter.getUID() + "\">"
+                + adapter.getUID() + " " + adapter.getLabel() + "</option>").collect(Collectors.joining());
         return options;
     }
 
     @Reference
-    protected void setThingManager(ThingRegistry thingRegistry) {
-        this.thingRegistry = thingRegistry;
+    protected void setThingProvider(ThingProvider thingProvider) {
+        this.thingProvider = thingProvider;
     }
+
+    protected void unsetThingProvider(ThingProvider thingProvider) {
+        this.thingProvider = null;
+    }
+
     @Reference
     public void setHttpService(HttpService httpService) {
         this.httpService = httpService;
+    }
+
+    public void unsetHttpService(HttpService httpService) {
+        this.httpService = null;
     }
 
     @Activate

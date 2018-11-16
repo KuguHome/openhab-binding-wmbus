@@ -5,7 +5,7 @@
 
     <parent>
         <groupId>org.openhab</groupId>
-        <artifactId>pom</artifactId>
+        <artifactId>pom-tycho</artifactId>
         <version>2.3.0</version>
         <relativePath />
     </parent>
@@ -23,6 +23,7 @@
     </modules>
 
     <repositories>
+
         <!-- releases -->
         <repository>
             <id>jcenter</id>
@@ -63,6 +64,14 @@
                 <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
+
+        <!-- openHAB dependencies p2 repository -->
+        <repository>
+            <id>p2-openhab-deps-repo</id>
+            <url>https://dl.bintray.com/openhab/p2/openhab-deps-repo/${ohdr.version}</url>
+            <layout>p2</layout>
+        </repository>
+
     </repositories>
 
     <pluginRepositories>
