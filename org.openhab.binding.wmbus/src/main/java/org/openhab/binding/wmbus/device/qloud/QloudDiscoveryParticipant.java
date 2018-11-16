@@ -57,6 +57,7 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
         if (!QloudBindingConstants.SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
             logger.trace("Found unsupported Q-lound/Fastforwar device {}, ommiting it from discovery results.",
                     device.getDeviceType());
+            return null;
         }
 
         try {

@@ -97,6 +97,7 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
         if (!TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
             logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
                     device.getDeviceType());
+            return Optional.empty();
         }
 
         logger.trace("Attempt to decode received Techem telegram");
