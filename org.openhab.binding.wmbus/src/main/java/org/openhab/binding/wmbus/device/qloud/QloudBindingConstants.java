@@ -30,6 +30,8 @@ import tec.uom.se.unit.Units;
  */
 public interface QloudBindingConstants {
 
+    String MANUFACTURER_ID = "FFD";
+
     // record fields reported by energycam
     RecordType VOLUME_CUBIC_METRE = new RecordType(0x04, 0x15);
     RecordType ELECTRICITY_WATT_HOUR = new RecordType(0x04, 0x05);

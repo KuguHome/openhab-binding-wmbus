@@ -50,7 +50,7 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
         WMBusMessage message = device.getOriginalMessage();
 
         // Q-loud doesn't have its own manufacturer
-        if (!"FFD".equals(message.getSecondaryAddress().getManufacturerId())) {
+        if (!QloudBindingConstants.MANUFACTURER_ID.equals(message.getSecondaryAddress().getManufacturerId())) {
             return null;
         }
 

@@ -54,7 +54,8 @@ public class QloudHandlerFactory extends BaseThingHandlerFactory {
             return new QloudThingHandler(thing);
         }
 
-        logger.warn("Unsupported thing type {}. TechemHandlerFactory can not handle {}", thingTypeUID, thing);
+        logger.warn("Unsupported thing type {}. This handler factory does not support {}", thingTypeUID,
+                thing.getUID());
 
         return null;
     }

@@ -33,7 +33,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Universal handler which covers all qloud configurations based on channel/record type mapping.
+ * Universal handler which covers all Q-loud configurations based on channel/record type mapping.
  *
  * @author Łukasz Dywicki - Initial contribution/
  */
