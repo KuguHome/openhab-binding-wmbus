@@ -30,11 +30,13 @@ public interface TechemBindingConstants {
     String _68TCH116255662 = "68TCH116255662"; // warm
     String _68TCH1162552272 = "68TCH1162552272"; // cold
     String _68TCH116255443 = "68TCH116255443"; // heat
+    String _68TCH118255818 = "68TCH118255818"; // hkv 118
     String _68TCH100255861 = "68TCH100255861"; // hkv 61
     String _68TCH100255864 = "68TCH100255864"; // khv 64
     String _68TCH105255869 = "68TCH105255869"; // kkv 69
 
     // techem heat cost allocators (Heizkostenverteiler)
+    String THING_TYPE_NAME_TECHEM_HKV118 = "techem_hkv118";
     String THING_TYPE_NAME_TECHEM_HKV61 = "techem_hkv61";
     String THING_TYPE_NAME_TECHEM_HKV64 = "techem_hkv64";
     String THING_TYPE_NAME_TECHEM_HKV69 = "techem_hkv69";
@@ -45,6 +47,8 @@ public interface TechemBindingConstants {
     // heat meter
     String THING_TYPE_NAME_TECHEM_HEAT_METER = "techem_wz43";
 
+    ThingTypeUID THING_TYPE_TECHEM_HKV118 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_TECHEM_HKV118);
     ThingTypeUID THING_TYPE_TECHEM_HKV61 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_TECHEM_HKV61);
     ThingTypeUID THING_TYPE_TECHEM_HKV64 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
@@ -67,6 +71,7 @@ public interface TechemBindingConstants {
             .put(_68TCH116255662, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 62
             .put(_68TCH1162552272, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 72
             .put(_68TCH116255443, THING_TYPE_TECHEM_HEAT_METER) // WZ 43
+            .put(_68TCH118255818, THING_TYPE_TECHEM_HKV118) // HKV 118
             .put(_68TCH100255861, THING_TYPE_TECHEM_HKV61) // HKV 61
             .put(_68TCH100255864, THING_TYPE_TECHEM_HKV64) // HKV 64
             .put(_68TCH105255869, THING_TYPE_TECHEM_HKV69) // HKV 69
@@ -90,6 +95,7 @@ public interface TechemBindingConstants {
 
     // channel mapping for thing types
     Map<ThingTypeUID, Map<String, Type>> RECORD_MAP = ImmutableMap.<ThingTypeUID, Map<String, Type>> builder()
+            .put(THING_TYPE_TECHEM_HKV118, TECHEM_METER_MAPPING) // basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV61, TECHEM_METER_MAPPING) // basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV64, TECHEM_METER_MAPPING) // again basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV69, HEAT_ALLOCATOR_MAPPING_69) // here we have two temperature channels

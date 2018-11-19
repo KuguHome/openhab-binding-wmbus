@@ -18,6 +18,7 @@ public class TechemHKVFrameDecoder extends TechemVariantFrameDecoder {
     private static final ImmutableMap<Byte, TechemFrameDecoder> CODEC_MAP = ImmutableMap
             .<Byte, TechemFrameDecoder> builder()
             // we have no test frame, but that's all difference between device variants
+            .put(Byte.valueOf((byte) 0x18), new TechemHKV118FrameDecoder())
             .put(Byte.valueOf((byte) 0x61), new TechemHKV61FrameDecoder())
             // should be pretty much same as above
             .put(Byte.valueOf((byte) 0x64), new TechemHKV64FrameDecoder()).build();
