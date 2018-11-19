@@ -12,7 +12,6 @@ import java.util.Map;
 import java.util.Set;
 
 import javax.measure.Unit;
-import javax.measure.quantity.Volume;
 
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
@@ -22,9 +21,6 @@ import org.openhab.binding.wmbus.WMBusBindingConstants;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import tec.uom.se.unit.ProductUnit;
-import tec.uom.se.unit.Units;
 
 /**
  * Subset of WMBus constants specific to Landis+Gyr devicees.
@@ -82,8 +78,6 @@ public interface LandisGyrBindingConstants {
     String CHANNEL_ON_TIME_ERROR = "on_time_error";
     String CHANNEL_ERROR_FLAGS = "error_flags";
 
-    Unit<Volume> CUBIC_METRE_PER_HOUR = new ProductUnit<Volume>(Units.CUBIC_METRE.divide(Units.HOUR));
-
     // channels supported by heat meter
     Map<String, RecordType> HEAT_METER_CHANNELS = ImmutableMap.<String, RecordType> builder() // quite long list
             .put(CHANNEL_ENERGY, ENERGY_WATT_HOUR) //
@@ -111,12 +105,12 @@ public interface LandisGyrBindingConstants {
             .put(ENERGY_WATT_HOUR, SmartHomeUnits.WATT_HOUR) //
             .put(VOLUME_CUBIC_METRE, SIUnits.CUBIC_METRE) //
             .put(POWER_WATT, SIUnits.WATT) //
-            // .put(FLOW_VOLUME, CUBIC_METRE_PER_HOUR) //
+            // .put(FLOW_VOLUME, SmartHomeUnits.CUBICMETRE_PER_HOUR) //
             .put(FLOW_TEMPERATURE, SIUnits.CELSIUS) //
             .put(RETURN_TEMPERATURE, SIUnits.CELSIUS) //
             .put(TEMPERATURE_DIFFERENCE, SIUnits.KELVIN) //
             .put(MAX_POWER, SIUnits.WATT) //
-            // .put(MAX_FLOW_VOLUME, CUBIC_METRE_PER_HOUR) //
+            // .put(MAX_FLOW_VOLUME, SmartHomeUnits.CUBICMETRE_PER_HOUR) //
             .put(MAX_FLOW_TEMPERATURE, SIUnits.CELSIUS) //
             .put(MAX_RETURN_TEMPERATURTE, SIUnits.CELSIUS) //
             .put(ON_TIME_ERROR, SIUnits.HOUR) //

@@ -33,10 +33,13 @@
 
     <channel-type id="flow_volume">
         <item-type>Number:Dimensionless</item-type>
+        <!-- We need https://github.com/eclipse/smarthome/issues/6549
+        <item-type>Number:VolumetricFlowRate</item-type>
+         -->
         <label>Flow volume</label>
         <description>Current flow volume reading.</description>
-        <category>Flow</category>
-        <state readOnly="true" pattern="%.2f %unit%">
+        <category>VolumetricFlowRate</category>
+        <state readOnly="true" pattern="%.2f m³/h">
         </state>
     </channel-type>
 
@@ -78,10 +81,13 @@
 
     <channel-type id="max_flow_volume">
         <item-type>Number:Dimensionless</item-type>
+        <!-- We need https://github.com/eclipse/smarthome/issues/6549
+        <item-type>Number:VolumetricFlowRate</item-type>
+        -->
         <label>Maximum flow volume</label>
         <description>Maximum flow volume reading registered by meter.</description>
-        <category>Flow</category>
-        <state readOnly="true" pattern="%.2f %unit%">
+        <category>VolumetricFlowRate</category>
+        <state readOnly="true" pattern="%.2f m³/h">
         </state>
     </channel-type>
 
