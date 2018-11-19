@@ -22,7 +22,6 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.AbstractWMBusDiscoveryParticipant;
-import org.openhab.binding.wmbus.device.qloud.QloudBindingConstants;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
@@ -62,11 +61,11 @@ public class LandisGyrDiscoveryParticipant extends AbstractWMBusDiscoveryPartici
         }
 
         try {
-            WMBusDevice qloudDevice = new LandisGyrWMBusDevice(message, device.getAdapter());
+            WMBusDevice landisDevice = new LandisGyrWMBusDevice(message, device.getAdapter());
             logger.trace("Attempt to decode message");
-            qloudDevice.decode();
+            landisDevice.decode();
 
-            return super.getThingUID(qloudDevice);
+            return super.getThingUID(landisDevice);
         } catch (DecodingException e) {
             logger.debug("Could not decode message '{}', not a landis device", message, e);
         }
@@ -95,7 +94,7 @@ public class LandisGyrDiscoveryParticipant extends AbstractWMBusDiscoveryPartici
             // Create the discovery result and add to the inbox
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
-                    .withThingType(QloudBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
+                    .withThingType(LandisGyrBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
                     .withBridge(device.getAdapter().getUID()).withLabel(label).build();
         }
 
