@@ -103,7 +103,7 @@ public class InjectorServlet extends HttpServlet {
         byte[] bytes = HexUtils.hexToBytes(frame.replace(" ", ""));
         try {
             WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
-            if (aesKey != null) {
+            if (aesKey != null && !aesKey.trim().isEmpty()) {
                 byte[] key = HexUtils.hexToBytes(aesKey);
                 message = VirtualWMBusMessageHelper.decode(bytes, 0,
                         Collections.singletonMap(message.getSecondaryAddress(), key));
