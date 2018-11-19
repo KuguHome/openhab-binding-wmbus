@@ -116,7 +116,7 @@ public interface LandisGyrBindingConstants {
             .put(RETURN_TEMPERATURE, SIUnits.CELSIUS) //
             .put(TEMPERATURE_DIFFERENCE, SIUnits.KELVIN) //
             .put(MAX_POWER, SIUnits.WATT) //
-            .put(MAX_FLOW_VOLUME, CUBIC_METRE_PER_HOUR) //
+            // .put(MAX_FLOW_VOLUME, CUBIC_METRE_PER_HOUR) //
             .put(MAX_FLOW_TEMPERATURE, SIUnits.CELSIUS) //
             .put(MAX_RETURN_TEMPERATURTE, SIUnits.CELSIUS) //
             .put(ON_TIME_ERROR, SIUnits.HOUR) //
