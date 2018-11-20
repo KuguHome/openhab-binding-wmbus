@@ -61,6 +61,15 @@
         </state>
     </channel-type>
 
+    <channel-type id="external_temperature">
+        <item-type>Number:Temperature</item-type>
+        <label>External temperature</label>
+        <description>Current external temperature reading.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f %unit%">
+        </state>
+    </channel-type>
+
     <channel-type id="temperature_difference">
         <item-type>Number:Temperature</item-type>
         <label>Temperature difference</label>
@@ -104,6 +113,15 @@
         <item-type>Number:Temperature</item-type>
         <label>Maximum return temperature.</label>
         <description>Maximum return temperature reading registered by meter.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f %unit%">
+        </state>
+    </channel-type>
+
+    <channel-type id="max_external_temperature">
+        <item-type>Number:Temperature</item-type>
+        <label>Maximum external temperature.</label>
+        <description>Maximum external temperature reading registered by meter.</description>
         <category>Temperature</category>
         <state readOnly="true" pattern="%.2f %unit%">
         </state>

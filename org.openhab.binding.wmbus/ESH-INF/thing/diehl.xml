@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="wmbus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+    xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <thing-type id="diehl_heat_cost_allocator">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Diehl Heat Cost Allocator</label>
+        <description>Heat cost allocator.</description>
+
+        <channels>
+            <channel id="current_reading" typeId="current_reading" />
+            <channel id="previous_date" typeId="previous_date" />
+            <channel id="flow_temperature" typeId="flow_temperature" />
+            <channel id="external_temperature" typeId="external_temperature" />
+            <channel id="max_flow_temperature" typeId="max_flow_temperature" />
+            <channel id="max_external_temperature" typeId="max_external_temperature" />
+            <channel id="max_flow_temperature15" typeId="max_flow_temperature15" />
+            <channel id="max_external_temperature15" typeId="max_external_temperature15" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <channel-type id="max_flow_temperature15">
+        <item-type>Number:Temperature</item-type>
+        <label>Max flow temperature (15)</label>
+        <description>Maximum flow temperature reading registered by meter in register 15.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f %unit%">
+        </state>
+    </channel-type>
+
+    <channel-type id="max_external_temperature15">
+        <item-type>Number:Temperature</item-type>
+        <label>Maximum external temperature (15).</label>
+        <description>Maximum external temperature reading registered by meter in register 15.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f %unit%">
+        </state>
+    </channel-type>
+
+</thing:thing-descriptions>
