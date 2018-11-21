@@ -13,7 +13,11 @@
         <description>Heat cost allocator.</description>
 
         <channels>
+            <!--  HCA instant val -->
             <channel id="current_reading" typeId="current_reading" />
+            <!-- HCA fields in storage 1 and different vib's -->
+            <channel id="heat_cost_allocation_43" typeId="heat_cost_allocation_43" />
+            <channel id="heat_cost_allocation_4D" typeId="heat_cost_allocation_4D" />
             <channel id="previous_date" typeId="previous_date" />
             <channel id="flow_temperature" typeId="flow_temperature" />
             <channel id="external_temperature" typeId="external_temperature" />
@@ -25,6 +29,24 @@
 
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
+
+    <channel-type id="heat_cost_allocation_43">
+        <item-type>Number:Dimensionless</item-type>
+        <label>Heat cost allocation (field 43)</label>
+        <description>Heat cost allocation reported in field 0x43.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f">
+        </state>
+    </channel-type>
+
+    <channel-type id="heat_cost_allocation_4D">
+        <item-type>Number:Dimensionless</item-type>
+        <label>Heat cost allocation (field 4D)</label>
+        <description>Heat cost allocation reported in field 0x4D.</description>
+        <category>Temperature</category>
+        <state readOnly="true" pattern="%.2f">
+        </state>
+    </channel-type>
 
     <channel-type id="max_flow_temperature15">
         <item-type>Number:Temperature</item-type>

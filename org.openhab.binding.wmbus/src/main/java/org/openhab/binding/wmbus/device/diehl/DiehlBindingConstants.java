@@ -48,14 +48,13 @@ public interface DiehlBindingConstants {
     // record fields reported by heat meter
     // Ignore - byte values with reserved units, not sure how to decode these and manufacturer documentation is missing
     RecordType HCA_INSTANT = new RecordType(0x03, 0x6E);
-    // RecordType HCA_STORAGE_1 = new RecordType(0x43, 0x6E);
-    // RecordType HCA_STORAGE_11 = new RecordType(0x4D, new byte[] { (byte) 0xEE, 0x1E });
+    RecordType HCA_STORAGE_1_43 = new RecordType(0x43, 0x6E);
+    RecordType HCA_STORAGE_1_4D = new RecordType(0x4D, new byte[] { (byte) 0xEE, 0x1E });
     RecordType PREVIOUS_DATE = new RecordType(0x42, 0x6C);
     RecordType FLOW_TEMPERATURE = new RecordType(0x02, 0x5A);
     RecordType EXTERNAL_TEMPERATURE = new RecordType(0x02, 0x66);
     RecordType MAX_FLOW_TEMPERATURE = new RecordType(0x12, 0x5A);
     RecordType MAX_EXTERNAL_TEMPERATURE = new RecordType(0x12, 0x66);
-    // FIXME clarify what is storage 15 and how to handle it
     RecordType MAX_FLOW_TEMPERATURE_STORAGE_15 = new RecordType(new byte[] { (byte) 0xD2, 0x07 }, 0x5A);
     RecordType MAX_EXTERNAL_TEMPERATURE_STORAGE_15 = new RecordType(new byte[] { (byte) 0xD2, 0x07 }, 0x66);
 
@@ -64,8 +63,9 @@ public interface DiehlBindingConstants {
     ThingTypeUID THING_TYPE_HEAT_COST_ALLOCATOR = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_HEAT_COST_ALLOCATOR);
 
-    // String HEAT_COST_ALLOCATION = "heat_cost_allocation";
     String CHANNEL_CURRENT_READINGG = "current_reading";
+    String CHANNEL_HEAT_COST_ALLOCATION_43 = "heat_cost_allocation_43";
+    String CHANNEL_HEAT_COST_ALLOCATION_4D = "heat_cost_allocation_4D";
     String CHANNEL_PREVIOUS_DATE = "previous_date";
     String CHANNEL_FLOW_TEMPERATURE = "flow_temperature";
     String CHANNEL_EXTERNAL_TEMPERATURE = "external_temperature";
@@ -77,6 +77,8 @@ public interface DiehlBindingConstants {
     // channels supported by heat meter
     Map<String, RecordType> HEAT_METER_CHANNELS = ImmutableMap.<String, RecordType> builder() // quite long list
             .put(CHANNEL_CURRENT_READINGG, HCA_INSTANT) //
+            .put(CHANNEL_HEAT_COST_ALLOCATION_43, HCA_STORAGE_1_43) //
+            .put(CHANNEL_HEAT_COST_ALLOCATION_4D, HCA_STORAGE_1_4D) //
             .put(CHANNEL_PREVIOUS_DATE, PREVIOUS_DATE) //
             .put(CHANNEL_FLOW_TEMPERATURE, FLOW_TEMPERATURE) //
             .put(CHANNEL_EXTERNAL_TEMPERATURE, EXTERNAL_TEMPERATURE) //
