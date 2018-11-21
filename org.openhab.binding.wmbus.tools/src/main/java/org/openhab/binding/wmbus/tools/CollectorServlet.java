@@ -77,10 +77,12 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
 
         Set<SecondaryAddress> addresses = entries.keySet();
         for (SecondaryAddress address : addresses) {
+            byte[] addressArray = address.asByteArray();
             String row = template.replace("__ID__", address.getDeviceId().toString());
-            row = row.replace("__Manufacturer__", address.getManufacturerId());
-            row = row.replace("__Type__", address.getDeviceType().name());
-            row = row.replace("__Version__", "" + address.getVersion());
+            row = row.replace("__Manufacturer__", address.getManufacturerId() + " " + hex(address.asByteArray()));
+            row = row.replace("__Type__",
+                    address.getDeviceType().name() + " " + hex(addressArray[addressArray.length - 1]));
+            row = row.replace("__Version__", address.getVersion() + " " + hex(address.getVersion()));
             row = row.replace("__Frame__", getFrames(entries.get(address)));
 
             rows += row;
@@ -94,7 +96,7 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
 
         for (Entry entry : entries) {
             LocalDateTime dateTime = Instant.ofEpochMilli(entry.time).atZone(ZoneId.systemDefault()).toLocalDateTime();
-            list += "<li>" + dateTime + "<br />" + HexUtils.bytesToHex(entry.frame) + "</li>";
+            list += "<li>" + dateTime + "<br />" + hex(entry.frame) + "</li>";
         }
 
         return list + "</ul>";
@@ -143,6 +145,18 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
 
         Entry entry = new Entry(System.currentTimeMillis(), device.getOriginalMessage().asBlob());
         entries.get(address).add(entry);
+    }
+
+    private String hex(Integer value) {
+        return hex((byte) value.intValue());
+    }
+
+    private String hex(byte value) {
+        return hex(new byte[] { value });
+    }
+
+    private String hex(byte[] value) {
+        return "<pre>" + HexUtils.bytesToHex(value) + "</pre>";
     }
 
     static class Entry {
