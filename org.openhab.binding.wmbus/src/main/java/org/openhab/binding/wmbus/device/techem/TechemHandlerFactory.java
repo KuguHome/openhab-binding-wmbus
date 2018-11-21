@@ -60,7 +60,7 @@ public class TechemHandlerFactory extends BaseThingHandlerFactory {
         if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV61)) {
             logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
             return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV118)) {
+        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV76)) {
             logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
             return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
         } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV64)) {

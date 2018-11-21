@@ -22,9 +22,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemHeatCostAllocator extends TechemDevice {
 
-    public TechemHeatCostAllocator(WMBusMessage originalMessage, WMBusAdapter adapter, byte variant,
-            List<Record<?>> measures) {
-        super(originalMessage, adapter, variant, DeviceType.HEAT_COST_ALLOCATOR, measures);
+    public TechemHeatCostAllocator(WMBusMessage originalMessage, WMBusAdapter adapter, List<Record<?>> measures) {
+        super(originalMessage, adapter, DeviceType.HEAT_COST_ALLOCATOR, measures);
     }
 
 }

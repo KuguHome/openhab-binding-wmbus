@@ -16,6 +16,7 @@ import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DeviceType;
+import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 
 /**
@@ -27,12 +28,13 @@ public class TechemDevice extends WMBusDevice {
 
     private final DeviceType deviceType;
     private final List<Record<?>> measurements;
-    private final byte variant;
+    private final Variant variant;
 
-    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, byte variant, DeviceType deviceType,
-            List<Record<?>> measurements) {
+    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType, List<Record<?>> measurements) {
         super(originalMessage, adapter);
-        this.variant = variant;
+
+        SecondaryAddress address = getOriginalMessage().getSecondaryAddress();
+        this.variant = new Variant(address.getVersion(), address.getDeviceType(), deviceType);
         this.deviceType = deviceType;
         this.measurements = measurements;
     }
@@ -49,17 +51,13 @@ public class TechemDevice extends WMBusDevice {
         return measurements.stream().filter(record -> record.getType().equals(type)).findFirst();
     }
 
+    public Variant getDeviceVariant() {
+        return variant;
+    }
+
     @Override
     public String getDeviceType() {
-        return getOriginalMessage().getControlField() + ""
-                + getOriginalMessage().getSecondaryAddress().getManufacturerId()
-                + getOriginalMessage().getSecondaryAddress().getVersion()
-                // device id from wmbus frame, OTHER / RESERVED
-                + getOriginalMessage().getSecondaryAddress().getDeviceType().getId()
-                // assumed device type from decoded application layer
-                + getTechemDeviceType().getId()
-                // device variant
-                + Integer.toHexString(variant);
+        return variant.getTechemType();
     }
 
 }

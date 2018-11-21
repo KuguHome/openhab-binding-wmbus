@@ -12,13 +12,17 @@ import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
 
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements TechemFrameDecoder<T> {
 
+    private final Logger logger = LoggerFactory.getLogger(AbstractTechemFrameDecoder.class);
     private final String variant;
 
     protected final Function<Float, Float> _SCALE_FACTOR_1_10th = value -> value / 10;
@@ -72,6 +76,12 @@ public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> impleme
 
         int day = (dateint >> 4) & 0x1F;
         int month = (dateint >> 9) & 0x0F;
+
+        if (day <= 0) {
+            logger.trace("Detected invalid day number {} in byte representation: {}, changing to 1st day of month", day,
+                    HexUtils.bytesToHex(read(buffer, index, index + 1)));
+            day = 1;
+        }
 
         LocalDateTime dateTime = LocalDateTime.now().withMonth(month).withDayOfMonth(day);
         return dateTime.truncatedTo(ChronoUnit.SECONDS);

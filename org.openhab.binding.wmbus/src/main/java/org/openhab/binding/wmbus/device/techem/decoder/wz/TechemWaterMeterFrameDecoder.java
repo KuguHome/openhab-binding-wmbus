@@ -57,7 +57,7 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemWa
             records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
-            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(), variant, deviceType, records);
+            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(), deviceType, records);
         }
 
         return null;

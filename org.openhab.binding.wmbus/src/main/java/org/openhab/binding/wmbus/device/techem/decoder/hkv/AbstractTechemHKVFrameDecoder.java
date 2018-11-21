@@ -12,10 +12,6 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.measure.Quantity;
-import javax.measure.Unit;
-import javax.measure.quantity.Power;
-
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
@@ -24,7 +20,6 @@ import org.openhab.binding.wmbus.device.techem.decoder.AbstractTechemFrameDecode
 import org.openmuc.jmbus.SecondaryAddress;
 
 import tec.uom.se.quantity.Quantities;
-import tec.uom.se.unit.Units;
 
 abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 
@@ -52,14 +47,10 @@ abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
             float currentValue = parseBigEndianInt(buffer, offset + 8);
 
-            Unit<Power> unit = Units.WATT;
-            Quantity<Power> currentVolume = Quantities.getQuantity(currentValue, unit);
-            Quantity<Power> pastVolume = Quantities.getQuantity(lastValue, unit);
-
             List<Record<?>> records = new ArrayList<>();
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentVolume));
+            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
             records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
-            records.add(new Record<>(Record.Type.PAST_VOLUME, pastVolume));
+            records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
             records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
@@ -71,7 +62,7 @@ abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<
                         new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));
             }
 
-            return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), variant, records);
+            return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), records);
         }
 
         return null;

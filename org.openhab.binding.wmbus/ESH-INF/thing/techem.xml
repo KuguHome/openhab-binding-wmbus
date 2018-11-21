@@ -88,6 +88,28 @@
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
 
+    <thing-type id="techem_hkv76">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Techem HKV variant 76</label>
+        <description>A heat cost allocator of Techem</description>
+
+        <channels>
+            <channel id="room_temperature" typeId="room_temperature" />
+            <channel id="radiator_temperature" typeId="radiator_temperature" />
+            <channel id="current_reading" typeId="current_reading" />
+            <channel id="last_reading" typeId="last_reading" />
+            <channel id="reception" typeId="reception" />
+            <channel id="last_date" typeId="last_date" />
+            <channel id="current_date" typeId="current_date" />
+            <channel id="almanac" typeId="almanac" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
     <thing-type id="techem_wz62">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />

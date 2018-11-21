@@ -6,33 +6,29 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-
 package org.openhab.binding.wmbus.device.techem;
 
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.Collections;
 import java.util.Date;
 
 import org.eclipse.smarthome.core.util.HexUtils;
-import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openhab.binding.wmbus.WMBusDevice;
 import org.openmuc.jmbus.DecodingException;
-import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.VariableDataStructure;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 
 /**
- * The {@link TechemHKV} class Represents a Message of a Techem Heizkostenverteiler (heat cost allocator)
- *
- * @deprecated This type is going to be removed over time as it contains logic related to frame parsing which is already
- *             moved to specific types. Device representation is simplified to be just a container for records.
- * @author Hanno - Felix Wagner - Roman Malyugin - Initial contribution
+ * Represents a Message of a Techem Heizkostenverteiler (heat cost allocator)
  */
-@Deprecated()
-public class TechemHKV extends TechemDevice {
+class LegacyTechemHKV extends WMBusDevice {
+
+    public LegacyTechemHKV(WMBusMessage originalMessage) {
+        super(originalMessage, null);
+    }
 
     int ciField;
     String status = "";
@@ -44,13 +40,10 @@ public class TechemHKV extends TechemDevice {
     float t2 = -1;
     byte[] historyBytes = new byte[27];
     String history = "";
+
     DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
 
     VariableDataStructure vdr;
-
-    public TechemHKV(WMBusMessage originalMessage, WMBusAdapter adapter) {
-        super(originalMessage, adapter, DeviceType.HEAT_COST_ALLOCATOR, Collections.emptyList());
-    }
 
     @Override
     public void decode() throws DecodingException {
@@ -59,32 +52,28 @@ public class TechemHKV extends TechemDevice {
         vdr = getOriginalMessage().getVariableDataResponse();
 
         int offset = 10;
-        if (hkvBuffer.length < 11 || !secondaryAddress.getManufacturerId().equals("TCH")) {
-            throw new DecodingException("No known Techem HKV message. hkvBuffer length = " + hkvBuffer.length);
-        } else {
-            ciField = hkvBuffer[offset + 0] & 0xff;
+
+        ciField = hkvBuffer[offset + 0] & 0xff;
+
+        if ((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH")) {
+            byte[] temp = { hkvBuffer[offset + 1] };
+            status = HexUtils.bytesToHex(temp);
+            lastDate = parseLastDate(offset + 2);
+            curDate = parseCurrentDate(offset + 6);
+            lastVal = parseBigEndianInt(offset + 4);
+            curVal = parseBigEndianInt(offset + 8);
+            t1 = parseTemp(offset + 10);
+            t2 = parseTemp(offset + 12);
+
             int historyLength = hkvBuffer.length - 24;
+            historyBytes = new byte[historyLength];
 
-            if (((ciField == 0xa0 || ciField == 0xa2) && secondaryAddress.getManufacturerId().equals("TCH"))
-                    && historyLength > 0) {
-                byte[] temp = { hkvBuffer[offset + 1] };
-                status = HexUtils.bytesToHex(temp);
-                lastDate = parseLastDate(offset + 2);
-                curDate = parseCurrentDate(offset + 6);
-                lastVal = parseBigEndianInt(offset + 4);
-                curVal = parseBigEndianInt(offset + 8);
-                t1 = parseTemp(offset + 10);
-                t2 = parseTemp(offset + 12);
+            System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
+            history = HexUtils.bytesToHex(historyBytes);
 
-                historyBytes = new byte[historyLength];
-
-                System.arraycopy(hkvBuffer, 24, historyBytes, 0, historyLength);
-                history = HexUtils.bytesToHex(historyBytes);
-            } else {
-                throw new DecodingException("No known Techem HKV message. ciField=" + ciField + "(0x"
-                        + Integer.toHexString(ciField) + "), Manufacturer=" + secondaryAddress.getManufacturerId()
-                        + " messagea: " + HexUtils.bytesToHex(hkvBuffer));
-            }
+        } else {
+            throw new DecodingException("No known Techem HKV message. ciField=" + ciField + ", Manufacturer="
+                    + secondaryAddress.getManufacturerId());
         }
     }
 
@@ -178,7 +167,7 @@ public class TechemHKV extends TechemDevice {
 
         StringBuilder builder = new StringBuilder();
         if (getOriginalMessage().getVariableDataResponse() == null) {
-            builder.append("TechemDevice: Message has not been decoded. Bytes of this message: ");
+            builder.append("TechemHKV: Message has not been decoded. Bytes of this message: ");
             // HexConverter.appendHexString(builder, originalMessage.asBlob(), 0, originalMessage.asBlob().length);
             return builder.toString();
         } else {
@@ -199,5 +188,4 @@ public class TechemHKV extends TechemDevice {
     public Integer getRssi() {
         return getOriginalMessage().getRssi();
     }
-
 }

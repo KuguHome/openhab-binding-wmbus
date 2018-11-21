@@ -23,9 +23,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
 
 public class TechemWaterMeter extends TechemDevice {
 
-    public TechemWaterMeter(WMBusMessage originalMessage, WMBusAdapter adapter, byte variant, DeviceType deviceType,
-            List<Record<?>> measures) {
-        super(originalMessage, adapter, variant, deviceType, measures);
+    public TechemWaterMeter(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType, List<Record<?>> measures) {
+        super(originalMessage, adapter, deviceType, measures);
     }
 
 }

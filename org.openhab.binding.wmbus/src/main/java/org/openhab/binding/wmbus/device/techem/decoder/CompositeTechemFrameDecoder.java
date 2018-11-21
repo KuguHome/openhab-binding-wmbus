@@ -12,6 +12,7 @@ import java.util.List;
 
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
+import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV76FrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV69FrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKVFrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.wz.TechemWZFrameDecoder;
@@ -27,7 +28,7 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
     private final Logger logger = LoggerFactory.getLogger(CompositeTechemFrameDecoder.class);
 
     private final List<TechemFrameDecoder<?>> decoders = ImmutableList.of(new TechemHKVFrameDecoder(),
-            new TechemHKV69FrameDecoder(), new TechemWZFrameDecoder());
+            new TechemHKV76FrameDecoder(), new TechemHKV69FrameDecoder(), new TechemWZFrameDecoder());
 
     @Override
     public boolean suports(String deviceVariant) {

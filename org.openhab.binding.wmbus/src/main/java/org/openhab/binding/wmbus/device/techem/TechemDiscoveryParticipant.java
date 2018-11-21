@@ -50,10 +50,13 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
-        return decodeDevice(device).map(TechemDevice::getDeviceType)
-                .map(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS::get)
-                .map(type -> new ThingUID(type, device.getDeviceId())).orElse(null);
+        return decodeDevice(device).map(this::getThingType).map(type -> new ThingUID(type, device.getDeviceId()))
+                .orElse(null);
+    }
 
+    protected @Nullable ThingUID getThingUID(TechemDevice device) {
+        return Optional.ofNullable(getThingType(device)).map(type -> new ThingUID(type, device.getDeviceId()))
+                .orElse(null);
     }
 
     @Override
@@ -64,10 +67,11 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
         if (thingUID != null) {
             String deviceTypeLabel = decodeDevice.map(TechemDevice::getTechemDeviceType)
                     .map(WMBusBindingConstants.DEVICE_TYPE_TRANSFORMATION).orElse("Unknown");
-            String deviceTypeTag = decodeDevice.map(TechemDevice::getDeviceType)
-                    .orElseGet(() -> device.getDeviceType());
+            Variant deviceTypeTag = decodeDevice.map(TechemDevice::getDeviceVariant).orElseThrow(
+                    () -> new IllegalArgumentException("Unmapped techem device " + device.getDeviceType()));
 
-            String label = "Techem " + deviceTypeLabel + " #" + device.getDeviceId() + " (" + deviceTypeTag + ")";
+            String label = "Techem " + deviceTypeLabel + " #" + device.getDeviceId() + " ("
+                    + deviceTypeTag.getTechemType() + ")";
 
             Map<String, Object> properties = new HashMap<>();
             properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ID, device.getDeviceId());
@@ -80,7 +84,7 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
             // Create the discovery result and add to the inbox
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
-                    .withThingType(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
+                    .withThingType(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(deviceTypeTag))
                     .withBridge(device.getAdapter().getUID()).withLabel(label).build();
         }
 
@@ -94,7 +98,7 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
             return Optional.empty();
         }
 
-        if (!TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.containsKey(device.getDeviceType())) {
+        if (!TechemBindingConstants.SUPPORTED_DEVICE_TYPES.contains(device.getDeviceType())) {
             logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
                     device.getDeviceType());
             return Optional.empty();
@@ -102,6 +106,10 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
         logger.trace("Attempt to decode received Techem telegram");
         return Optional.ofNullable(techemFrameDecoder.decode(device));
+    }
+
+    private @Nullable ThingTypeUID getThingType(TechemDevice device) {
+        return TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceVariant());
     }
 
     @Reference
