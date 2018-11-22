@@ -168,7 +168,7 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                 .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withBridge(adapter.getUID())
-                .withThingType(typeUID).withLabel(label).build();
+                .withThingType(typeUID).withLabel(label).withTTL(WMBusBindingConstants.DEFAULT_TIME_TO_LIVE).build();
 
         thingDiscovered(discoveryResult);
     }

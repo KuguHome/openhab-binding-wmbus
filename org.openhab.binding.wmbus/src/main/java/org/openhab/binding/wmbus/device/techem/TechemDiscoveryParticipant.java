@@ -85,7 +85,8 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
                     .withThingType(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(deviceTypeTag))
-                    .withBridge(device.getAdapter().getUID()).withLabel(label).build();
+                    .withBridge(device.getAdapter().getUID()).withLabel(label)
+                    .withTTL(WMBusBindingConstants.DEFAULT_TIME_TO_LIVE).build();
         }
 
         return null;

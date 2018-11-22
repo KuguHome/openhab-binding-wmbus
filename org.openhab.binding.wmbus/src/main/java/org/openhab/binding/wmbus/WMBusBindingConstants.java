@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus;
 
 import java.util.Map;
 import java.util.Set;
+import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
@@ -32,6 +33,11 @@ public class WMBusBindingConstants {
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
     public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
     public static final String THING_TYPE_NAME_METER = "meter";
+
+    /**
+     * Time to live - by default 24 hours after which discovery result is discarded.
+     */
+    public static final Long DEFAULT_TIME_TO_LIVE = TimeUnit.HOURS.toSeconds(24);
 
     // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before
     // constructor
