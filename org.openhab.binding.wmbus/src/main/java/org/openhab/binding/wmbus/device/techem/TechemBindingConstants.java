@@ -32,19 +32,21 @@ public interface TechemBindingConstants {
     String MANUFACTURER_ID = "TCH";
 
     // warm water, type 0x62
-    Variant _68TCH116255_6 = new Variant(0x74, DeviceType.RESERVED, DeviceType.WARM_WATER_METER);
+    Variant _68TCH116255_6 = new Variant(116, 0x62, DeviceType.WARM_WATER_METER);
     // cold water, type 0x72
-    Variant _68TCH116255_16 = new Variant(0x74, DeviceType.RESERVED, DeviceType.COLD_WATER_METER);
-    // heat, 0x43
-    Variant _68TCH116255_4 = new Variant(0x74, DeviceType.RESERVED, DeviceType.HEAT_METER);
-    // hkv version byte 0x61 -> v 141
-    Variant _68TCH100255_8 = new Variant(0x61, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // khv version byte 0x64 -> v 97
-    Variant _68TCH972558_8 = new Variant(0x64, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH116255_16 = new Variant(116, 0x72, DeviceType.COLD_WATER_METER);
+    // heat, type 0x43
+    Variant _68TCH113255_4 = new Variant(113, 0x43, DeviceType.HEAT_METER);
+    // hkv version byte 0x61 -> v 97
+    Variant _68TCH97255_8 = new Variant(0x61, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
+    // khv version byte 0x64 -> v 100
+    Variant _68TCH100255_8 = new Variant(0x64, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
     // kkv version byte 0x69 -> v 105
     Variant _68TCH105255_8 = new Variant(0x69, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version byte 0x76 -> v 118
     Variant _68TCH118255_8 = new Variant(0x76, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
+
+    // 68TCH113255
 
     // techem heat cost allocators (Heizkostenverteiler)
     String THING_TYPE_NAME_TECHEM_HKV61 = "techem_hkv61";
@@ -81,9 +83,9 @@ public interface TechemBindingConstants {
     Map<Variant, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<Variant, ThingTypeUID> builder()
             .put(_68TCH116255_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 62
             .put(_68TCH116255_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 72
-            .put(_68TCH116255_4, THING_TYPE_TECHEM_HEAT_METER) // WZ 43
-            .put(_68TCH100255_8, THING_TYPE_TECHEM_HKV61) // HKV 61
-            .put(_68TCH972558_8, THING_TYPE_TECHEM_HKV64) // HKV 64
+            .put(_68TCH113255_4, THING_TYPE_TECHEM_HEAT_METER) // WZ 43
+            .put(_68TCH97255_8, THING_TYPE_TECHEM_HKV61) // HKV 61
+            .put(_68TCH100255_8, THING_TYPE_TECHEM_HKV64) // HKV 64
             .put(_68TCH105255_8, THING_TYPE_TECHEM_HKV69) // HKV 69
             .put(_68TCH118255_8, THING_TYPE_TECHEM_HKV76) // HKV 76
             .build();

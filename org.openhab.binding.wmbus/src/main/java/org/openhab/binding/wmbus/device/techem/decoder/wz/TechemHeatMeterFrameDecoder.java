@@ -10,15 +10,20 @@ package org.openhab.binding.wmbus.device.techem.decoder.wz;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatMeter;
+import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.SecondaryAddress;
 
 // TODO adjust after finding test frame
 class TechemHeatMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemHeatMeter> {
 
-    TechemHeatMeterFrameDecoder() {
+    TechemHeatMeterFrameDecoder(Variant variant) {
+        super(variant);
     }
 
     @Override
@@ -26,23 +31,20 @@ class TechemHeatMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemHea
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA2) {
-            /*
-             * LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
-             * float lastValue = parseValue(buffer, offset + 4);
-             * LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-             * float currentValue = parseValue(buffer, offset + 8);
-             *
-             * Unit<Volume> unit = Units.CUBIC_METRE;
-             * Quantity<Volume> currentVolume = Quantities.getQuantity(currentValue, unit);
-             * Quantity<Volume> pastVolume = Quantities.getQuantity(lastValue, unit);
-             *
-             * List<Record> records = new ArrayList<>();
-             * records.add(new Record(Record.Type.CURRENT_VOLUME, currentVolume, currentDate));
-             * records.add(new Record(Record.Type.PAST_VOLUME, pastVolume, lastReading));
-             *
-             * return new TechemHeatMeter(message, null, records);
-             */
+        if (coding == 0xA0) {
+            LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
+            float lastValue = parseLastPeriod(buffer, offset + 4);
+            LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
+            float currentValue = parseActualPeriod(buffer, offset + 8);
+
+            List<Record<?>> records = new ArrayList<>();
+            records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
+            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
+            records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
+            records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
+            records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
+
+            return new TechemHeatMeter(device.getOriginalMessage(), device.getAdapter(), records);
         }
 
         return null;

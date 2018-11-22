@@ -19,6 +19,7 @@ import javax.measure.quantity.Volume;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemWaterMeter;
+import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 
@@ -27,12 +28,8 @@ import tec.uom.se.unit.Units;
 
 class TechemWaterMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemWaterMeter> {
 
-    private final DeviceType deviceType;
-    private final byte variant;
-
-    public TechemWaterMeterFrameDecoder(byte variant, DeviceType deviceType) {
-        this.variant = variant;
-        this.deviceType = deviceType;
+    public TechemWaterMeterFrameDecoder(Variant variant) {
+        super(variant);
     }
 
     @Override
@@ -57,7 +54,8 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemWa
             records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
-            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(), deviceType, records);
+            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(),
+                    DeviceType.getInstance(variant.desiredType), records);
         }
 
         return null;

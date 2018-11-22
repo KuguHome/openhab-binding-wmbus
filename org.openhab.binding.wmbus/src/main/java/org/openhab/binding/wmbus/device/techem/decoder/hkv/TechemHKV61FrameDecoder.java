@@ -8,12 +8,12 @@
  */
 package org.openhab.binding.wmbus.device.techem.decoder.hkv;
 
+import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
+
 class TechemHKV61FrameDecoder extends AbstractTechemHKVFrameDecoder {
 
-    private static final String DEVICE_VARIANT = "68TCH100255";
-
     TechemHKV61FrameDecoder() {
-        super(DEVICE_VARIANT, (byte) 0x61);
+        super(TechemBindingConstants._68TCH97255_8);
     }
 
 }

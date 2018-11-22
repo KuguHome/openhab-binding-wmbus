@@ -15,6 +15,7 @@ import java.util.function.Function;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
+import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
@@ -23,18 +24,18 @@ import org.slf4j.LoggerFactory;
 public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements TechemFrameDecoder<T> {
 
     private final Logger logger = LoggerFactory.getLogger(AbstractTechemFrameDecoder.class);
-    private final String variant;
+    protected final Variant variant;
 
     protected final Function<Float, Float> _SCALE_FACTOR_1_10th = value -> value / 10;
     protected final Function<Float, Float> _SCALE_FACTOR_1_100th = value -> value / 100;
 
-    protected AbstractTechemFrameDecoder(String variant) {
+    protected AbstractTechemFrameDecoder(Variant variant) {
         this.variant = variant;
     }
 
     @Override
     public final boolean suports(String deviceVariant) {
-        return variant.equals(deviceVariant);
+        return variant.getRawType().equals(deviceVariant);
     }
 
     protected final byte[] read(byte[] buffer, int... indexes) {

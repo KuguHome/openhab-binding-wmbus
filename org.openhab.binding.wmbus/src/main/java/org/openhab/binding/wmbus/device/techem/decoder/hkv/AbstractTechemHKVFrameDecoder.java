@@ -16,6 +16,7 @@ import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
+import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openhab.binding.wmbus.device.techem.decoder.AbstractTechemFrameDecoder;
 import org.openmuc.jmbus.SecondaryAddress;
 
@@ -23,16 +24,14 @@ import tec.uom.se.quantity.Quantities;
 
 abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 
-    private final byte variant;
     private final boolean reportsTemperature;
 
-    protected AbstractTechemHKVFrameDecoder(String mbusVariant, byte variant) {
-        this(mbusVariant, variant, false);
+    protected AbstractTechemHKVFrameDecoder(Variant variant) {
+        this(variant, false);
     }
 
-    protected AbstractTechemHKVFrameDecoder(String mbusVariant, byte variant, boolean temperature) {
-        super(mbusVariant);
-        this.variant = variant;
+    protected AbstractTechemHKVFrameDecoder(Variant variant, boolean temperature) {
+        super(variant);
         this.reportsTemperature = temperature;
     }
 

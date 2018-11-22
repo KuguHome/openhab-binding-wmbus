@@ -6,24 +6,30 @@ public class Variant {
 
     public final int version;
     public final int type;
+    public final DeviceType reportedType;
     public final int desiredType;
 
     public Variant(int version, DeviceType type, DeviceType desiredType) {
-        this(version, type.getId(), desiredType.getId());
+        this(version, type.getId(), type, desiredType.getId());
     }
 
     public Variant(int version, int type, DeviceType desiredType) {
-        this(version, type, desiredType.getId());
+        this(version, type, DeviceType.getInstance(type), desiredType.getId());
     }
 
-    public Variant(int version, int type, int desiredType) {
+    public Variant(int version, int type, DeviceType reportedType, DeviceType desiredType) {
+        this(version, type, reportedType, desiredType.getId());
+    }
+
+    public Variant(int version, int type, DeviceType reportedType, int desiredType) {
         this.version = version;
         this.type = type;
+        this.reportedType = reportedType;
         this.desiredType = desiredType;
     }
 
     public String getRawType() {
-        return "68" + TechemBindingConstants.MANUFACTURER_ID + version + "" + type;
+        return "68" + TechemBindingConstants.MANUFACTURER_ID + version + "" + reportedType.getId();
     }
 
     public String getTechemType() {
@@ -35,7 +41,7 @@ public class Variant {
         final int prime = 31;
         int result = 1;
         result = prime * result + desiredType;
-        result = prime * result + type;
+        result = prime * result + reportedType.hashCode();
         result = prime * result + version;
         return result;
     }
@@ -55,7 +61,7 @@ public class Variant {
         if (desiredType != other.desiredType) {
             return false;
         }
-        if (type != other.type) {
+        if (reportedType != other.reportedType) {
             return false;
         }
         if (version != other.version) {

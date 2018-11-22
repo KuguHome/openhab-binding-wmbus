@@ -63,6 +63,13 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_COLD_WATER_METER);
     }
 
+    @Test
+    public void testWZ43Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_113_HEAT);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HEAT_METER);
+    }
+
     private DiscoveryResult result(String message) throws DecodingException {
         when(adapter.getUID()).thenReturn(new ThingUID(WMBusBindingConstants.THING_TYPE_BRIDGE, "bridge0"));
 

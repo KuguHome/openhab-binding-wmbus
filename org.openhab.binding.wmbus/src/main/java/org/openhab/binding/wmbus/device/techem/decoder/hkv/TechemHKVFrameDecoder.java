@@ -25,7 +25,7 @@ public class TechemHKVFrameDecoder extends TechemVariantFrameDecoder {
     final static String DEVICE_VARIANT = "68TCH100255";
 
     public TechemHKVFrameDecoder() {
-        super(DEVICE_VARIANT, -1, CODEC_MAP);
+        super(-1, CODEC_MAP);
     }
 
 }

@@ -28,23 +28,23 @@ import org.openmuc.jmbus.SecondaryAddress;
  *
  * @author Łukasz Dywicki - initial contribution
  */
-public class TechemVariantFrameDecoder extends AbstractTechemFrameDecoder<TechemDevice> {
+public class TechemVariantFrameDecoder implements TechemFrameDecoder<TechemDevice> {
 
     private final Map<Byte, TechemFrameDecoder> decoders;
     private final int tagOffset;
 
-    protected TechemVariantFrameDecoder(String variant, Map<Byte, TechemFrameDecoder> codecMap) {
-        this(variant, 0, codecMap);
+    protected TechemVariantFrameDecoder(Map<Byte, TechemFrameDecoder> codecMap) {
+        this(0, codecMap);
     }
 
-    protected TechemVariantFrameDecoder(String variant, int tagOffset, Map<Byte, TechemFrameDecoder> codecMap) {
-        super(variant);
+    protected TechemVariantFrameDecoder(int tagOffset, Map<Byte, TechemFrameDecoder> codecMap) {
         this.tagOffset = tagOffset;
         this.decoders = codecMap;
     }
 
     @Override
-    protected TechemDevice decode(WMBusDevice device, SecondaryAddress address, byte[] buffer) {
+    public TechemDevice decode(WMBusDevice device) {
+        SecondaryAddress address = device.getOriginalMessage().getSecondaryAddress();
         byte[] addressArray = address.asByteArray();
         int tagIndex = addressArray.length + tagOffset - 1;
 
@@ -60,4 +60,8 @@ public class TechemVariantFrameDecoder extends AbstractTechemFrameDecoder<Techem
         return null;
     }
 
+    @Override
+    public boolean suports(String deviceVariant) {
+        return decoders.values().stream().filter(decoder -> decoder.suports(deviceVariant)).findFirst().isPresent();
+    }
 }
