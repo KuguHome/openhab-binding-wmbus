@@ -149,4 +149,6 @@ public class WMBusBindingConstants {
             DeviceType.GAS_DETECTOR, DeviceType.BREAKER_ELEC, DeviceType.VALVE_GAS_OR_WATER,
             DeviceType.WASTE_WATER_METER);
 
+    public static final String CONFKEY_BINDING_TIME_TO_LIVE = "timeToLive";
+
 }

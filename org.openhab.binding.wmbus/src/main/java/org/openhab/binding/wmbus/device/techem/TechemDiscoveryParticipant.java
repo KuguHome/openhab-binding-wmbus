@@ -20,6 +20,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.BindingConfiguration;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.decoder.TechemFrameDecoder;
@@ -42,6 +43,8 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
     private final Logger logger = LoggerFactory.getLogger(TechemDiscoveryParticipant.class);
 
     private TechemFrameDecoder<TechemDevice> techemFrameDecoder;
+
+    private BindingConfiguration configuration;
 
     @Override
     public @NonNull Set<ThingTypeUID> getSupportedThingTypeUIDs() {
@@ -85,8 +88,7 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
                     .withThingType(TechemBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(deviceTypeTag))
-                    .withBridge(device.getAdapter().getUID()).withLabel(label)
-                    .withTTL(WMBusBindingConstants.DEFAULT_TIME_TO_LIVE).build();
+                    .withBridge(device.getAdapter().getUID()).withLabel(label).withTTL(getTimeToLive()).build();
         }
 
         return null;
@@ -120,6 +122,19 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
     public void unsetTechemFrameDecoder(TechemFrameDecoder<TechemDevice> techemFrameDecoder) {
         this.techemFrameDecoder = null;
+    }
+
+    @Reference
+    public void setBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void unsetBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = null;
+    }
+
+    private Long getTimeToLive() {
+        return configuration.getTimeToLive();
     }
 
 }

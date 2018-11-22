@@ -94,8 +94,7 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
                     .withThingType(QloudBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
-                    .withBridge(device.getAdapter().getUID()).withLabel(label)
-                    .withTTL(WMBusBindingConstants.DEFAULT_TIME_TO_LIVE).build();
+                    .withBridge(device.getAdapter().getUID()).withLabel(label).withTTL(getTimeToLive()).build();
         }
 
         return null;

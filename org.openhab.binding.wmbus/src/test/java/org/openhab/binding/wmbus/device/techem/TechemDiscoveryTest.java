@@ -13,6 +13,7 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openhab.binding.wmbus.internal.DynamicBindingConfiguration;
 import org.openmuc.jmbus.DecodingException;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -26,6 +27,7 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
     @Before
     public void setUp() {
         discoverer.setTechemFrameDecoder(new CompositeTechemFrameDecoder());
+        discoverer.setBindingConfiguration(new DynamicBindingConfiguration());
     }
 
     @Test

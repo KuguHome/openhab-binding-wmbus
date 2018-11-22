@@ -20,6 +20,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryService;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.BindingConfiguration;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusCompanyIdentifiers;
 import org.openhab.binding.wmbus.WMBusDevice;
@@ -52,6 +53,8 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
 
     private final Set<WMBusDiscoveryParticipant> participants = new CopyOnWriteArraySet<>();
     private final Set<ThingTypeUID> supportedThingTypes = new CopyOnWriteArraySet<>();
+
+    private BindingConfiguration configuration;
 
     public WMBusDiscoveryService2() {
         super(SEARCH_TIME);
@@ -168,9 +171,22 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                 .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withBridge(adapter.getUID())
-                .withThingType(typeUID).withLabel(label).withTTL(WMBusBindingConstants.DEFAULT_TIME_TO_LIVE).build();
+                .withThingType(typeUID).withLabel(label).withTTL(getTimeToLive()).build();
 
         thingDiscovered(discoveryResult);
+    }
+
+    @Reference
+    public void setBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void unsetBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = null;
+    }
+
+    private Long getTimeToLive() {
+        return configuration.getTimeToLive();
     }
 
 }

@@ -11,8 +11,10 @@ package org.openhab.binding.wmbus.device;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.BindingConfiguration;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
+import org.osgi.service.component.annotations.Reference;
 
 /**
  * Base class for discovery participants.
@@ -20,6 +22,8 @@ import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
  * @author Łukasz Dywicki - initial contribution
  */
 public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscoveryParticipant {
+
+    private BindingConfiguration configuration;
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
@@ -32,4 +36,16 @@ public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscover
 
     protected abstract ThingTypeUID getThingType(WMBusDevice device);
 
+    @Reference
+    public void setBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = configuration;
+    }
+
+    public void unsetBindingConfiguration(BindingConfiguration configuration) {
+        this.configuration = null;
+    }
+
+    protected Long getTimeToLive() {
+        return configuration.getTimeToLive();
+    }
 }

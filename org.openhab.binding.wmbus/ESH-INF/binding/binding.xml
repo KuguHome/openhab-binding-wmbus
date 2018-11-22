@@ -8,4 +8,12 @@
     <description>The WMBus binding uses a WMBus radio USB stick to receive messages and decode the contents to show the data of the devices in the UI. It uses the jMBus library, but currently, only the Techem heat cost allocators are supported.</description>
     <author>Hanno - Felix Wagner, Ernst Rohlicek, Roman Malyugin</author>
 
+
+    <config-description>
+        <parameter name="timeToLive" type="integer">
+            <description>Amount of time (in minutes) over which discovery results are retained in inbox. By default set to 720 minutes (24 hours)</description>
+            <unitLabel>minute</unitLabel>
+        </parameter>
+    </config-description>
+
 </binding:binding>
