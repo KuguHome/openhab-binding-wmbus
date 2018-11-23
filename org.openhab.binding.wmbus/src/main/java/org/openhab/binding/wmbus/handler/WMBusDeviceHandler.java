@@ -70,8 +70,6 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         logger.trace("onNewWMBusDevice(): is it me?");
         if (wmBusDevice.getDeviceId().equals(deviceId)) {
             logger.trace("onNewWMBusDevice(): yes it's me");
-            logger.trace("onNewWMBusDevice(): updating status to online");
-            updateStatus(ThingStatus.ONLINE);
             logger.trace("onNewWMBusDevice(): calling onChangedWMBusDevice()");
             onChangedWMBusDevice(adapter, wmBusDevice);
         }
@@ -89,6 +87,9 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
             } else {
                 try {
                     wmbusDevice = parseDevice(receivedDevice);
+                    logger.trace("onChangedWMBusDevice(): updating status to online");
+                    updateStatus(ThingStatus.ONLINE);
+
                     if (wmbusDevice != null) {
                         logger.trace("onChangedWMBusDevice(): inform all channels to refresh");
                         triggerRefresh();
