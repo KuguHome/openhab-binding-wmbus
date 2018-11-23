@@ -9,13 +9,18 @@
 
 package org.openhab.binding.wmbus.handler;
 
-import static org.openhab.binding.wmbus.WMBusBindingConstants.PROPERTY_DEVICE_ID;
+import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
+import java.math.BigDecimal;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
@@ -24,10 +29,12 @@ import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
+import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openmuc.jmbus.DataRecord;
@@ -48,6 +55,9 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     protected String deviceId;
     private WMBusBridgeHandler bridgeHandler;
     protected T wmbusDevice;
+    protected Long lastUpdate;
+    private Long frequencyOfUpdates = WMBusBindingConstants.DEFAULT_DEVICE_FREQUENCY_OF_UPDATES;
+    private ThingStatus status;
 
     public WMBusDeviceHandler(Thing thing) {
         super(thing);
@@ -94,7 +104,16 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         logger.trace("onChangedWMBusDevice(): return");
     }
 
+    @Override
+    protected void updateStatus(@NonNull ThingStatus status, @NonNull ThingStatusDetail statusDetail,
+            @Nullable String description) {
+        super.updateStatus(status, statusDetail, description);
+        this.status = status;
+    }
+
     protected void triggerRefresh() {
+        lastUpdate = System.currentTimeMillis();
+
         for (Channel curChan : getThing().getChannels()) {
             handleCommand(curChan.getUID(), RefreshType.REFRESH);
         }
@@ -142,6 +161,14 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         } catch (WMBusException e) {
             logger.error("Could not obtain Wireless M-Bus device information", e);
         }
+
+        Long updateFrequency = Optional.of(config.getProperties())
+                .map(cfg -> cfg.get(PROPERTY_DEVICE_FREQUENCY_OF_UPDATES)) //
+                .filter(BigDecimal.class::isInstance) //
+                .map(BigDecimal.class::cast) //
+                .map(BigDecimal::longValue) //
+                .orElse(DEFAULT_DEVICE_FREQUENCY_OF_UPDATES);
+        this.frequencyOfUpdates = TimeUnit.MINUTES.toMillis(updateFrequency);
     }
 
     protected void initialize(T device) {
@@ -200,6 +227,20 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
 
     boolean checkMessage(WMBusDevice receivedDevice) {
         return true;
+    }
+
+    public void checkStatus() {
+        // status check is relevant only if device is considered to be online - we determine if it should be marked
+        // offline
+        if (this.status != ThingStatus.ONLINE) {
+            return;
+        }
+
+        long currentTime = System.currentTimeMillis();
+        if (lastUpdate + frequencyOfUpdates <= currentTime) {
+            logger.info("WMBus device was not seen since {}, marking it as offline", new Date(lastUpdate));
+            updateStatus(ThingStatus.OFFLINE);
+        }
     }
 
     @SuppressWarnings("unchecked")

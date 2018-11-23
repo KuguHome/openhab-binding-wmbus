@@ -125,8 +125,15 @@ public class WMBusBindingConstants {
 
     // device config properties
     public static final String PROPERTY_DEVICE_ID = "deviceId";
+    public static final String PROPERTY_DEVICE_FREQUENCY_OF_UPDATES = "frequencyOfUpdates";
     public static final String PROPERTY_DEVICE_ADDRESS = "address";
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
+
+    /**
+     * Default frequency of reports. This is at the same time value after which device is considered to be offline.
+     * Value in minutes.
+     */
+    public static final Long DEFAULT_DEVICE_FREQUENCY_OF_UPDATES = 60l;
 
     public static final Map<String, ThingTypeUID> WMBUS_TYPE_MAP = new ImmutableMap.Builder<String, ThingTypeUID>()
             .put("68KAM484", THING_TYPE_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_QUNDIS_QHEAT_5)

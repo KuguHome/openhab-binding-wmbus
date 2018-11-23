@@ -12,6 +12,7 @@ package org.openhab.binding.wmbus.handler;
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -19,19 +20,24 @@ import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 
 import javax.xml.bind.DatatypeConverter;
 
+import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
+import org.eclipse.smarthome.core.common.ThreadPoolManager;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
+import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
+import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
@@ -56,6 +62,8 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .singleton(WMBusBindingConstants.THING_TYPE_BRIDGE);
 
+    private static final ScheduledExecutorService SCHEDULER = ThreadPoolManager.getScheduledPool("wmbus");
+
     private static final String DEVICE_STATE_ADDED = "added";
 
     private static final String DEVICE_STATE_CHANGED = "changed";
@@ -67,6 +75,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
     private ScheduledFuture<?> initFuture;
 
     private final Map<String, WMBusDevice> knownDevices = new ConcurrentHashMap<>();
+    private final Set<WMBusDeviceHandler<WMBusDevice>> handlers = Collections.synchronizedSet(new HashSet<>());
 
     private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
@@ -74,8 +83,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
     // https://stackoverflow.com/questions/40471/differences-between-hashmap-and-hashtable#40878
     private final Map<SecondaryAddress, byte[]> encryptionKeys = new Hashtable<SecondaryAddress, byte[]>();
 
+    private ScheduledFuture<?> statusFuture;
+
     public WMBusBridgeHandler(Bridge bridge) {
         super(bridge);
+        this.statusFuture = SCHEDULER.scheduleAtFixedRate(new StatusRunnable(handlers), 60, 60, TimeUnit.SECONDS);
     }
 
     @Override
@@ -336,8 +348,14 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
         if (wmbusReceiver != null) {
             wmbusReceiver = null;
         }
+
+        if (statusFuture != null) {
+            statusFuture.cancel(true);
+            statusFuture = null;
+        }
     }
 
+    @Override
     public void processMessage(WMBusDevice device) {
         logger.trace("bridge: processMessage begin");
         String deviceId = device.getDeviceId();
@@ -406,4 +424,32 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
         return getThing().getUID();
     }
 
+    @Override
+    public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
+        if (childHandler instanceof WMBusDeviceHandler) {
+            handlers.add((WMBusDeviceHandler<WMBusDevice>) childHandler);
+        }
+    }
+
+    @Override
+    public void childHandlerDisposed(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
+        if (childHandler instanceof WMBusDeviceHandler) {
+            handlers.remove(childHandler);
+        }
+    }
+
+    static class StatusRunnable implements Runnable {
+
+        private Set<WMBusDeviceHandler<WMBusDevice>> handlers;
+
+        public StatusRunnable(Set<WMBusDeviceHandler<WMBusDevice>> handlers) {
+            this.handlers = handlers;
+        }
+
+        @Override
+        public void run() {
+            handlers.stream().forEach(WMBusDeviceHandler::checkStatus);
+        }
+
+    }
 }

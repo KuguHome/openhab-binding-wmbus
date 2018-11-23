@@ -20,9 +20,18 @@
                 <description>Identifier which lets to find device.</description>
                 <required>true</required>
             </parameter>
+            <parameter name="frequencyOfUpdates" type="integer">
+                <label>Frequency of updates</label>
+                <description>
+                    Frequency of updates sent by device. This value is used to determine if device goes offline.
+                    Recommended value depends on manufacturer and specific meter and should be adjusted manually.
+                    Defaults to 60 minutes which is quite long.
+                </description>
+                <required>false</required>
+                <unitLabel>minutes</unitLabel>
+            </parameter>
         </config-description>
     </thing-type>
-
 
     <!-- thing definition for Qundis Qcaloric 5,5 -->
     <thing-type id="qundis_qcaloric_5_5">
@@ -47,13 +56,7 @@
             <channel id="last_date" typeId="last_date" />
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
 
@@ -81,13 +84,7 @@
             <channel id="last_date" typeId="last_date" />
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
 
@@ -108,13 +105,7 @@
             <channel id="current_date" typeId="current_date" />
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
 
@@ -140,13 +131,7 @@
             <channel id="previous_date" typeId="previous_date" />
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
     <!-- thing definition for adeunis_rf gas meter_v3 -->
@@ -162,13 +147,7 @@
             <channel id="current_volume_total_m3" typeId="current_gas_volume_reading" />   <!-- TODO make more specific channel types -->
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
     
     <thing-type id="engelmann_heat_meter_v0">
@@ -191,13 +170,7 @@
             <channel id="temperature_difference" typeId="room_temperature" />   <!-- TODO make more specific channel types -->
         </channels>
 
-        <config-description>
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>This is the WMBus device ID field.</description>
-                <required>true</required>
-            </parameter>
-        </config-description>
+        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
     <!-- channel definitions for all WMBus devices -->
