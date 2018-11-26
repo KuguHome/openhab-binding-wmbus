@@ -99,6 +99,8 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
             return new QuantityType<>(quantity.getValue(), quantity.getUnit());
         } else if (value instanceof Double) {
             return new DecimalType(((Double) value).floatValue());
+        } else if (value instanceof Float) {
+            return new DecimalType(((Float) value).floatValue());
         } else if (value instanceof LocalDateTime) {
             return new DateTimeType(ZonedDateTime.of((LocalDateTime) value, ZoneId.systemDefault()));
         } else if (value instanceof ZonedDateTime) {
