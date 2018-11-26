@@ -4,7 +4,7 @@ Bundle-Name: WMBus Binding
 Bundle-SymbolicName: org.openhab.binding.wmbus
 Bundle-Version: 2.3.0.SNAPSHOT
 Bundle-ClassPath: .,
- lib/jmbus-3.1.1.sp2.jar
+ lib/jmbus-3.2.0.sp2.jar
 Bundle-Vendor: KUGU Home GmbH
 Bundle-RequiredExecutionEnvironment: JavaSE-1.8
 Service-Component: OSGI-INF/*.xml
