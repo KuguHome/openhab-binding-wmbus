@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.RecordType;
+import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.generic.GenericWMBusThingHandler;
 import org.openhab.binding.wmbus.device.qloud.QloudBindingConstants;
@@ -27,12 +28,12 @@ import org.openmuc.jmbus.DecodingException;
  */
 public class QloudThingHandler extends GenericWMBusThingHandler<QloudWMBusDevice> {
 
-    public QloudThingHandler(Thing thing) {
-        this(thing, fetchMapping(thing.getThingTypeUID()));
+    public QloudThingHandler(Thing thing, UnitRegistry unitRegistry) {
+        this(thing, unitRegistry, fetchMapping(thing.getThingTypeUID()));
     }
 
-    protected QloudThingHandler(Thing thing, Map<String, RecordType> channelMapping) {
-        super(thing, channelMapping, QloudBindingConstants.RECORD_UNITS);
+    protected QloudThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
+        super(thing, unitRegistry, channelMapping);
     }
 
     @Override

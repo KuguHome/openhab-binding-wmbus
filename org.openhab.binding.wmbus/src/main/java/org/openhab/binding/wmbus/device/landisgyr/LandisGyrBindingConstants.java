@@ -11,10 +11,6 @@ package org.openhab.binding.wmbus.device.landisgyr;
 import java.util.Map;
 import java.util.Set;
 
-import javax.measure.Unit;
-
-import org.eclipse.smarthome.core.library.unit.SIUnits;
-import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
@@ -100,22 +96,6 @@ public interface LandisGyrBindingConstants {
     Map<String, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<String, ThingTypeUID> builder()
             // here we enlist supported devices
             .put("68LUG44", LandisGyrBindingConstants.THING_TYPE_HEAT_METER).build();
-
-    Map<RecordType, Unit<?>> RECORD_UNITS = ImmutableMap.<RecordType, Unit<?>> builder() // break line please!
-            .put(ENERGY_WATT_HOUR, SmartHomeUnits.WATT_HOUR) //
-            .put(VOLUME_CUBIC_METRE, SIUnits.CUBIC_METRE) //
-            .put(POWER_WATT, SIUnits.WATT) //
-            // .put(FLOW_VOLUME, SmartHomeUnits.CUBICMETRE_PER_HOUR) //
-            .put(FLOW_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(RETURN_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(TEMPERATURE_DIFFERENCE, SIUnits.KELVIN) //
-            .put(MAX_POWER, SIUnits.WATT) //
-            // .put(MAX_FLOW_VOLUME, SmartHomeUnits.CUBICMETRE_PER_HOUR) //
-            .put(MAX_FLOW_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(MAX_RETURN_TEMPERATURTE, SIUnits.CELSIUS) //
-            .put(ON_TIME_ERROR, SIUnits.HOUR) //
-            // .put(ERROR_FLAGS) //
-            .build();
 
     Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet.copyOf(SUPPORTED_DEVICE_VARIANTS.values());
 

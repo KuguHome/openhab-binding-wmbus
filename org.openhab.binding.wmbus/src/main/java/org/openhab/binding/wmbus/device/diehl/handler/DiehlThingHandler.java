@@ -14,6 +14,7 @@ import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.RecordType;
+import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.diehl.DiehlBindingConstants;
 import org.openhab.binding.wmbus.device.diehl.DiehlWMBusDevice;
@@ -27,12 +28,12 @@ import org.openmuc.jmbus.DecodingException;
  */
 public class DiehlThingHandler extends GenericWMBusThingHandler<DiehlWMBusDevice> {
 
-    public DiehlThingHandler(Thing thing) {
-        this(thing, fetchMapping(thing.getThingTypeUID()));
+    public DiehlThingHandler(Thing thing, UnitRegistry unitRegistry) {
+        this(thing, unitRegistry, fetchMapping(thing.getThingTypeUID()));
     }
 
-    protected DiehlThingHandler(Thing thing, Map<String, RecordType> channelMapping) {
-        super(thing, channelMapping, DiehlBindingConstants.RECORD_UNITS);
+    protected DiehlThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
+        super(thing, unitRegistry, channelMapping);
     }
 
     @Override

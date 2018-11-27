@@ -11,17 +11,12 @@ package org.openhab.binding.wmbus.device.qloud;
 import java.util.Map;
 import java.util.Set;
 
-import javax.measure.Unit;
-
-import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 
 import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
-
-import tec.uom.se.unit.Units;
 
 /**
  * Subset of WMBus constants specific to Fastforward/Q-Loud devices.
@@ -69,9 +64,6 @@ public interface QloudBindingConstants {
             .put("68FFD12", QloudBindingConstants.THING_TYPE_ENERGYCAM_ELECTRICITY)
             .put("68FFD13", QloudBindingConstants.THING_TYPE_ENERGYCAM_GAS)
             .put("68FFD17", QloudBindingConstants.THING_TYPE_ENERGYCAM_WATER).build();
-
-    Map<RecordType, Unit<?>> RECORD_UNITS = ImmutableMap.of(VOLUME_CUBIC_METRE, Units.CUBIC_METRE,
-            ELECTRICITY_WATT_HOUR, SmartHomeUnits.WATT_HOUR);
 
     Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet.copyOf(SUPPORTED_DEVICE_VARIANTS.values());
 

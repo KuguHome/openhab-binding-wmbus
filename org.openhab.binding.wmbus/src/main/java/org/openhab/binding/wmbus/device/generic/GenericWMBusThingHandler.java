@@ -10,8 +10,6 @@ package org.openhab.binding.wmbus.device.generic;
 
 import java.util.Map;
 
-import javax.measure.Unit;
-
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.library.types.QuantityType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
@@ -19,8 +17,8 @@ import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
-import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.wmbus.RecordType;
+import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
 import org.openmuc.jmbus.DataRecord;
@@ -36,14 +34,13 @@ public class GenericWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
 
     private final Logger logger = LoggerFactory.getLogger(GenericWMBusThingHandler.class);
 
+    private final UnitRegistry unitRegistry;
     private final Map<String, RecordType> channelMapping;
-    private final Map<RecordType, Unit<?>> unitMapping;
 
-    protected GenericWMBusThingHandler(Thing thing, Map<String, RecordType> channelMapping,
-            Map<RecordType, Unit<?>> unitMapping) {
+    protected GenericWMBusThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
         super(thing);
+        this.unitRegistry = unitRegistry;
         this.channelMapping = channelMapping;
-        this.unitMapping = unitMapping;
     }
 
     @Override
@@ -56,13 +53,9 @@ public class GenericWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
                     DataRecord record = wmbusDevice.findRecord(recordType);
 
                     if (record != null) {
-                        State newState = UnDefType.NULL;
-                        Unit<?> unit = unitMapping.get(recordType);
-                        if (unit != null) {
-                            newState = new QuantityType<>(record.getScaledDataValue(), unit);
-                        } else {
-                            newState = convertRecordData(record);
-                        }
+                        State newState = unitRegistry.lookup(record.getUnit())
+                                .map(unit -> new QuantityType<>(record.getScaledDataValue(), unit))
+                                .map(State.class::cast).orElseGet(() -> convertRecordData(record));
 
                         logger.trace("Assigning new state {} to channel {}", newState, channelUID.getId());
                         updateState(channelUID.getId(), newState);

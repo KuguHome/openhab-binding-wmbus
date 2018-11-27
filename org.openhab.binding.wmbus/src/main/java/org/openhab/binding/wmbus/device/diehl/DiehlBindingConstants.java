@@ -11,9 +11,6 @@ package org.openhab.binding.wmbus.device.diehl;
 import java.util.Map;
 import java.util.Set;
 
-import javax.measure.Unit;
-
-import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
@@ -95,15 +92,6 @@ public interface DiehlBindingConstants {
     Map<String, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<String, ThingTypeUID> builder()
             // here we enlist supported devices
             .put("68DME1298", DiehlBindingConstants.THING_TYPE_HEAT_COST_ALLOCATOR).build();
-
-    Map<RecordType, Unit<?>> RECORD_UNITS = ImmutableMap.<RecordType, Unit<?>> builder() // break line please!
-            .put(FLOW_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(EXTERNAL_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(MAX_FLOW_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(MAX_EXTERNAL_TEMPERATURE, SIUnits.CELSIUS) //
-            .put(MAX_FLOW_TEMPERATURE_STORAGE_15, SIUnits.CELSIUS) //
-            .put(MAX_EXTERNAL_TEMPERATURE_STORAGE_15, SIUnits.CELSIUS) //
-            .build();
 
     Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet.copyOf(SUPPORTED_DEVICE_VARIANTS.values());
 
