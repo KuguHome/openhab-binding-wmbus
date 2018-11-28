@@ -1,3 +1,8 @@
+/**
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
+ */
 package org.openmuc.jmbus;
 
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
@@ -107,6 +112,7 @@ public class DataRecord {
         CUSTOMER,
         RESERVED,
         OPERATING_TIME_BATTERY,
+        RF_LEVEL,
         HCA,
         REACTIVE_ENERGY,
         TEMPERATURE_LIMIT,
@@ -192,7 +198,7 @@ public class DataRecord {
         return rawData;
     }
 
-    int decode(byte[] buffer, int offset, int length) throws DecodingException {
+    int decode(byte[] buffer, int offset) throws DecodingException {
         int i = offset;
 
         decodeDib(buffer, i);
@@ -397,7 +403,6 @@ public class DataRecord {
                 }
                 i += dataLength0x0d;
 
-                this.rawData = rawData;
                 dataValue = new String(rawData);
                 dataValueType = DataValueType.STRING;
                 break;
@@ -884,7 +889,7 @@ public class DataRecord {
             description = Description.RESERVED;
         } else if ((vif & 0x7c) == 0x24) { // E010 01nn
             description = Description.STORAGE_INTERVALL;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7f) == 0x28) { // E010 1000
             description = Description.STORAGE_INTERVALL;
             unit = DlmsUnit.MONTH;
@@ -898,19 +903,13 @@ public class DataRecord {
             unit = DlmsUnit.SECOND;
         } else if ((vif & 0x7c) == 0x2c) { // E010 11nn
             description = Description.DURATION_LAST_READOUT;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7c) == 0x30) { // E011 00nn
             description = Description.TARIF_DURATION;
-            switch (vif & 0x03) {
-                case 0: // E011 0000
-                    description = Description.NOT_SUPPORTED; // TODO: TARIF_START (Date/Time)
-                    break;
-                default:
-                    this.unit = unitFor(vif);
-            }
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7c) == 0x34) { // E011 01nn
             description = Description.TARIF_PERIOD;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7f) == 0x38) { // E011 1000
             description = Description.TARIF_PERIOD;
             unit = DlmsUnit.MONTH;
@@ -950,7 +949,8 @@ public class DataRecord {
         } else if ((vif & 0x7f) == 0x70) { // E111 0000
             description = Description.NOT_SUPPORTED; // TODO: BATTERY_CHANGE_DATE_TIME
         } else if ((vif & 0x7f) == 0x71) { // E111 0001
-            description = Description.NOT_SUPPORTED; // TODO: RF_LEVEL dBm
+            description = Description.RF_LEVEL;
+            this.unit = DlmsUnit.SIGNAL_STRENGTH;
         } else if ((vif & 0x7f) == 0x72) { // E111 0010
             description = Description.NOT_SUPPORTED; // TODO: DAYLIGHT_SAVING (begin, ending, deviation)
         } else if ((vif & 0x7f) == 0x73) { // E111 0011
@@ -985,7 +985,7 @@ public class DataRecord {
         }
     }
 
-    private static DlmsUnit unitFor(byte vif) throws DecodingException {
+    private static DlmsUnit timeUnitFor(byte vif) throws DecodingException {
         int u = vif & 0x03;
         switch (u) {
             case 0: // E010 1100

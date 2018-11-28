@@ -10,6 +10,7 @@ import org.assertj.core.api.Assertions;
 import org.assertj.core.api.Condition;
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.junit.Test;
+import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.device.techem.TechemDecoderTest.QuantityPredicate;
 import org.openhab.binding.wmbus.device.techem.TechemDecoderTest.RssiPredicate;

@@ -1,4 +1,4 @@
-package org.openhab.binding.wmbus.device.techem;
+package org.openhab.binding.wmbus.device;
 
 import java.util.Collections;
 

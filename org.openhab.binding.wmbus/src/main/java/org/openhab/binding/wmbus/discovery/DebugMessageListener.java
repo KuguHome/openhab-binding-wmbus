@@ -6,6 +6,7 @@ import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.EncryptionMode;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.VariableDataStructure;
 import org.osgi.service.component.annotations.Component;
@@ -34,16 +35,21 @@ public class DebugMessageListener implements WMBusMessageListener {
 
             try {
                 VariableDataStructure vdr = device.getOriginalMessage().getVariableDataResponse();
-                vdr.decode();
 
-                logger.debug(
-                        "Received telegram ({}): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}",
-                        secondaryAddress, vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(),
-                        vdr.getNumberOfEncryptedBlocks());
-                logger.debug("Message in hex: {}", HexUtils.bytesToHex(device.getOriginalMessage().asBlob()));
+                if (vdr.getEncryptionMode() == EncryptionMode.NONE) {
+                    vdr.decode();
 
-                for (DataRecord record : vdr.getDataRecords()) {
-                    logger.debug("> record: {}", record.toString());
+                    logger.debug(
+                            "Received telegram ({}): access number: {}, status: {}, encryption mode: {}, number of encrypted blocks: {}",
+                            secondaryAddress, vdr.getAccessNumber(), vdr.getStatus(), vdr.getEncryptionMode(),
+                            vdr.getNumberOfEncryptedBlocks());
+                    logger.debug("Message in hex: {}", HexUtils.bytesToHex(device.getOriginalMessage().asBlob()));
+
+                    for (DataRecord record : vdr.getDataRecords()) {
+                        logger.debug("> record: {}", record.toString());
+                    }
+                } else {
+                    logger.debug("Encrypted block {}", vdr);
                 }
             } catch (DecodingException e) {
                 logger.debug("Could not decode frame ({})", secondaryAddress, e);

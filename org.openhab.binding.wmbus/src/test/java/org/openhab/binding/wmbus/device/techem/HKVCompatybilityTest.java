@@ -8,6 +8,7 @@ import javax.measure.Quantity;
 
 import org.assertj.core.api.Assertions;
 import org.junit.Test;
+import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 

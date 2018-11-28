@@ -11,6 +11,7 @@ import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.junit.MockitoJUnitRunner;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
+import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.internal.DynamicBindingConfiguration;
