@@ -19,6 +19,7 @@ import org.eclipse.smarthome.config.discovery.DiscoveryResultBuilder;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.thing.ThingUID;
+import org.openhab.binding.wmbus.BindingConfiguration;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.AbstractWMBusDiscoveryParticipant;
@@ -27,6 +28,7 @@ import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.osgi.service.component.annotations.Component;
+import org.osgi.service.component.annotations.Reference;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -118,6 +120,17 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
         }
 
         return null;
+    }
+
+    @Override
+    @Reference
+    public void setBindingConfiguration(BindingConfiguration configuration) {
+        super.setBindingConfiguration(configuration);
+    }
+
+    @Override
+    public void unsetBindingConfiguration(BindingConfiguration configuration) {
+        super.unsetBindingConfiguration(configuration);
     }
 
 }

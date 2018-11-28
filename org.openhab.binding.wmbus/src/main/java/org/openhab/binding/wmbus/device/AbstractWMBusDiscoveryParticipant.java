@@ -14,7 +14,6 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wmbus.BindingConfiguration;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.discovery.WMBusDiscoveryParticipant;
-import org.osgi.service.component.annotations.Reference;
 
 /**
  * Base class for discovery participants.
@@ -36,7 +35,6 @@ public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscover
 
     protected abstract ThingTypeUID getThingType(WMBusDevice device);
 
-    @Reference
     public void setBindingConfiguration(BindingConfiguration configuration) {
         this.configuration = configuration;
     }
