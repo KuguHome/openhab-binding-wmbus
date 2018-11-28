@@ -97,6 +97,8 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
         if (value instanceof Quantity) {
             Quantity<?> quantity = (Quantity<?>) value;
             return new QuantityType<>(quantity.getValue(), quantity.getUnit());
+        } else if (value instanceof Integer) {
+            return new DecimalType(((Integer) value).floatValue());
         } else if (value instanceof Double) {
             return new DecimalType(((Double) value).floatValue());
         } else if (value instanceof Float) {

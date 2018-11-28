@@ -440,7 +440,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
 
     static class StatusRunnable implements Runnable {
 
-        private Set<WMBusDeviceHandler<WMBusDevice>> handlers;
+        private final Set<WMBusDeviceHandler<WMBusDevice>> handlers;
 
         public StatusRunnable(Set<WMBusDeviceHandler<WMBusDevice>> handlers) {
             this.handlers = handlers;
