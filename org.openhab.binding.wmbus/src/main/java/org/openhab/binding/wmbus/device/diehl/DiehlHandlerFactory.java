@@ -16,6 +16,8 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.device.diehl.handler.DiehlThingHandler;
+import org.openhab.io.transport.mbus.wireless.FilteredKeyStorage;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,6 +36,7 @@ public class DiehlHandlerFactory extends BaseThingHandlerFactory {
 
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(DiehlHandlerFactory.class);
+    private KeyStorage keyStorage;
     private UnitRegistry unitRegistry;
 
     public DiehlHandlerFactory() {
@@ -51,7 +54,7 @@ public class DiehlHandlerFactory extends BaseThingHandlerFactory {
 
         if (thingTypeUID.equals(DiehlBindingConstants.THING_TYPE_HEAT_COST_ALLOCATOR)) {
             logger.debug("Creating handler for Diehl heat cost allocator {}", thing.getUID().getId());
-            return new DiehlThingHandler(thing, unitRegistry);
+            return new DiehlThingHandler(thing, new FilteredKeyStorage(keyStorage, thing), unitRegistry);
         }
 
         logger.warn("Unsupported thing type {}. This handler factory does not support {}", thingTypeUID,
@@ -70,6 +73,15 @@ public class DiehlHandlerFactory extends BaseThingHandlerFactory {
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
+    }
+
+    @Reference
+    public void setKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = keyStorage;
+    }
+
+    public void unsetKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = null;
     }
 
     @Reference

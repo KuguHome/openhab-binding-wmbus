@@ -13,18 +13,14 @@ import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
-import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-
-import javax.xml.bind.DatatypeConverter;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
@@ -42,10 +38,13 @@ import org.eclipse.smarthome.core.types.Command;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
-import org.openmuc.jmbus.SecondaryAddress;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
+import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
 import org.openmuc.jmbus.wireless.WMBusConnection;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusManufacturer;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusSerialBuilder;
+import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.openmuc.jmbus.wireless.WMBusMode;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,8 +69,10 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
 
     private final Logger logger = LoggerFactory.getLogger(WMBusBridgeHandler.class);
 
-    protected WMBusReceiver wmbusReceiver = null;
-    private WMBusConnection wmbusConnection = null;
+    private final KeyStorage keyStorage;
+
+    protected WMBusReceiver wmbusReceiver;
+    private WMBusConnection wmbusConnection;
     private ScheduledFuture<?> initFuture;
 
     private final Map<String, WMBusDevice> knownDevices = new ConcurrentHashMap<>();
@@ -79,14 +80,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
 
     private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
 
-    // TODO HashMap would be the unsynchronized version; differences see here:
-    // https://stackoverflow.com/questions/40471/differences-between-hashmap-and-hashtable#40878
-    private final Map<SecondaryAddress, byte[]> encryptionKeys = new Hashtable<SecondaryAddress, byte[]>();
-
     private ScheduledFuture<?> statusFuture;
 
-    public WMBusBridgeHandler(Bridge bridge) {
+    public WMBusBridgeHandler(Bridge bridge, KeyStorage keyStorage) {
         super(bridge);
+        this.keyStorage = keyStorage;
         this.statusFuture = SCHEDULER.scheduleAtFixedRate(new StatusRunnable(handlers), 60, 60, TimeUnit.SECONDS);
     }
 
@@ -239,31 +237,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
                     }
                 });
 
-                if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)
-                        || getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS) == null
-                        || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).isEmpty()) {
-                    logger.debug("No encryption keys given.");
-                } else {
-                    logger.trace("Parsing given encryption keys");
-                    parseKeys();
-                    logger.trace("Encryption keys parsed");
-                    Map<SecondaryAddress, byte[]> encryptionKeys = getEncryptionKeys();
-                    logger.trace("Setting encryption keys in JMBus, count: " + encryptionKeys.size());
-                    for (Entry<SecondaryAddress, byte[]> encryptionKey : encryptionKeys.entrySet()) {
-                        wmbusConnection.addKey(encryptionKey.getKey(), encryptionKey.getValue());
-                    }
-                    logger.trace("Keys successfully set");
-                }
-
                 // success
                 logger.debug("WMBusBridgeHandler: Initialization done! Setting bridge online");
                 updateStatus(ThingStatus.ONLINE);
             }
         }, 0, TimeUnit.SECONDS);
-    }
-
-    private Map<SecondaryAddress, byte[]> getEncryptionKeys() {
-        return encryptionKeys;
     }
 
     private static WMBusManufacturer parseManufacturer(String manufacturer) {
@@ -307,11 +285,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
             try {
                 switch (type) {
                     case DEVICE_STATE_ADDED: {
-                        wmBusMessageListener.onNewWMBusDevice(this, device);
+                        wmBusMessageListener.onNewWMBusDevice(this, decrypt(device));
                         break;
                     }
                     case DEVICE_STATE_CHANGED: {
-                        wmBusMessageListener.onChangedWMBusDevice(this, device);
+                        wmBusMessageListener.onChangedWMBusDevice(this, decrypt(device));
                         break;
                     }
                     default: {
@@ -355,58 +333,62 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
         }
     }
 
+    /**
+     * Because we do not add encryption keys to connection and they are propagated from connection down to received
+     * frame and its parsing logic we need to inject encryption keys after message is received and before its first use
+     * to avoid troubles.
+     * Yes, we do it manually because jmbus does not offer any API/SPI for that.
+     *
+     * @param device Incoming frame.
+     * @return Decrypted frame or original (unencrypted) frame when parsing fails.
+     */
+    protected WMBusDevice decrypt(WMBusDevice device) {
+        try {
+            device.decode();
+        } catch (DecodingException parseException) {
+            if (parseException.getMessage().startsWith("Unable to decode encrypted payload")) {
+                try {
+                    WMBusMessage message = VirtualWMBusMessageHelper.decode(device.getOriginalMessage().asBlob(),
+                            device.getOriginalMessage().getRssi(), keyStorage.toMap());
+                    logger.info("Message from {} successfully deecrypted, forwarding it to receivers",
+                            device.getDeviceAddress());
+                    message.getVariableDataResponse().decode();
+                    return new WMBusDevice(message, this);
+                } catch (DecodingException decodingException) {
+                    logger.info(
+                            "Could not decode frame, probably we still miss enryption key, forwarding frame in original form",
+                            decodingException);
+                }
+            } else {
+                logger.info("Unexpected error while parsing frame, forwarding frame in original form", parseException);
+            }
+        }
+        return device;
+    }
+
     @Override
     public void processMessage(WMBusDevice device) {
         logger.trace("bridge: processMessage begin");
-        String deviceId = device.getDeviceId();
+
+        String deviceAddress = device.getDeviceAddress();
         String deviceState = DEVICE_STATE_ADDED;
-        if (knownDevices.containsKey(deviceId)) {
+        if (knownDevices.containsKey(deviceAddress)) {
             deviceState = DEVICE_STATE_CHANGED;
         }
-        knownDevices.put(deviceId, device);
+        knownDevices.put(deviceAddress, device);
         logger.trace("bridge processMessage: notifying listeners");
         notifyWMBusMessageListeners(device, deviceState);
         logger.trace("bridge: processMessage end");
     }
 
-    public WMBusDevice getDeviceById(String deviceId) {
-        logger.trace("bridge: get device by id: " + deviceId);
-        if (knownDevices.containsKey(deviceId)) {
+    public WMBusDevice getDeviceByAddress(String deviceAddress) {
+        logger.trace("bridge: get device by address: " + deviceAddress);
+        if (knownDevices.containsKey(deviceAddress)) {
             logger.trace("bridge: found device");
         } else {
             logger.trace("bridge: device not found");
         }
-        return knownDevices.get(deviceId);
-    }
-
-    private void parseKeys() {
-        String[] idKeyPairs = ((String) getConfig().get(WMBusBindingConstants.CONFKEY_ENCRYPTION_KEYS)).split(";");
-        for (String currentKey : idKeyPairs) {
-            String[] idKeyPair = currentKey.split(":");
-            if (idKeyPair.length != 2) {
-                logger.error("parseKeys(): A key has to be a given as [secondary address]:[key].", true);
-            } else {
-                int secondaryAddressLength = idKeyPair[0].length();
-                if (secondaryAddressLength != 16) {
-                    logger.error("parseKeys(): The secondary address needs to be 16 digits long, but has "
-                            + secondaryAddressLength + '.', true);
-                } else {
-                    try {
-                        byte[] secondaryAddressbytes = DatatypeConverter.parseHexBinary(idKeyPair[0]);
-                        SecondaryAddress secondaryAddress = SecondaryAddress.newFromWMBusLlHeader(secondaryAddressbytes,
-                                0);
-                        try {
-                            byte[] key = DatatypeConverter.parseHexBinary(idKeyPair[1]);
-                            encryptionKeys.put(secondaryAddress, key);
-                        } catch (IllegalArgumentException e) {
-                            logger.error("parseKeys(): The key is not hexadecimal.", true);
-                        }
-                    } catch (NumberFormatException e) {
-                        logger.error("parseKeys(): The secondary address is not hexadecimal.", true);
-                    }
-                }
-            }
-        }
+        return knownDevices.get(deviceAddress);
     }
 
     private int[] parseDeviceIDFilter() {

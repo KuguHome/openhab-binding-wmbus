@@ -16,6 +16,8 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.device.landisgyr.handler.LandisGyrThingHandler;
+import org.openhab.io.transport.mbus.wireless.FilteredKeyStorage;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -34,6 +36,7 @@ public class LandisGyrHandlerFactory extends BaseThingHandlerFactory {
 
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(LandisGyrHandlerFactory.class);
+    private KeyStorage keyStorage;
     private UnitRegistry unitRegistry;
 
     public LandisGyrHandlerFactory() {
@@ -51,7 +54,7 @@ public class LandisGyrHandlerFactory extends BaseThingHandlerFactory {
 
         if (thingTypeUID.equals(LandisGyrBindingConstants.THING_TYPE_HEAT_METER)) {
             logger.debug("Creating handler for Landis+Gyr heat meter {}", thing.getUID().getId());
-            return new LandisGyrThingHandler(thing, unitRegistry);
+            return new LandisGyrThingHandler(thing, new FilteredKeyStorage(keyStorage, thing), unitRegistry);
         }
 
         logger.warn("Unsupported thing type {}. This handler factory does not support {}", thingTypeUID,
@@ -70,6 +73,15 @@ public class LandisGyrHandlerFactory extends BaseThingHandlerFactory {
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
+    }
+
+    @Reference
+    public void setKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = keyStorage;
+    }
+
+    public void unsetKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = null;
     }
 
     @Reference

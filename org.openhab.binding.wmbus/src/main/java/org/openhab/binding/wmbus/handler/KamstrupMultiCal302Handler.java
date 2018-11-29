@@ -24,6 +24,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DataRecord.DataValueType;
 import org.slf4j.Logger;
@@ -66,8 +67,8 @@ public class KamstrupMultiCal302Handler extends WMBusDeviceHandler {
     // private static final RecordType TYPE_MANUFACTURER_SPECIFIC = new RecordType(new byte[] { 0x01 }, new byte[] {
     // (byte) 0xFF, 0x21 });
 
-    public KamstrupMultiCal302Handler(Thing thing) {
-        super(thing);
+    public KamstrupMultiCal302Handler(Thing thing, KeyStorage keyStorage) {
+        super(thing, keyStorage);
     }
 
     @Override

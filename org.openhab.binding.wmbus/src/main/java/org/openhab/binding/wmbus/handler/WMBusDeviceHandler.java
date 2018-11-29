@@ -38,6 +38,8 @@ import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
+import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
 import org.slf4j.Logger;
@@ -53,15 +55,21 @@ import org.slf4j.LoggerFactory;
 public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThingHandler
         implements WMBusMessageListener {
     private final Logger logger = LoggerFactory.getLogger(WMBusDeviceHandler.class);
-    protected String deviceId;
+    private final KeyStorage keyStorage;
+
     private WMBusBridgeHandler bridgeHandler;
     protected T wmbusDevice;
     protected Long lastUpdate;
     private Long frequencyOfUpdates = WMBusBindingConstants.DEFAULT_DEVICE_FREQUENCY_OF_UPDATES;
     private ThingStatus status;
 
-    public WMBusDeviceHandler(Thing thing) {
+    protected WMBusDeviceHandler(Thing thing) {
+        this(thing, new MapKeyStorage());
+    }
+
+    public WMBusDeviceHandler(Thing thing, KeyStorage keyStorage) {
         super(thing);
+        this.keyStorage = keyStorage;
         logger.debug("Created new handler for thing {}", thing.getUID());
     }
 
@@ -172,12 +180,18 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                 .orElse(DEFAULT_DEVICE_FREQUENCY_OF_UPDATES);
         this.frequencyOfUpdates = TimeUnit.MINUTES.toMillis(updateFrequency);
 
-        this.encryptionKey = Optional.of(config.getProperties()) //
-                .map(cfg -> cfg.get(PROPERTY_DEVICE_ENCRYPTION_KEY)) //
-                .filter(String.class::isInstance) //
-                .map(String.class::cast) //
-                .map(HexUtils::hexToBytes) //
-                .orElse(DEFAULT_DEVICE_ENCRYPTION_KEY);
+        if (Boolean.valueOf(thing.getProperties().get(PROPERTY_DEVICE_ENCRYPTED))) {
+            Optional<byte[]> encryptionKey = Optional.of(config.getProperties()) //
+                    .map(cfg -> cfg.get(PROPERTY_DEVICE_ENCRYPTION_KEY)) //
+                    .filter(String.class::isInstance) //
+                    .map(String.class::cast) //
+                    .map(HexUtils::hexToBytes);
+            if (!encryptionKey.isPresent()) {
+                updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_PENDING,
+                        "Please provide encryption key to read device communication.");
+            }
+            encryptionKey.ifPresent(key -> keyStorage.registerKey(HexUtils.hexToBytes(deviceAddress), key));
+        }
     }
 
     protected void initialize(T device) {

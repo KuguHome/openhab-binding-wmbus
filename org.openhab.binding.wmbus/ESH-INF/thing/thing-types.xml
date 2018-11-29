@@ -18,6 +18,19 @@
             <parameter name="deviceId" type="text">
                 <label>WMBus device ID</label>
                 <description>Identifier which lets to find device.</description>
+    <!-- thing definition for encrypted, but still standard meter -->
+    <thing-type id="encrypted_meter">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Encrypted WMBus device</label>
+        <description>WMBus device which uses secured communication - you need to provide a encryption key to read reported values.</description>
+
+        <config-description uri="wmbus:meter:encrypted">
+            <parameter name="deviceAddress" type="text">
+                <label>WMBus device address</label>
+                <description>Identifier which lets to find device (in hexdecimal format).</description>
                 <required>true</required>
             </parameter>
             <parameter name="frequencyOfUpdates" type="integer">
@@ -37,6 +50,7 @@
                      is optional and required only in case when meter is configured to use encrypted communication.
                 </description>
                 <required>false</required>
+                <context>encryption</context>
             </parameter>
         </config-description>
     </thing-type>

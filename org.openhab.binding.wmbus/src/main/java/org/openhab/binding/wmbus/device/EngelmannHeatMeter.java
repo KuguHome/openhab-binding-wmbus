@@ -23,6 +23,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -81,8 +82,8 @@ public class EngelmannHeatMeter extends Meter {
                 .put(CHANNEL_RETURNTEMPERATURE, new RecordType(0x04, 0x5F))
                 .put(CHANNEL_TEMPERATUREDIFFERENCE, new RecordType(0x04, 0x61)).build();
 
-        public EngelmannHeatMeterHandler(Thing thing) {
-            super(thing);
+        public EngelmannHeatMeterHandler(Thing thing, KeyStorage keyStorage) {
+            super(thing, keyStorage);
         }
 
         @Override

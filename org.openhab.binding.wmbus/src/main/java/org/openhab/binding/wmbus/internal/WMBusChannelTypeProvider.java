@@ -39,9 +39,7 @@ import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DataRecord.DataValueType;
 import org.openmuc.jmbus.DataRecord.Description;
 import org.openmuc.jmbus.DataRecord.FunctionField;
-import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.DlmsUnit;
-import org.openmuc.jmbus.EncryptionMode;
 import org.openmuc.jmbus.VariableDataStructure;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -101,17 +99,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     }
 
     private void calculateChannelTypes(WMBusDevice device) {
-        try {
-            device.decode();
-        } catch (DecodingException e) {
-            return;
-        }
-
         VariableDataStructure response = device.getOriginalMessage().getVariableDataResponse();
-        if (response.getEncryptionMode() != EncryptionMode.NONE) {
-            // can't handle encrypted messages just yet.
-            return;
-        }
 
         for (DataRecord record : response.getDataRecords()) {
             Optional<ChannelTypeUID> channelTypeUID = getChannelType(record);
@@ -119,7 +107,14 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                 ChannelTypeUID typeUID = channelTypeUID.get();
                 if (!wmbusChannelMap.containsKey(typeUID.getId())) {
                     Optional<Unit<?>> unit = unitRegistry.lookup(record.getUnit());
-                    String label = record.getDescription().name().toLowerCase().replace("_", " ");
+                    String label = getFunction(record.getFunctionField()) + " ";
+                    label += record.getDescription().name().toLowerCase().replace("_", " ");
+                    if (record.getTariff() != 0) {
+                        label += " tariff " + record.getTariff();
+                    }
+                    if (record.getStorageNumber() != 0) {
+                        label += " storage " + record.getStorageNumber();
+                    }
 
                     logger.info("Calculating new channel type {} for record {}", channelTypeUID, record);
 
@@ -131,7 +126,6 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                     StateDescription state = getStateDescription(record.getDataValueType(), record.getDescription(),
                             unit);
                     EventDescription event = null;
-
                     ChannelType channelType = new ChannelType(typeUID, false, itemType.get(), kind, label, description,
                             category, tags, state, event, null);
                     wmbusChannelMap.put(typeUID.getId(), channelType);
@@ -171,7 +165,8 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
         String description = record.getDescription().name().replace("_", " ").toLowerCase();
         String function = getFunction(record.getFunctionField());
         return function + " value of " + description + " registry. Storage " + record.getStorageNumber() + ", tarif "
-                + record.getTariff();
+                + record.getTariff() + ". Emmited under DIB " + HexUtils.bytesToHex(record.getDib()) + " and VIB:"
+                + HexUtils.bytesToHex(record.getVib());
     }
 
     private String getFunction(FunctionField function) {
@@ -179,7 +174,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
             case ERROR_VAL:
                 return "Error";
             case INST_VAL:
-                return "Instant";
+                return "Present";
             case MAX_VAL:
                 return "Maximum";
             case MIN_VAL:

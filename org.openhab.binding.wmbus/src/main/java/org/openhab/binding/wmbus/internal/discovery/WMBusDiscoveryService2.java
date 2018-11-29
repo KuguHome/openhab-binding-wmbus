@@ -164,8 +164,16 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
             label += " (" + manufacturer + ")";
         }
 
-        ThingTypeUID typeUID = WMBusBindingConstants.THING_TYPE_METER;
-        ThingUID thingUID = new ThingUID(typeUID, device.getDeviceId());
+        ThingTypeUID typeUID;
+        if (device.isEnrypted()) {
+            typeUID = WMBusBindingConstants.THING_TYPE_ENCRYPTED_METER;
+            properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ENCRYPTED, true);
+        } else {
+            typeUID = WMBusBindingConstants.THING_TYPE_METER;
+            properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ENCRYPTED, false);
+        }
+
+        ThingUID thingUID = new ThingUID(typeUID, device.getDeviceAddress());
 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)

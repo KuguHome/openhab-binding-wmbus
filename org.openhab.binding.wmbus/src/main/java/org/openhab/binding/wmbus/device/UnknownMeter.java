@@ -19,6 +19,7 @@ import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Deactivate;
@@ -46,8 +47,8 @@ public class UnknownMeter extends Meter {
 
     public static class UnknownWMBusDeviceHandler extends WMBusDeviceHandler {
 
-        public UnknownWMBusDeviceHandler(Thing thing) {
-            super(thing);
+        public UnknownWMBusDeviceHandler(Thing thing, KeyStorage keyStorage) {
+            super(thing, keyStorage);
         }
 
         @Override

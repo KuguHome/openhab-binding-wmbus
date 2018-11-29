@@ -23,7 +23,6 @@ import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.QuantityType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
@@ -64,11 +63,6 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
         this.type = type;
         this.decoder = decoder;
         this.channelMapping = channelMapping;
-    }
-
-    @Override
-    public void initialize(T device) {
-        updateStatus(ThingStatus.ONLINE);
     }
 
     @Override

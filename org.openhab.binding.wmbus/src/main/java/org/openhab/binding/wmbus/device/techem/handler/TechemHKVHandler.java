@@ -16,7 +16,6 @@ import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
@@ -45,11 +44,6 @@ public class TechemHKVHandler extends WMBusDeviceHandler<TechemHKV> {
     public TechemHKVHandler(Thing thing, TechemFrameDecoder<TechemDevice> decoder) {
         super(thing);
         this.decoder = decoder;
-    }
-
-    @Override
-    public void initialize(TechemHKV device) {
-        updateStatus(ThingStatus.ONLINE);
     }
 
     // @Override

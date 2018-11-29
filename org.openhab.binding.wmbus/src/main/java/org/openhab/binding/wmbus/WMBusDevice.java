@@ -13,6 +13,7 @@ import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
+import org.openmuc.jmbus.EncryptionMode;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 
 /**
@@ -58,6 +59,10 @@ public class WMBusDevice {
 
     public DataRecord findRecord(byte[] dib, byte[] vib) {
         return findRecord(new RecordType(dib, vib));
+    }
+
+    public boolean isEnrypted() {
+        return getOriginalMessage().getVariableDataResponse().getEncryptionMode() != EncryptionMode.NONE;
     }
 
     public String getDeviceAddress() {

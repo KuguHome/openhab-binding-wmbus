@@ -31,6 +31,7 @@ import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.internal.units.CompositeUnitRegistry;
+import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DlmsUnit;
 
@@ -46,8 +47,8 @@ public class GenericWMBusThingHandlerTest {
 
     private static final String CHANNEL_VOLUME = "volume";
     private static final String DEVICE_ID = "10";
-    private static final Map<String, Object> CONFIGURATION = ImmutableMap.of(WMBusBindingConstants.PROPERTY_DEVICE_ID,
-            DEVICE_ID);
+    private static final Map<String, Object> CONFIGURATION = ImmutableMap
+            .of(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, DEVICE_ID);
 
     private static final RecordType VOLUME = new RecordType(0x0C, 0x14);
     private static final Double VOLUME_VALUE = 10.0;
@@ -68,8 +69,8 @@ public class GenericWMBusThingHandlerTest {
     private ThingHandlerCallback callback;
 
     public GenericWMBusThingHandlerTest() {
-        handler = new GenericWMBusThingHandler<WMBusDevice>(createTestThing(), new CompositeUnitRegistry(),
-                CHANNEL_MAPPING) {
+        handler = new GenericWMBusThingHandler<WMBusDevice>(createTestThing(), new MapKeyStorage(),
+                new CompositeUnitRegistry(), CHANNEL_MAPPING) {
             @Override
             protected org.eclipse.smarthome.core.thing.Bridge getBridge() {
                 return createTestBridge(adapter);

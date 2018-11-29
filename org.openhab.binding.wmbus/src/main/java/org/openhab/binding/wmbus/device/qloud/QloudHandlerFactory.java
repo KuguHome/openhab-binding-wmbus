@@ -16,6 +16,8 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.device.qloud.handler.QloudThingHandler;
+import org.openhab.io.transport.mbus.wireless.FilteredKeyStorage;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
@@ -35,6 +37,7 @@ public class QloudHandlerFactory extends BaseThingHandlerFactory {
     // OpenHAB logger
     private final Logger logger = LoggerFactory.getLogger(QloudHandlerFactory.class);
     private UnitRegistry unitRegistry;
+    private KeyStorage keyStorage;
 
     public QloudHandlerFactory() {
         logger.debug("Q-loud handler factory starting up.");
@@ -54,7 +57,7 @@ public class QloudHandlerFactory extends BaseThingHandlerFactory {
                 || thingTypeUID.equals(QloudBindingConstants.THING_TYPE_ENERGYCAM_GAS)
                 || thingTypeUID.equals(QloudBindingConstants.THING_TYPE_ENERGYCAM_WATER)) {
             logger.debug("Creating handler for q-loud meter {}", thing.getUID().getId());
-            return new QloudThingHandler(thing, unitRegistry);
+            return new QloudThingHandler(thing, new FilteredKeyStorage(keyStorage, thing), unitRegistry);
         }
 
         logger.warn("Unsupported thing type {}. This handler factory does not support {}", thingTypeUID,
@@ -73,6 +76,15 @@ public class QloudHandlerFactory extends BaseThingHandlerFactory {
     @Deactivate
     protected void deactivate(ComponentContext componentContext) {
         super.deactivate(componentContext);
+    }
+
+    @Reference
+    public void setKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = keyStorage;
+    }
+
+    public void unsetKeyStorage(KeyStorage keyStorage) {
+        this.keyStorage = null;
     }
 
     @Reference

@@ -21,6 +21,7 @@ import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -37,8 +38,9 @@ public class GenericWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
     private final UnitRegistry unitRegistry;
     private final Map<String, RecordType> channelMapping;
 
-    protected GenericWMBusThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
-        super(thing);
+    protected GenericWMBusThingHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry,
+            Map<String, RecordType> channelMapping) {
+        super(thing, keyStorage);
         this.unitRegistry = unitRegistry;
         this.channelMapping = channelMapping;
     }

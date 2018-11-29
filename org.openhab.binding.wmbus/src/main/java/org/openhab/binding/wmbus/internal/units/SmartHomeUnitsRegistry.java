@@ -87,14 +87,12 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
                 return Optional.of(SIUnits.CUBIC_METRE);
             case CUBIC_METRE_PER_DAY:
             case CUBIC_METRE_PER_DAY_CORRECTED:
-                break;
             case CUBIC_METRE_PER_HOUR:
             case CUBIC_METRE_PER_HOUR_CORRECTED:
-                break;
             case CUBIC_METRE_PER_MINUTE:
-                break;
             case CUBIC_METRE_PER_SECOND:
-                break;
+                // there is no support for VolumetricFlowRate yet.
+                return Optional.empty();
             case CURRENCY:
                 break;
             case DAY:
@@ -241,6 +239,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case CUBIC_FEET:
             case CUBIC_METRE:
             case CUBIC_METRE_CORRECTED:
+                return Optional.of(Volume.class);
             case CUBIC_METRE_PER_DAY:
             case CUBIC_METRE_PER_DAY_CORRECTED:
             case CUBIC_METRE_PER_HOUR:
@@ -248,7 +247,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case CUBIC_METRE_PER_MINUTE:
             case CUBIC_METRE_PER_SECOND:
                 // VolumetricFlow
-                break;
+                return Optional.empty();
             case CURRENCY:
                 break;
             case DEGREE:

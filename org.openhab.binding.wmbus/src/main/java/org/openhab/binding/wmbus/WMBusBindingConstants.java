@@ -33,6 +33,7 @@ public class WMBusBindingConstants {
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
     public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
     public static final String THING_TYPE_NAME_METER = "meter";
+    public static final String THING_TYPE_NAME_ENCRYPTED_METER = "encrypted_meter";
 
     /**
      * Time to live - by default 24 hours after which discovery result is discarded.
@@ -62,6 +63,8 @@ public class WMBusBindingConstants {
             THING_TYPE_NAME_VIRTUAL_BRIDGE);
 
     public final static ThingTypeUID THING_TYPE_METER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_METER);
+    public final static ThingTypeUID THING_TYPE_ENCRYPTED_METER = new ThingTypeUID(BINDING_ID,
+            THING_TYPE_NAME_ENCRYPTED_METER);
 
     // add new devices here
     public final static ThingTypeUID THING_TYPE_KAMSTRUP_MULTICAL_302 = new ThingTypeUID(BINDING_ID,
@@ -109,7 +112,7 @@ public class WMBusBindingConstants {
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
             THING_TYPE_KAMSTRUP_MULTICAL_302, THING_TYPE_QUNDIS_QHEAT_5, THING_TYPE_QUNDIS_QWATER_5_5,
             THING_TYPE_QUNDIS_QCALORIC_5_5, THING_TYPE_VIRTUAL_BRIDGE, THING_TYPE_ADEUNIS_GAS_METER_3,
-            THING_TYPE_ENGELMANN_SENSOSTAR, THING_TYPE_METER);
+            THING_TYPE_ENGELMANN_SENSOSTAR, THING_TYPE_METER, THING_TYPE_ENCRYPTED_METER);
 
     // Bridge config properties
     public static final String CONFKEY_STICK_MODEL = "stickModel";
@@ -127,6 +130,8 @@ public class WMBusBindingConstants {
     public static final String PROPERTY_DEVICE_ID = "deviceId";
     public static final String PROPERTY_DEVICE_FREQUENCY_OF_UPDATES = "frequencyOfUpdates";
     public static final String PROPERTY_DEVICE_ENCRYPTION_KEY = "enryptionKey";
+    // device property which says if we expected secure communication
+    public static final String PROPERTY_DEVICE_ENCRYPTED = "encrypted";
 
     public static final String PROPERTY_DEVICE_ADDRESS = "address";
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";

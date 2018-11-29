@@ -21,6 +21,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.types.UnDefType;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DataRecord.DataValueType;
 import org.slf4j.Logger;
@@ -41,8 +42,8 @@ public class QundisQCaloricHandler extends WMBusDeviceHandler {
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Sets.newHashSet(THING_TYPE_QUNDIS_QCALORIC_5_5);
     private final Logger logger = LoggerFactory.getLogger(QundisQCaloricHandler.class);
 
-    public QundisQCaloricHandler(Thing thing) {
-        super(thing);
+    public QundisQCaloricHandler(Thing thing, KeyStorage keyStorage) {
+        super(thing, keyStorage);
     }
 
     @Override

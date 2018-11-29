@@ -29,6 +29,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
@@ -49,10 +50,10 @@ public class WMBusVirtualBridgeHandler extends WMBusBridgeHandler {
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
             .singleton(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE);
 
-    private Logger logger = LoggerFactory.getLogger(WMBusVirtualBridgeHandler.class);
+    private final Logger logger = LoggerFactory.getLogger(WMBusVirtualBridgeHandler.class);
 
-    public WMBusVirtualBridgeHandler(Bridge bridge) {
-        super(bridge);
+    public WMBusVirtualBridgeHandler(Bridge bridge, KeyStorage keyStorage) {
+        super(bridge, keyStorage);
     }
 
     @Override
