@@ -1,0 +1,144 @@
+/**
+ * Copyright (c) 2010-2018 by the respective copyright holders.
+ *
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ */
+package org.openhab.binding.wmbus.device.generic;
+
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+
+import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.smarthome.core.library.types.QuantityType;
+import org.eclipse.smarthome.core.thing.Channel;
+import org.eclipse.smarthome.core.thing.ChannelUID;
+import org.eclipse.smarthome.core.thing.Thing;
+import org.eclipse.smarthome.core.thing.binding.builder.ChannelBuilder;
+import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
+import org.eclipse.smarthome.core.thing.type.ChannelType;
+import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
+import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.types.RefreshType;
+import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.binding.wmbus.RecordType;
+import org.openhab.binding.wmbus.UnitRegistry;
+import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
+import org.openhab.binding.wmbus.internal.WMBusChannelTypeProvider;
+import org.openmuc.jmbus.DataRecord;
+import org.openmuc.jmbus.EncryptionMode;
+import org.openmuc.jmbus.VariableDataStructure;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import com.google.common.collect.ImmutableMap;
+
+/**
+ * Universal dynamic handler which covers devices based on dib/vib and channel type mapping.
+ *
+ * @author Łukasz Dywicki - Initial contribution.
+ */
+public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDeviceHandler<T> {
+
+    private static final String CHANNEL_PROPERTY_VIB = "vib";
+
+    private static final String CHANNEL_PROPERTY_DIB = "dib";
+
+    private final Logger logger = LoggerFactory.getLogger(DynamicWMBusThingHandler.class);
+
+    private final UnitRegistry unitRegistry;
+    private final WMBusChannelTypeProvider channelTypeProvider;
+
+    public DynamicWMBusThingHandler(Thing thing, UnitRegistry unitRegistry,
+            WMBusChannelTypeProvider channelTypeProvider) {
+        super(thing);
+        this.unitRegistry = unitRegistry;
+        this.channelTypeProvider = channelTypeProvider;
+    }
+
+    @Override
+    public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice receivedDevice) {
+        VariableDataStructure response = receivedDevice.getOriginalMessage().getVariableDataResponse();
+
+        if (response.getEncryptionMode() == EncryptionMode.NONE) {
+            List<Channel> channels = new ArrayList<>();
+            for (DataRecord record : response.getDataRecords()) {
+                Optional<ChannelTypeUID> typeId = WMBusChannelTypeProvider.getChannelType(record);
+                Optional<Channel> channel = typeId.map(type -> thing.getChannel(type.getId()));
+
+                if (typeId.isPresent() && !channel.isPresent()) {
+                    channels.add(createChannel(typeId.get(), record));
+                }
+            }
+
+            if (!channels.isEmpty()) {
+                ThingBuilder updatedThing = editThing().withChannels(channels);
+                updateThing(updatedThing.build());
+            }
+        }
+
+        super.onChangedWMBusDevice(adapter, receivedDevice);
+    }
+
+    private Channel createChannel(ChannelTypeUID typeId, DataRecord record) {
+        ChannelType type = channelTypeProvider.getChannelType(typeId, null);
+
+        // public ChannelUID(ThingUID thingUID, String id)
+        ChannelBuilder channelBuilder = ChannelBuilder.create(new ChannelUID(thing.getUID(), typeId.getId()),
+                type.getItemType());
+
+        Map<String, String> properties = ImmutableMap.of(CHANNEL_PROPERTY_DIB, HexUtils.bytesToHex(record.getDib()),
+                CHANNEL_PROPERTY_VIB, HexUtils.bytesToHex(record.getVib()));
+
+        channelBuilder.withProperties(properties).withLabel(type.getLabel());
+
+        String description = type.getDescription();
+        if (description != null) {
+            channelBuilder.withDescription(description);
+        }
+
+        return channelBuilder.build();
+    }
+
+    @Override
+    public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
+        logger.trace("Received command {} for channel {}", command, channelUID);
+        if (command == RefreshType.REFRESH) {
+            if (wmbusDevice != null) {
+                Channel channel = thing.getChannel(channelUID.getId());
+
+                Map<String, String> properties = channel.getProperties();
+                Optional<byte[]> dib = Optional.ofNullable(properties.get(CHANNEL_PROPERTY_DIB))
+                        .map(HexUtils::hexToBytes);
+                Optional<byte[]> vib = Optional.ofNullable(properties.get(CHANNEL_PROPERTY_VIB))
+                        .map(HexUtils::hexToBytes);
+
+                if (dib.isPresent() && vib.isPresent()) {
+                    RecordType recordType = new RecordType(dib.get(), vib.get());
+                    DataRecord record = wmbusDevice.findRecord(recordType);
+
+                    if (record != null) {
+                        State newState = unitRegistry.lookup(record.getUnit())
+                                .map(unit -> new QuantityType<>(record.getScaledDataValue(), unit))
+                                .map(State.class::cast).orElseGet(() -> convertRecordData(record));
+
+                        logger.trace("Assigning new state {} to channel {}", newState, channelUID.getId());
+                        updateState(channelUID.getId(), newState);
+                    } else {
+                        logger.warn("Could not read value of record {} in received frame", recordType);
+                    }
+                } else {
+                    logger.warn("Unown channel {}, not supported by {}", channelUID, thing);
+                }
+            }
+        }
+    }
+
+}

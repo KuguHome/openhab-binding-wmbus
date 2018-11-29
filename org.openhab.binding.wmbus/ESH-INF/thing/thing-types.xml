@@ -12,7 +12,7 @@
         </supported-bridge-type-refs>
 
         <label>WMBus device</label>
-        <description>Universal WMBus device/</description>
+        <description>Universal WMBus device.</description>
 
         <config-description uri="wmbus:meter">
             <parameter name="deviceId" type="text">

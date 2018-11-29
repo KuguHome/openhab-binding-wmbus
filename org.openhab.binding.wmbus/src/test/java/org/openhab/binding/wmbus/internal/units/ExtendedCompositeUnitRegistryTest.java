@@ -10,9 +10,11 @@ package org.openhab.binding.wmbus.internal.units;
 
 import java.util.Optional;
 
+import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import org.assertj.core.api.Assertions;
+import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openmuc.jmbus.DlmsUnit;
@@ -49,5 +51,9 @@ public class ExtendedCompositeUnitRegistryTest extends BaseUnitRegistryTest {
             return Optional.empty();
         }
 
+        @Override
+        public Optional<Class<? extends Quantity<?>>> quantity(@Nullable DlmsUnit wmbusType) {
+            return Optional.empty();
+        }
     }
 }

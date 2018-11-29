@@ -109,7 +109,7 @@ public class WMBusBindingConstants {
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
             THING_TYPE_KAMSTRUP_MULTICAL_302, THING_TYPE_QUNDIS_QHEAT_5, THING_TYPE_QUNDIS_QWATER_5_5,
             THING_TYPE_QUNDIS_QCALORIC_5_5, THING_TYPE_VIRTUAL_BRIDGE, THING_TYPE_ADEUNIS_GAS_METER_3,
-            THING_TYPE_ENGELMANN_SENSOSTAR);
+            THING_TYPE_ENGELMANN_SENSOSTAR, THING_TYPE_METER);
 
     // Bridge config properties
     public static final String CONFKEY_STICK_MODEL = "stickModel";

@@ -153,9 +153,10 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
                 + device.getDeviceType();
 
         Map<String, Object> properties = new HashMap<>();
-        String address = device.getDeviceType();
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ID, device.getDeviceId());
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
+        properties.put(Thing.PROPERTY_SERIAL_NUMBER, device.getDeviceId());
+        properties.put(Thing.PROPERTY_MODEL_ID, secondaryAddress.getVersion());
 
         String manufacturer = WMBusCompanyIdentifiers.get(secondaryAddress.getManufacturerId());
         if (manufacturer != null) {
@@ -163,10 +164,8 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
             label += " (" + manufacturer + ")";
         }
 
-        ThingTypeUID typeUID = WMBusBindingConstants.WMBUS_TYPE_MAP.getOrDefault(device.getDeviceType(),
-                WMBusBindingConstants.THING_TYPE_METER);
-
-        ThingUID thingUID = new ThingUID(typeUID, address);
+        ThingTypeUID typeUID = WMBusBindingConstants.THING_TYPE_METER;
+        ThingUID thingUID = new ThingUID(typeUID, device.getDeviceId());
 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)

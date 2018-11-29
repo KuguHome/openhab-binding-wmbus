@@ -15,8 +15,10 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Stream;
 
+import javax.measure.Quantity;
 import javax.measure.Unit;
 
+import org.eclipse.jdt.annotation.Nullable;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openmuc.jmbus.DlmsUnit;
 import org.osgi.service.component.annotations.Component;
@@ -58,8 +60,24 @@ public class CompositeUnitRegistry implements UnitRegistry {
                 .findFirst();
     }
 
+    @Override
+    public Optional<Class<? extends Quantity<?>>> quantity(@Nullable DlmsUnit wmbusType) {
+        return registers.stream() //
+                .flatMap(registry -> getQuantity(registry, wmbusType)) //
+                .findFirst();
+    }
+
     private Stream<Unit<?>> get(UnitRegistry registry, DlmsUnit wmbusType) {
         Optional<Unit<?>> lookup = registry.lookup(wmbusType);
+
+        if (lookup.isPresent()) {
+            return Stream.of(lookup.get());
+        }
+        return Stream.empty();
+    }
+
+    private Stream<Class<? extends Quantity<?>>> getQuantity(UnitRegistry registry, @Nullable DlmsUnit wmbusType) {
+        Optional<Class<? extends Quantity<?>>> lookup = registry.quantity(wmbusType);
 
         if (lookup.isPresent()) {
             return Stream.of(lookup.get());
