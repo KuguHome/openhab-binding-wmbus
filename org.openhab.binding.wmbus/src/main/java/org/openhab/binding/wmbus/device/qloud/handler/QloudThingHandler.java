@@ -19,6 +19,7 @@ import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.generic.GenericWMBusThingHandler;
 import org.openhab.binding.wmbus.device.qloud.QloudBindingConstants;
 import org.openhab.binding.wmbus.device.qloud.QloudWMBusDevice;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DecodingException;
 
 /**
@@ -28,12 +29,13 @@ import org.openmuc.jmbus.DecodingException;
  */
 public class QloudThingHandler extends GenericWMBusThingHandler<QloudWMBusDevice> {
 
-    public QloudThingHandler(Thing thing, UnitRegistry unitRegistry) {
-        this(thing, unitRegistry, fetchMapping(thing.getThingTypeUID()));
+    public QloudThingHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry) {
+        this(thing, keyStorage, unitRegistry, fetchMapping(thing.getThingTypeUID()));
     }
 
-    protected QloudThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
-        super(thing, unitRegistry, channelMapping);
+    protected QloudThingHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry,
+            Map<String, RecordType> channelMapping) {
+        super(thing, keyStorage, unitRegistry, channelMapping);
     }
 
     @Override
