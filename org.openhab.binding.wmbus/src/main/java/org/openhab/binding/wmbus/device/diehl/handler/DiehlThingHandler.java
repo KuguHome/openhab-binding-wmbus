@@ -19,6 +19,7 @@ import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.diehl.DiehlBindingConstants;
 import org.openhab.binding.wmbus.device.diehl.DiehlWMBusDevice;
 import org.openhab.binding.wmbus.device.generic.GenericWMBusThingHandler;
+import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DecodingException;
 
 /**
@@ -28,12 +29,13 @@ import org.openmuc.jmbus.DecodingException;
  */
 public class DiehlThingHandler extends GenericWMBusThingHandler<DiehlWMBusDevice> {
 
-    public DiehlThingHandler(Thing thing, UnitRegistry unitRegistry) {
-        this(thing, unitRegistry, fetchMapping(thing.getThingTypeUID()));
+    public DiehlThingHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry) {
+        this(thing, keyStorage, unitRegistry, fetchMapping(thing.getThingTypeUID()));
     }
 
-    protected DiehlThingHandler(Thing thing, UnitRegistry unitRegistry, Map<String, RecordType> channelMapping) {
-        super(thing, unitRegistry, channelMapping);
+    protected DiehlThingHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry,
+            Map<String, RecordType> channelMapping) {
+        super(thing, keyStorage, unitRegistry, channelMapping);
     }
 
     @Override

@@ -15,9 +15,24 @@
         <description>Universal WMBus device.</description>
 
         <config-description uri="wmbus:meter">
-            <parameter name="deviceId" type="text">
-                <label>WMBus device ID</label>
-                <description>Identifier which lets to find device.</description>
+            <parameter name="deviceAddress" type="text">
+                <label>WMBus device address</label>
+                <description>Identifier which lets to find device (in hexdecimal format).</description>
+                <required>true</required>
+            </parameter>
+            <parameter name="frequencyOfUpdates" type="integer">
+                <label>Frequency of updates</label>
+                <description>
+                    Frequency of updates sent by device. This value is used to determine if device goes offline.
+                    Recommended value depends on manufacturer and specific meter and should be adjusted manually.
+                    Defaults to 60 minutes which is quite long.
+                </description>
+                <required>false</required>
+                <unitLabel>minutes</unitLabel>
+            </parameter>
+        </config-description>
+    </thing-type>
+
     <!-- thing definition for encrypted, but still standard meter -->
     <thing-type id="encrypted_meter">
         <supported-bridge-type-refs>

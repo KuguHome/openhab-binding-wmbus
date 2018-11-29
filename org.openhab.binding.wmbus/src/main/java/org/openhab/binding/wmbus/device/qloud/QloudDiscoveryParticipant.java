@@ -86,7 +86,6 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
                     + device.getDeviceType() + ")";
 
             Map<String, Object> properties = new HashMap<>();
-            properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ID, device.getDeviceId());
             properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
             properties.put(Thing.PROPERTY_VENDOR, "Q-loud GmbH");
             properties.put(Thing.PROPERTY_SERIAL_NUMBER, device.getDeviceId());
@@ -94,7 +93,7 @@ public class QloudDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
 
             // Create the discovery result and add to the inbox
             return DiscoveryResultBuilder.create(thingUID).withProperties(properties)
-                    .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withLabel(label)
+                    .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS).withLabel(label)
                     .withThingType(QloudBindingConstants.SUPPORTED_DEVICE_VARIANTS.get(device.getDeviceType()))
                     .withBridge(device.getAdapter().getUID()).withLabel(label).withTTL(getTimeToLive()).build();
         }

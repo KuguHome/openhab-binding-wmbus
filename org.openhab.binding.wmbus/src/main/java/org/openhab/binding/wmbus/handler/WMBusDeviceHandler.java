@@ -54,9 +54,11 @@ import org.slf4j.LoggerFactory;
 
 public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThingHandler
         implements WMBusMessageListener {
+
     private final Logger logger = LoggerFactory.getLogger(WMBusDeviceHandler.class);
     private final KeyStorage keyStorage;
 
+    protected String deviceAddress;
     private WMBusBridgeHandler bridgeHandler;
     protected T wmbusDevice;
     protected Long lastUpdate;
@@ -77,7 +79,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     @Override
     public void onNewWMBusDevice(WMBusAdapter adapter, WMBusDevice wmBusDevice) {
         logger.trace("onNewWMBusDevice(): is it me?");
-        if (wmBusDevice.getDeviceId().equals(deviceId)) {
+        if (wmBusDevice.getDeviceAddress().equals(deviceAddress)) {
             logger.trace("onNewWMBusDevice(): yes it's me");
             logger.trace("onNewWMBusDevice(): calling onChangedWMBusDevice()");
             onChangedWMBusDevice(adapter, wmBusDevice);
@@ -88,7 +90,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     @Override
     public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice receivedDevice) {
         logger.trace("onChangedWMBusDevice(): is it me?");
-        if (receivedDevice.getDeviceId().equals(deviceId)) {
+        if (receivedDevice.getDeviceAddress().equals(deviceAddress)) {
             logger.trace("onChangedWMBusDevice(): yes");
             // in between the good messages, there are messages with invalid values -> filter these out
             if (!checkMessage(receivedDevice)) {
@@ -133,11 +135,11 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         switch (record.getDataValueType()) {
             case LONG:
             case DOUBLE:
+            case BCD:
                 return new DecimalType(record.getScaledDataValue());
             case DATE:
                 return convertDate(record.getDataValue());
             case STRING:
-            case BCD:
             case NONE:
                 return new StringType(record.getDataValue().toString());
         }
@@ -162,7 +164,14 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         updateStatus(ThingStatus.UNKNOWN);
 
         Configuration config = getConfig();
-        deviceId = (String) config.getProperties().get(PROPERTY_DEVICE_ID);
+        deviceAddress = (String) config.getProperties().get(PROPERTY_DEVICE_ADDRESS);
+
+        if (deviceAddress == null || deviceAddress.trim().isEmpty()) {
+            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.CONFIGURATION_PENDING,
+                    "Missing device address, please update.");
+            return;
+        }
+
         try {
             wmbusDevice = getDevice();
             if (wmbusDevice != null) {
@@ -201,7 +210,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     @Override
     public void dispose() {
         logger.debug("Disposing handler.");
-        this.deviceId = null;
+        this.deviceAddress = null;
         this.wmbusDevice = null;
     }
 
@@ -232,10 +241,10 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
             return null;
         }
 
-        logger.trace("Lookup known devices by identifier {}", deviceId);
-        WMBusDevice device = bridgeHandler.getDeviceById(deviceId);
+        logger.trace("Lookup known devices by address {}", deviceAddress);
+        WMBusDevice device = bridgeHandler.getDeviceByAddress(deviceAddress);
         if (device != null) {
-            logger.trace("Found device matching given id {}, {}", deviceId, device);
+            logger.trace("Found device matching given addresss {}, {}", deviceAddress, device);
             try {
                 return parseDevice(device);
             } catch (DecodingException e) {
@@ -244,7 +253,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
             }
         }
 
-        logger.trace("Couldn't find device matching id {}", deviceId);
+        logger.trace("Couldn't find device matching address {}", deviceAddress);
         return null;
     }
 

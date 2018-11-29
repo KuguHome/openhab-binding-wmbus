@@ -127,13 +127,12 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_VIRTUAL_RSSI = "rssi";
 
     // device config properties
-    public static final String PROPERTY_DEVICE_ID = "deviceId";
+    public static final String PROPERTY_DEVICE_ADDRESS = "deviceAddress";
     public static final String PROPERTY_DEVICE_FREQUENCY_OF_UPDATES = "frequencyOfUpdates";
     public static final String PROPERTY_DEVICE_ENCRYPTION_KEY = "enryptionKey";
     // device property which says if we expected secure communication
     public static final String PROPERTY_DEVICE_ENCRYPTED = "encrypted";
 
-    public static final String PROPERTY_DEVICE_ADDRESS = "address";
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
 
     /**

@@ -90,7 +90,7 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
             // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
-            properties.put(PROPERTY_DEVICE_ID, wmBusDevice.getDeviceId().toString());
+            properties.put(PROPERTY_DEVICE_ADDRESS, wmBusDevice.getDeviceId().toString());
 
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(wmBusDevice.getDeviceId().toString()).withBridge(bridgeUID)

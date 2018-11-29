@@ -153,7 +153,6 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
                 + device.getDeviceType();
 
         Map<String, Object> properties = new HashMap<>();
-        properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ID, device.getDeviceId());
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
         properties.put(Thing.PROPERTY_SERIAL_NUMBER, device.getDeviceId());
         properties.put(Thing.PROPERTY_MODEL_ID, secondaryAddress.getVersion());
@@ -177,7 +176,7 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
-                .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ID).withBridge(adapter.getUID())
+                .withRepresentationProperty(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS).withBridge(adapter.getUID())
                 .withThingType(typeUID).withLabel(label).withTTL(getTimeToLive()).build();
 
         thingDiscovered(discoveryResult);
