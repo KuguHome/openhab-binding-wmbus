@@ -30,6 +30,14 @@
                 <required>false</required>
                 <unitLabel>minutes</unitLabel>
             </parameter>
+            <parameter name="enryptionKey" type="text">
+                <label>Encryption key</label>
+                <description>
+                    Encryption key in hexadecimal format to decode frames sent by this device. Value of this configuration parameter
+                     is optional and required only in case when meter is configured to use encrypted communication.
+                </description>
+                <required>false</required>
+            </parameter>
         </config-description>
     </thing-type>
 

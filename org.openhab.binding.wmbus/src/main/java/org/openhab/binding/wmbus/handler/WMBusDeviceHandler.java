@@ -34,6 +34,7 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusException;
@@ -170,6 +171,13 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                 .map(BigDecimal::longValue) //
                 .orElse(DEFAULT_DEVICE_FREQUENCY_OF_UPDATES);
         this.frequencyOfUpdates = TimeUnit.MINUTES.toMillis(updateFrequency);
+
+        this.encryptionKey = Optional.of(config.getProperties()) //
+                .map(cfg -> cfg.get(PROPERTY_DEVICE_ENCRYPTION_KEY)) //
+                .filter(String.class::isInstance) //
+                .map(String.class::cast) //
+                .map(HexUtils::hexToBytes) //
+                .orElse(DEFAULT_DEVICE_ENCRYPTION_KEY);
     }
 
     protected void initialize(T device) {
