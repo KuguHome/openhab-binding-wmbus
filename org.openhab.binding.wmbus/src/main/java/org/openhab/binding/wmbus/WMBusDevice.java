@@ -45,7 +45,7 @@ public class WMBusDevice {
     }
 
     public String getDeviceId() {
-        return originalMessage.getSecondaryAddress().getDeviceId().toString();
+        return Long.toString(originalMessage.getSecondaryAddress().getDeviceId().longValue());
     }
 
     public DataRecord findRecord(RecordType recordType) {
