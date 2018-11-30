@@ -65,21 +65,23 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
 
     @Override
     public void onChangedWMBusDevice(WMBusAdapter adapter, WMBusDevice receivedDevice) {
-        VariableDataStructure response = receivedDevice.getOriginalMessage().getVariableDataResponse();
+        if (receivedDevice.getDeviceAddress().equals(deviceAddress)) {
+            VariableDataStructure response = receivedDevice.getOriginalMessage().getVariableDataResponse();
 
-        List<Channel> channels = new ArrayList<>();
-        for (DataRecord record : response.getDataRecords()) {
-            Optional<ChannelTypeUID> typeId = WMBusChannelTypeProvider.getChannelType(record);
-            Optional<Channel> channel = typeId.map(type -> thing.getChannel(type.getId()));
+            List<Channel> channels = new ArrayList<>();
+            for (DataRecord record : response.getDataRecords()) {
+                Optional<ChannelTypeUID> typeId = WMBusChannelTypeProvider.getChannelType(record);
+                Optional<Channel> channel = typeId.map(type -> thing.getChannel(type.getId()));
 
-            if (typeId.isPresent() && !channel.isPresent()) {
-                channels.add(createChannel(typeId.get(), record));
+                if (typeId.isPresent() && !channel.isPresent()) {
+                    channels.add(createChannel(typeId.get(), record));
+                }
             }
-        }
 
-        if (!channels.isEmpty()) {
-            ThingBuilder updatedThing = editThing().withChannels(channels);
-            updateThing(updatedThing.build());
+            if (!channels.isEmpty()) {
+                ThingBuilder updatedThing = editThing().withChannels(channels);
+                updateThing(updatedThing.build());
+            }
         }
 
         super.onChangedWMBusDevice(adapter, receivedDevice);
