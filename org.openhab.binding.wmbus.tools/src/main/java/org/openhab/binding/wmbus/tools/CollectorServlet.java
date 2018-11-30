@@ -78,7 +78,7 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
         Set<SecondaryAddress> addresses = entries.keySet();
         for (SecondaryAddress address : addresses) {
             byte[] addressArray = address.asByteArray();
-            String row = template.replace("__ID__", address.getDeviceId().toString());
+            String row = template.replace("__ID__", "" + address.getDeviceId().longValue());
             row = row.replace("__Manufacturer__", address.getManufacturerId() + " " + hex(address.asByteArray()));
             row = row.replace("__Type__",
                     address.getDeviceType().name() + " " + hex(addressArray[addressArray.length - 1]));
