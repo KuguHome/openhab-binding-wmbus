@@ -46,9 +46,9 @@ import com.google.common.collect.ImmutableMap;
 public class GenericWMBusThingHandlerTest {
 
     private static final String CHANNEL_VOLUME = "volume";
-    private static final String DEVICE_ID = "10";
+    private static final String DEVICE_ADDRESS = "68TCH100";
     private static final Map<String, Object> CONFIGURATION = ImmutableMap
-            .of(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, DEVICE_ID);
+            .of(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, DEVICE_ADDRESS);
 
     private static final RecordType VOLUME = new RecordType(0x0C, 0x14);
     private static final Double VOLUME_VALUE = 10.0;
@@ -95,7 +95,7 @@ public class GenericWMBusThingHandlerTest {
         WMBusDevice device = Mockito.mock(WMBusDevice.class);
         DataRecord data = Mockito.mock(DataRecord.class);
 
-        Mockito.when(device.getDeviceId()).thenReturn(DEVICE_ID);
+        Mockito.when(device.getDeviceAddress()).thenReturn(DEVICE_ADDRESS);
         Mockito.when(device.findRecord(VOLUME)).thenReturn(data);
         Mockito.when(data.getUnit()).thenReturn(DlmsUnit.CUBIC_METRE);
         Mockito.when(data.getScaledDataValue()).thenReturn(VOLUME_VALUE);
