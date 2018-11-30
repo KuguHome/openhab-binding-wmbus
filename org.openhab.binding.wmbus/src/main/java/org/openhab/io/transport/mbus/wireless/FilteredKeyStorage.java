@@ -30,8 +30,9 @@ public class FilteredKeyStorage implements KeyStorage {
 
     public FilteredKeyStorage(KeyStorage delegate, Thing thing) {
         this.delegate = delegate;
-        this.address = HexUtils
-                .hexToBytes(thing.getConfiguration().get(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS).toString());
+        this.address = Optional.ofNullable(thing.getConfiguration())
+                .map(cfg -> cfg.get(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS)).map(Object::toString)
+                .map(HexUtils::hexToBytes).orElse(new byte[0]);
     }
 
     @Override
