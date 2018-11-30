@@ -117,7 +117,8 @@ public interface TechemBindingConstants {
             .put(THING_TYPE_TECHEM_HKV76, HEAT_ALLOCATOR_MAPPING_69) // v118 supports also two temperature readings
             .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
             .put(THING_TYPE_TECHEM_COLD_WATER_METER, TECHEM_METER_MAPPING) // cold
-            .put(THING_TYPE_TECHEM_HEAT_METER, ImmutableMap.of()) // head
+            .put(THING_TYPE_TECHEM_HEAT_METER, TECHEM_METER_MAPPING) // heat meter have same set of channels as heat
+                                                                     // cost allocator
 
             .build();
 

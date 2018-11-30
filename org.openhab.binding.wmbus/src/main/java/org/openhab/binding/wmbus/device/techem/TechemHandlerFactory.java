@@ -77,7 +77,7 @@ public class TechemHandlerFactory extends BaseThingHandlerFactory {
             return new TechemMeterHandler<>(thing, TechemWaterMeter.class, techemFrameDecoder);
         } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HEAT_METER)) {
             logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
-            return new TechemMeterHandler<>(thing, TechemWaterMeter.class, techemFrameDecoder);
+            return new TechemMeterHandler<>(thing, TechemHeatMeter.class, techemFrameDecoder);
         }
 
         logger.warn("Unsupported thing type {}. TechemHandlerFactory can not handle {}", thingTypeUID, thing.getUID());
