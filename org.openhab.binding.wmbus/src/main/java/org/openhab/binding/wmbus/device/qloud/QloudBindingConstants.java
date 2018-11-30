@@ -56,7 +56,7 @@ public interface QloudBindingConstants {
             // again volume
             THING_TYPE_ENERGYCAM_GAS, ImmutableMap.of(CHANNEL_VOLUME, VOLUME_CUBIC_METRE),
             // volume one more time
-            THING_TYPE_ENERGYCAM_WATER, ImmutableMap.of(CHANNEL_VOLUME, new RecordType(0, 0x15)));
+            THING_TYPE_ENERGYCAM_WATER, ImmutableMap.of(CHANNEL_VOLUME, VOLUME_CUBIC_METRE));
 
     Map<String, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<String, ThingTypeUID> builder()
             // here we enlist supported devices
