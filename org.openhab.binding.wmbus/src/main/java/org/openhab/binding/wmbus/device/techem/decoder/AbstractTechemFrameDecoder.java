@@ -83,6 +83,11 @@ public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> impleme
                     HexUtils.bytesToHex(read(buffer, index, index + 1)));
             day = 1;
         }
+        if (month <= 0) {
+            logger.trace("Detected invalid month number {} in byte representation: {}, changing to last month of year", month,
+                    HexUtils.bytesToHex(read(buffer, index, index + 1)));
+            month = 12;
+        }
 
         LocalDateTime dateTime = LocalDateTime.now().withMonth(month).withDayOfMonth(day);
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
