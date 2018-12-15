@@ -135,6 +135,11 @@ public class WMBusBindingConstants {
 
     public static final String PROPERTY_WMBUS_MESSAGE = "wmBusMessage";
 
+    // Manufacturer options
+    public static final String MANUFACTURER_AMBER = "amber";
+    public static final String MANUFACTURER_RADIO_CRAFTS = "rc";
+    public static final String MANUFACTURER_IMST = "imst";
+
     /**
      * Default frequency of reports. This is at the same time value after which device is considered to be offline.
      * Value in minutes.

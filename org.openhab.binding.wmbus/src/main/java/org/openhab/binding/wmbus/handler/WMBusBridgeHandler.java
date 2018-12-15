@@ -9,6 +9,8 @@
 
 package org.openhab.binding.wmbus.handler;
 
+import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
+
 import java.io.IOException;
 import java.util.Collection;
 import java.util.Collections;
@@ -58,8 +60,7 @@ import org.slf4j.LoggerFactory;
 
 public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMBusAdapter {
 
-    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections
-            .singleton(WMBusBindingConstants.THING_TYPE_BRIDGE);
+    public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES = Collections.singleton(THING_TYPE_BRIDGE);
 
     private static final ScheduledExecutorService SCHEDULER = ThreadPoolManager.getScheduledPool("wmbus");
 
@@ -175,26 +176,18 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
                 WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver,
                         interfaceName);
 
-                WMBusMode radioMode;
-                // check and convert radio mode
-                switch (radioModeStr) {
-                    case "S":
-                        radioMode = WMBusMode.S;
-                        break;
-                    case "T":
-                        radioMode = WMBusMode.T;
-                        break;
-                    case "C":
-                        radioMode = WMBusMode.C;
-                        break;
-                    default:
-                        logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                                + ". Expected 'S', 'T', or 'C'.");
-                        updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                                "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                                        + ". Expected 'S', 'T', or 'C'.");
-                        return;
+                WMBusMode radioMode = null;
+                try {
+                    radioMode = WMBusMode.valueOf(radioModeStr.trim().toUpperCase());
+                } catch (IllegalArgumentException e) {
+                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+                            + ". Expected 'S', 'T', or 'C'.");
+                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+                            "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+                                    + ". Expected 'S', 'T', or 'C'.");
+                    return;
                 }
+
                 logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
                 connectionBuilder.setMode(radioMode);
                 // connectionBuilder.setTimeout(0); // infinite
@@ -246,11 +239,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
 
     private static WMBusManufacturer parseManufacturer(String manufacturer) {
         switch (manufacturer.toLowerCase()) {
-            case "amber":
+            case MANUFACTURER_AMBER:
                 return WMBusManufacturer.AMBER;
-            case "rc":
+            case MANUFACTURER_RADIO_CRAFTS:
                 return WMBusManufacturer.RADIO_CRAFTS;
-            case "imst":
+            case MANUFACTURER_IMST:
                 return WMBusManufacturer.IMST;
             default:
                 return null;
