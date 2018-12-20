@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus.tools;
 
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.osgi.service.component.annotations.Component;

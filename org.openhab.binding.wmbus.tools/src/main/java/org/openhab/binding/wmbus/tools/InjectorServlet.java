@@ -98,18 +98,38 @@ public class InjectorServlet extends HttpServlet {
                 .filter(thing -> thing.getHandler() instanceof WMBusAdapter).collect(Collectors.toList());
     }
 
-    private void inject(WMBusAdapter adapter, String frame, HttpServletRequest req, HttpServletResponse resp,
+    private void inject(WMBusAdapter adapter, String frames, HttpServletRequest req, HttpServletResponse resp,
             String aesKey) throws IOException {
-        byte[] bytes = HexUtils.hexToBytes(frame.replace(" ", ""));
+        int skipBytes = Optional.ofNullable(req.getParameter("skipBytes")).map(Integer::parseInt).orElse(0);
+        boolean calculateLength = Optional.ofNullable(req.getParameter("calculateLength")).map(value -> Boolean.TRUE)
+                .orElse(false);
+
+        String[] frameArray = frames.split("\n");
         try {
-            WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
-            if (aesKey != null && !aesKey.trim().isEmpty()) {
-                byte[] key = HexUtils.hexToBytes(aesKey);
-                message = VirtualWMBusMessageHelper.decode(bytes, 0,
-                        Collections.singletonMap(message.getSecondaryAddress(), key));
+            for (String frame : frameArray) {
+                frame = frame.trim().replace(" ", "");
+
+                if (skipBytes > 0) {
+                    // one byte is 2 characters in hex representation
+                    frame = frame.substring(skipBytes * 2);
+                }
+
+                if (calculateLength) {
+                    // remember of hex notation which doubles length
+                    Integer len = frame.length() / 2;
+                    frame = Integer.toHexString(len) + frame;
+                }
+
+                byte[] bytes = HexUtils.hexToBytes(frame);
+                WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
+                if (aesKey != null && !aesKey.trim().isEmpty()) {
+                    byte[] key = HexUtils.hexToBytes(aesKey);
+                    message = VirtualWMBusMessageHelper.decode(bytes, 0,
+                            Collections.singletonMap(message.getSecondaryAddress(), key));
+                }
+                WMBusDevice device = new WMBusDevice(message, adapter);
+                adapter.processMessage(device);
             }
-            WMBusDevice device = new WMBusDevice(message, adapter);
-            adapter.processMessage(device);
         } catch (DecodingException e) {
             req.setAttribute("error", e);
         }
