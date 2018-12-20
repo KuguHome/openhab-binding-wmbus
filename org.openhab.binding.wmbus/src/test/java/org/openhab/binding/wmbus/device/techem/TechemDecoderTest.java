@@ -92,6 +92,19 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     }
 
     @Test
+    public void testHKV45() throws Exception {
+        TechemDevice device = reader.decode(message(MESSAGE_69));
+
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
+                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH69255_8.getTechemType());
+
+        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
+    }
+
+    @Test
     public void testHKV76F0() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_118));
 

@@ -57,22 +57,15 @@ public class TechemHandlerFactory extends BaseThingHandlerFactory {
             return new TechemHKVHandler(thing, techemFrameDecoder);
         }
 
-        if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV61)) {
+        if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV45)
+                || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV61)
+                || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV64)
+                || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV69)
+                || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV76)) {
             logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
             return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV76)) {
-            logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
-            return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV64)) {
-            logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
-            return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV69)) {
-            logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
-            return new TechemMeterHandler<>(thing, TechemHeatCostAllocator.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_WARM_WATER_METER)) {
-            logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
-            return new TechemMeterHandler<>(thing, TechemWaterMeter.class, techemFrameDecoder);
-        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_COLD_WATER_METER)) {
+        } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_WARM_WATER_METER)
+                || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_COLD_WATER_METER)) {
             logger.debug("Creating handler for TechemDevice device {}", thing.getUID().getId());
             return new TechemMeterHandler<>(thing, TechemWaterMeter.class, techemFrameDecoder);
         } else if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HEAT_METER)) {
