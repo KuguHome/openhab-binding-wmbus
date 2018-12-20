@@ -170,7 +170,8 @@ public class WMBusBindingConstants {
             DeviceType.HOT_WATER_METER, DeviceType.COLD_WATER_METER, DeviceType.DUAL_REGISTER_WATER_METER,
             DeviceType.PRESSURE_METER, DeviceType.SMOKE_DETECTOR, DeviceType.ROOM_SENSOR_TEMP_HUM,
             DeviceType.GAS_DETECTOR, DeviceType.BREAKER_ELEC, DeviceType.VALVE_GAS_OR_WATER,
-            DeviceType.WASTE_WATER_METER);
+            DeviceType.WASTE_WATER_METER, DeviceType.RADIO_CONVERTER_SYSTEM_SIDE,
+            DeviceType.RADIO_CONVERTER_METER_SIDE);
 
     public static final String CONFKEY_BINDING_TIME_TO_LIVE = "timeToLive";
 
