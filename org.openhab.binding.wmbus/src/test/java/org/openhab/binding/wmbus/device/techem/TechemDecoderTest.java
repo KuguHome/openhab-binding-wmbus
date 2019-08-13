@@ -105,11 +105,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     }
 
     @Test
-    public void testHKV76F0() throws Exception {
+    public void testSD76F0() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_118));
 
-        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
-                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
+                expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_8.getTechemType());
 
         // FIXME adjust frame parsing as these looks really suspicious
@@ -118,6 +118,23 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 9583.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 0.0, SIUnits.CELSIUS))
                 .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 0.26, SIUnits.CELSIUS)).areAtLeastOne(rssi());
+    }
+
+    @Test
+    public void testSD76F0_extra() throws Exception {
+        // just another test frame
+        TechemDevice device = reader.decode(message("294468508364866476F0A000DE246F2500586F25010019000013006BA1007CB2008DC3009ED4000FE500F40000"));
+
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
+            expectedDevice(DeviceType.SMOKE_DETECTOR));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_8.getTechemType());
+
+        // FIXME these are similar to results from SD76F0 readings
+        Assertions.assertThat(device.getMeasurements()).hasSize(7)
+            .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 9583.0))
+            .areAtLeastOne(record(Record.Type.PAST_VOLUME, 9583.0))
+            .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 0.01, SIUnits.CELSIUS))
+            .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 0.25, SIUnits.CELSIUS)).areAtLeastOne(rssi());
     }
 
     private Condition<Record<?>> record(Type type, double expectedValue) {

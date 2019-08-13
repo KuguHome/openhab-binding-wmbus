@@ -22,7 +22,7 @@ import org.openmuc.jmbus.SecondaryAddress;
 
 import tec.uom.se.quantity.Quantities;
 
-abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
+public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 
     private final boolean reportsTemperature;
 
@@ -65,10 +65,6 @@ abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<
         }
 
         return null;
-    }
-
-    private float parseTemperature(byte[] buffer, int index) {
-        return parseValue(buffer, index, _SCALE_FACTOR_1_100th);
     }
 
 }
