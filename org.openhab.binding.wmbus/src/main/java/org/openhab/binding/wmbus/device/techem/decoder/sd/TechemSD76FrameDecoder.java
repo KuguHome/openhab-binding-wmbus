@@ -10,9 +10,9 @@ package org.openhab.binding.wmbus.device.techem.decoder.hkv;
 
 import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
 
-public class TechemHKV76FrameDecoder extends AbstractTechemHKVFrameDecoder {
+public class TechemSD76FrameDecoder extends AbstractTechemHKVFrameDecoder {
 
-    public TechemHKV76FrameDecoder() {
+    public TechemSD76FrameDecoder() {
         super(TechemBindingConstants._68TCH118255_8, true);
     }
 

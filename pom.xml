@@ -4,18 +4,22 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-        <groupId>org.openhab</groupId>
-        <artifactId>pom-tycho</artifactId>
-        <version>2.3.0</version>
-        <relativePath />
+        <groupId>org.openhab.addons</groupId>
+        <artifactId>org.openhab.addons.reactor</artifactId>
+        <version>2.5.0-SNAPSHOT</version>
+        <relativePath></relativePath>
     </parent>
 
     <groupId>org.openhab.binding</groupId>
     <artifactId>wmbus</artifactId>
-    <version>2.3.0-SNAPSHOT</version>
+    <version>2.5.0-SNAPSHOT</version>
     <packaging>pom</packaging>
 
     <name>WMBus Binding Aggregator</name>
+
+    <properties>
+        <bnd.importpackage>gnu.io*;version=0</bnd.importpackage>
+    </properties>
 
     <modules>
         <module>org.openhab.binding.wmbus</module>
@@ -23,30 +27,62 @@
     </modules>
 
     <build>
-        <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.eclipse.tycho</groupId>
-                    <artifactId>tycho-packaging-plugin</artifactId>
-                    <version>${tycho-version}</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
         <plugins>
             <plugin>
-                <groupId>org.eclipse.tycho</groupId>
-                <artifactId>tycho-packaging-plugin</artifactId>
+                <groupId>org.commonjava.maven.plugins</groupId>
+                <artifactId>directory-maven-plugin</artifactId>
+                <version>0.3.1</version>
+                <executions>
+                    <execution>
+                        <id>directories</id>
+                        <phase>none</phase>
+                        <goals>
+                            <goal>directory-of</goal>
+                        </goals>
+                        <configuration>
+                            <property>basedirRoot</property>
+                            <project>
+                                <groupId>org.openhab.addons</groupId>
+                                <artifactId>org.openhab.addons.reactor</artifactId>
+                            </project>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <configuration>
+                    <archive>
+                        <manifestFile>${project.build.outputDirectory}/META-INF/MANIFEST.MF</manifestFile>
+                    </archive>
+                    <skipIfEmpty>true</skipIfEmpty>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>biz.aQute.bnd</groupId>
+                <artifactId>bnd-maven-plugin</artifactId>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-source-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>attach-sources</id>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
 
     <repositories>
-
-        <!-- releases -->
         <repository>
             <id>jcenter</id>
             <name>JCenter Repository</name>
-            <url>https://jcenter.bintray.com/</url>
+            <url>https://jcenter.bintray.com</url>
             <releases>
                 <enabled>true</enabled>
                 <updatePolicy>never</updatePolicy>
@@ -55,7 +91,6 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
         <repository>
             <id>openhab-artifactory-release</id>
             <name>JFrog Artifactory Repository</name>
@@ -68,55 +103,30 @@
                 <enabled>false</enabled>
             </snapshots>
         </repository>
-
-        <!-- snapshots -->
         <repository>
-            <id>openhab-artifactory-snapshot</id>
+            <id>openhab-snapshots-release</id>
             <name>JFrog Artifactory Repository</name>
-            <url>https://openhab.jfrog.io/openhab/libs-snapshot</url>
+            <url>https://openhab.jfrog.io/openhab/libs-snapshot-local</url>
             <releases>
                 <enabled>false</enabled>
+                <updatePolicy>never</updatePolicy>
             </releases>
             <snapshots>
                 <enabled>true</enabled>
-                <updatePolicy>always</updatePolicy>
             </snapshots>
         </repository>
-
-        <!-- openHAB dependencies p2 repository -->
-        <repository>
-            <id>p2-openhab-deps-repo</id>
-            <url>https://dl.bintray.com/openhab/p2/openhab-deps-repo/${ohdr.version}</url>
-            <layout>p2</layout>
-        </repository>
-
     </repositories>
 
     <pluginRepositories>
         <pluginRepository>
             <id>jcenter</id>
-            <name>JCenter Repository</name>
-            <url>https://jcenter.bintray.com/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
+            <url>https://jcenter.bintray.com</url>
         </pluginRepository>
         <pluginRepository>
-            <id>artifactory</id>
-            <name>JFrog Artifactory Repository</name>
+            <id>openhab-artifactory-release</id>
             <url>https://openhab.jfrog.io/openhab/libs-release</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>never</updatePolicy>
-            </releases>
-            <snapshots>
-                <enabled>false</enabled>
-            </snapshots>
         </pluginRepository>
     </pluginRepositories>
+
 
 </project>
