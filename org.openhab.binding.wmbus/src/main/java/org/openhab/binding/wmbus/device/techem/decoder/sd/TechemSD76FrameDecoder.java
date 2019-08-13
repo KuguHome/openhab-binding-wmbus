@@ -8,19 +8,11 @@
  */
 package org.openhab.binding.wmbus.device.techem.decoder.sd;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
-import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
-import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
 import org.openhab.binding.wmbus.device.techem.TechemSmokeDetector;
 import org.openhab.binding.wmbus.device.techem.decoder.AbstractTechemFrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.hkv.AbstractTechemHKVFrameDecoder;
 import org.openmuc.jmbus.SecondaryAddress;
-import tec.uom.se.quantity.Quantities;
 
 public class TechemSD76FrameDecoder extends AbstractTechemFrameDecoder<TechemSmokeDetector> {
 
@@ -34,24 +26,7 @@ public class TechemSD76FrameDecoder extends AbstractTechemFrameDecoder<TechemSmo
         int coding = buffer[offset] & 0xFF;
 
         if (coding == 0xA0 || coding == 0xA1) {
-            LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
-            float lastValue = parseBigEndianInt(buffer, offset + 4);
-            LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-            float currentValue = parseBigEndianInt(buffer, offset + 8);
-
-            List<Record<?>> records = new ArrayList<>();
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
-            records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
-            records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
-            records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
-            records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
-
-            float temp1 = parseTemperature(buffer, offset + 10);
-            float temp2 = parseTemperature(buffer, offset + 12);
-            records.add(new Record<>(Record.Type.ROOM_TEMPERATURE, Quantities.getQuantity(temp1, SIUnits.CELSIUS)));
-            records.add(new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));
-
-            return new TechemSmokeDetector(device.getOriginalMessage(), device.getAdapter(), records);
+            return new TechemSmokeDetector(device.getOriginalMessage(), device.getAdapter());
         }
 
         return null;

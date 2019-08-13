@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus.device.techem;
 
 import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -125,7 +126,7 @@ public interface TechemBindingConstants {
             .put(THING_TYPE_TECHEM_HKV61, TECHEM_METER_MAPPING) // basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV64, TECHEM_METER_MAPPING) // again basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV69, HEAT_ALLOCATOR_MAPPING_69) // here we have two temperature channels
-            .put(THING_TYPE_TECHEM_SD76, HEAT_ALLOCATOR_MAPPING_69) // v118 is smoke detector, not sure what to do about it channels
+            .put(THING_TYPE_TECHEM_SD76, Collections.emptyMap()) // v118 is smoke detector, not sure what to do about it channels
             .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
             .put(THING_TYPE_TECHEM_COLD_WATER_METER, TECHEM_METER_MAPPING) // cold
             .put(THING_TYPE_TECHEM_HEAT_METER, TECHEM_METER_MAPPING) // heat meter have same set of channels as heat

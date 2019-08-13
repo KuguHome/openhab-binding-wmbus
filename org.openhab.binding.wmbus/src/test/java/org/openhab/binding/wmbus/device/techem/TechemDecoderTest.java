@@ -112,12 +112,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_8.getTechemType());
 
-        // FIXME adjust frame parsing as these looks really suspicious
-        Assertions.assertThat(device.getMeasurements()).hasSize(7)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 9583.0))
-                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 9583.0))
-                .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 0.0, SIUnits.CELSIUS))
-                .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 0.26, SIUnits.CELSIUS)).areAtLeastOne(rssi());
+        // FIXME add parsing of frame
+        Assertions.assertThat(device.getMeasurements()).isEmpty();
     }
 
     @Test
@@ -129,12 +125,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
             expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_8.getTechemType());
 
-        // FIXME these are similar to results from SD76F0 readings
-        Assertions.assertThat(device.getMeasurements()).hasSize(7)
-            .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 9583.0))
-            .areAtLeastOne(record(Record.Type.PAST_VOLUME, 9583.0))
-            .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 0.01, SIUnits.CELSIUS))
-            .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 0.25, SIUnits.CELSIUS)).areAtLeastOne(rssi());
+        // FIXME add parsing of frame
+        Assertions.assertThat(device.getMeasurements()).isEmpty();
     }
 
     private Condition<Record<?>> record(Type type, double expectedValue) {

@@ -9,6 +9,7 @@
 
 package org.openhab.binding.wmbus.device.techem;
 
+import java.util.Collections;
 import java.util.List;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DeviceType;
@@ -21,8 +22,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemSmokeDetector extends TechemDevice {
 
-    public TechemSmokeDetector(WMBusMessage originalMessage, WMBusAdapter adapter, List<Record<?>> measures) {
-        super(originalMessage, adapter, DeviceType.SMOKE_DETECTOR, measures);
+    public TechemSmokeDetector(WMBusMessage originalMessage, WMBusAdapter adapter) {
+        super(originalMessage, adapter, DeviceType.SMOKE_DETECTOR, Collections.emptyList());
     }
 
 }
