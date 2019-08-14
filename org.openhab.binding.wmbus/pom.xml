@@ -16,7 +16,7 @@
     
     <properties>
         <report.fail.on.error>false</report.fail.on.error>
-        <checkstyle.skip>true</checkstyle.skip>
+        <bnd.exportpackage>org.openmuc.jmbus.*</bnd.exportpackage>
     </properties>
     
     <dependencies>
