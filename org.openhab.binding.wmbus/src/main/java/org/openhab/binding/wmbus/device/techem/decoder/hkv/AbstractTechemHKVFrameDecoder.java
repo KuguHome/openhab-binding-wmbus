@@ -40,7 +40,7 @@ public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameD
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA0 || coding == 0xA1) {
+        if (coding == 0xA0 || coding == 0xA1 || coding == 0xA2) {
             LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
             float lastValue = parseBigEndianInt(buffer, offset + 4);
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);

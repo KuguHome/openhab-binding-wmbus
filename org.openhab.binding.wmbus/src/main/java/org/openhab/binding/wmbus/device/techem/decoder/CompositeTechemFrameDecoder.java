@@ -14,6 +14,7 @@ import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
 import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV45FrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV69FrameDecoder;
+import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV94FrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.sd.TechemSD76FrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKVFrameDecoder;
 import org.openhab.binding.wmbus.device.techem.decoder.wz.TechemWZFrameDecoder;
@@ -30,7 +31,7 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
 
     private final List<TechemFrameDecoder<?>> decoders = ImmutableList.of(new TechemHKVFrameDecoder(),
             new TechemSD76FrameDecoder(), new TechemHKV69FrameDecoder(), new TechemHKV45FrameDecoder(),
-            new TechemWZFrameDecoder());
+            new TechemHKV94FrameDecoder(), new TechemWZFrameDecoder());
 
     @Override
     public boolean suports(String deviceVariant) {
