@@ -79,7 +79,7 @@ public class WMBusVirtualBridgeHandler extends WMBusBridgeHandler {
 
             message = ArrayUtils.addAll(size, message);
 
-            SecondaryAddress secondaryAddress = SecondaryAddress.newFromWMBusLlHeader(address, 2);
+            SecondaryAddress secondaryAddress = SecondaryAddress.newFromWMBusHeader(address, 2);
 
             Map<SecondaryAddress, byte[]> keyMap = new HashMap<SecondaryAddress, byte[]>() {
                 {

@@ -1,0 +1,2 @@
+Export-Package: org.openmuc.jmbus.*
+Private-Package: org.openmuc.jrxtx.*
