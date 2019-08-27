@@ -24,7 +24,7 @@ import tec.uom.se.quantity.Quantities;
 
 public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 
-    private final boolean reportsTemperature;
+    protected final boolean reportsTemperature;
 
     protected AbstractTechemHKVFrameDecoder(Variant variant) {
         this(variant, false);

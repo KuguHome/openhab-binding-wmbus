@@ -12,9 +12,6 @@ import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.junit.Test;
 import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
-import org.openhab.binding.wmbus.device.techem.TechemDecoderTest.QuantityPredicate;
-import org.openhab.binding.wmbus.device.techem.TechemDecoderTest.RssiPredicate;
-import org.openhab.binding.wmbus.device.techem.TechemDecoderTest.ValuePredicate;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 import org.openmuc.jmbus.DeviceType;
 
@@ -104,20 +101,19 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
 
-
     @Test
     public void testHKV148() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_148));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
-            expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
+                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148255_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(7)
-            .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 261.0))
-            .areAtLeastOne(record(Record.Type.PAST_VOLUME, 439.0))
-            .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.84, SIUnits.CELSIUS))
-            .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 26.39, SIUnits.CELSIUS)).areAtLeastOne(rssi());
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 258.0))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 412.0))
+                .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.48, SIUnits.CELSIUS))
+                .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 26.31, SIUnits.CELSIUS)).areAtLeastOne(rssi());
     }
 
     @Test
@@ -135,10 +131,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     @Test
     public void testSD76F0_extra() throws Exception {
         // just another test frame
-        TechemDevice device = reader.decode(message("294468508364866476F0A000DE246F2500586F25010019000013006BA1007CB2008DC3009ED4000FE500F40000"));
+        TechemDevice device = reader.decode(
+                message("294468508364866476F0A000DE246F2500586F25010019000013006BA1007CB2008DC3009ED4000FE500F40000"));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
-            expectedDevice(DeviceType.SMOKE_DETECTOR));
+                expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_8.getTechemType());
 
         // FIXME add parsing of frame
