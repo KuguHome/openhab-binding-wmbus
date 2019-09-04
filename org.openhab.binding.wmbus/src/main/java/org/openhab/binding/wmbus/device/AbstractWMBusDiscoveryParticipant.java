@@ -26,7 +26,11 @@ public abstract class AbstractWMBusDiscoveryParticipant implements WMBusDiscover
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
-        return new ThingUID(getThingType(device), getDeviceID(device));
+        if (configuration.getIncludeBridgeUID()) {
+            return new ThingUID(getThingType(device), device.getAdapter().getUID(), getDeviceID(device));
+        } else {
+            return new ThingUID(getThingType(device), getDeviceID(device));
+        }
     }
 
     private String getDeviceID(WMBusDevice device) {
