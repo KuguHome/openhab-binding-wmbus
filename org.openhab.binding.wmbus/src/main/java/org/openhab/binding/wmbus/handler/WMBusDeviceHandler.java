@@ -107,7 +107,9 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                     }
                 } catch (DecodingException e) {
                     // FIXME decoding exception should not be necessary over time
-                    logger.debug("onChangedWMBusDevice(): could not decode frame", e);
+                    logger.debug("onChangedWMBusDevice(): could not decode frame {} because {}. Detail: {}",
+                            HexUtils.bytesToHex(receivedDevice.getOriginalMessage().asBlob()), e.getMessage(),
+                            receivedDevice.getOriginalMessage());
                 }
             }
         } else {

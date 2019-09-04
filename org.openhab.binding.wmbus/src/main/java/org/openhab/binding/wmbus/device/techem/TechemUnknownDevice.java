@@ -9,7 +9,7 @@
 
 package org.openhab.binding.wmbus.device.techem;
 
-import java.util.List;
+import java.util.ArrayList;
 
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.DeviceType;
@@ -20,15 +20,10 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  *
  * @author Łukasz Dywicki - Initial contribution.
  */
-public class TechemHeatCostAllocator extends TechemDevice {
+public class TechemUnknownDevice extends TechemHeatCostAllocator {
 
-    public TechemHeatCostAllocator(WMBusMessage originalMessage, WMBusAdapter adapter, List<Record<?>> measures) {
-        super(originalMessage, adapter, DeviceType.HEAT_COST_ALLOCATOR, measures);
-    }
-
-    public TechemHeatCostAllocator(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType,
-            List<Record<?>> measures) {
-        super(originalMessage, adapter, deviceType, measures);
+    public TechemUnknownDevice(WMBusMessage originalMessage, WMBusAdapter adapter) {
+        super(originalMessage, adapter, DeviceType.UNKNOWN, new ArrayList<>());
     }
 
 }

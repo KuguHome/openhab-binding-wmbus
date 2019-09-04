@@ -16,6 +16,7 @@ import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
+import org.openhab.binding.wmbus.device.techem.TechemUnknownDevice;
 import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openhab.binding.wmbus.device.techem.decoder.AbstractTechemFrameDecoder;
 import org.openmuc.jmbus.SecondaryAddress;
@@ -62,6 +63,10 @@ public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameD
             }
 
             return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), records);
+        }
+
+        if (coding == 0xA3) {
+            return new TechemUnknownDevice(device.getOriginalMessage(), device.getAdapter());
         }
 
         return null;
