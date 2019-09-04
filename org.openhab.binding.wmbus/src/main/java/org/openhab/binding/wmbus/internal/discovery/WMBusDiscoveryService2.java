@@ -172,7 +172,12 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
             properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ENCRYPTED, false);
         }
 
-        ThingUID thingUID = new ThingUID(typeUID, device.getDeviceAddress());
+        ThingUID thingUID;
+        if (configuration.getIncludeBridgeUID()) {
+            thingUID = new ThingUID(typeUID, device.getAdapter().getUID(), device.getDeviceAddress());
+        } else {
+            thingUID = new ThingUID(typeUID, device.getDeviceAddress());
+        }
 
         // Create the discovery result and add to the inbox
         DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
