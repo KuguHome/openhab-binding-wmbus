@@ -150,7 +150,7 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
 
         // We did not find a thing type for this device, so let's treat it as a generic one
         String label = "WMBus device: " + secondaryAddress.getDeviceType().name().toLowerCase().replace("_", " ") + " #"
-                + device.getDeviceType();
+                + device.getDeviceId() + " (" + device.getDeviceType() + ")";
 
         Map<String, Object> properties = new HashMap<>();
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
