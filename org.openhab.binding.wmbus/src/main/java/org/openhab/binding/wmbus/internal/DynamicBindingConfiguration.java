@@ -30,10 +30,12 @@ public class DynamicBindingConfiguration implements BindingConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(DynamicBindingConfiguration.class);
     private Long timeToLive = WMBusBindingConstants.DEFAULT_TIME_TO_LIVE;
+    private Boolean includeBridgeUID = false;
 
     @Activate
     public void activate(ComponentContext context) {
         setTimeToLive(context.getProperties().get(WMBusBindingConstants.CONFKEY_BINDING_TIME_TO_LIVE));
+        setIncludeBridgeUID(context.getProperties().get(WMBusBindingConstants.CONFKEY_BINDING_INCLUDE_BRIDGE_UID));
     }
 
     private void setTimeToLive(Object value) {
@@ -59,9 +61,33 @@ public class DynamicBindingConfiguration implements BindingConfiguration {
         return timeToLive;
     }
 
+    private void setIncludeBridgeUID(Object value) {
+        if (value == null) {
+            logger.debug("Setting up includeBridgeUID to default value");
+            this.includeBridgeUID = false;
+            return;
+        }
+
+        logger.debug("Setting up includeBridgeUID to new value {}", value);
+        if (value instanceof Boolean) {
+            this.includeBridgeUID = (Boolean) value;
+        }
+
+        if (value instanceof String) {
+            this.includeBridgeUID = Boolean.parseBoolean((String) value);
+        }
+
+    }
+
+    @Override
+    public Boolean getIncludeBridgeUID() {
+        return includeBridgeUID;
+    }
+
     @Modified
     void updated(Map<String, Object> configuration) {
         setTimeToLive(configuration.get(WMBusBindingConstants.CONFKEY_BINDING_TIME_TO_LIVE));
+        setIncludeBridgeUID(configuration.get(WMBusBindingConstants.CONFKEY_BINDING_INCLUDE_BRIDGE_UID));
     }
 
 }

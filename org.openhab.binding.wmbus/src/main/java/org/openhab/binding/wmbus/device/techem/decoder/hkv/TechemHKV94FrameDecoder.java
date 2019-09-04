@@ -15,24 +15,16 @@ import java.util.List;
 import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
+import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
-import org.openhab.binding.wmbus.device.techem.Variant;
-import org.openhab.binding.wmbus.device.techem.decoder.AbstractTechemFrameDecoder;
 import org.openmuc.jmbus.SecondaryAddress;
 
 import tec.uom.se.quantity.Quantities;
 
-public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
+public class TechemHKV94FrameDecoder extends AbstractTechemHKVFrameDecoder {
 
-    protected final boolean reportsTemperature;
-
-    protected AbstractTechemHKVFrameDecoder(Variant variant) {
-        this(variant, false);
-    }
-
-    protected AbstractTechemHKVFrameDecoder(Variant variant, boolean temperature) {
-        super(variant);
-        this.reportsTemperature = temperature;
+    public TechemHKV94FrameDecoder() {
+        super(TechemBindingConstants._68TCH148255_8, true);
     }
 
     @Override
@@ -40,11 +32,11 @@ public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameD
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA0 || coding == 0xA1 || coding == 0xA2) {
+        if (coding == 0xA2) {
             LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
             float lastValue = parseBigEndianInt(buffer, offset + 4);
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-            float currentValue = parseBigEndianInt(buffer, offset + 8);
+            float currentValue = parseBigEndianInt(buffer, offset + 9);
 
             List<Record<?>> records = new ArrayList<>();
             records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
@@ -54,8 +46,8 @@ public abstract class AbstractTechemHKVFrameDecoder extends AbstractTechemFrameD
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
             if (reportsTemperature) {
-                float temp1 = parseTemperature(buffer, offset + 10);
-                float temp2 = parseTemperature(buffer, offset + 12);
+                float temp1 = parseTemperature(buffer, offset + 11);
+                float temp2 = parseTemperature(buffer, offset + 13);
                 records.add(new Record<>(Record.Type.ROOM_TEMPERATURE, Quantities.getQuantity(temp1, SIUnits.CELSIUS)));
                 records.add(
                         new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));

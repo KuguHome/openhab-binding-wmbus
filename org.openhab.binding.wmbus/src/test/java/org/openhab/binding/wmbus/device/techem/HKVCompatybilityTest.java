@@ -7,11 +7,14 @@ import java.util.function.Function;
 import javax.measure.Quantity;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 
+@Ignore // 0x76 variant is smoke detector and not HKV
+@Deprecated
 @SuppressWarnings("deprecation")
 public class HKVCompatybilityTest extends AbstractWMBusTest {
 

@@ -53,13 +53,23 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
 
     @Override
     public @Nullable ThingUID getThingUID(WMBusDevice device) {
-        return decodeDevice(device).map(this::getThingType).map(type -> new ThingUID(type, device.getDeviceId()))
-                .orElse(null);
+        if (configuration.getIncludeBridgeUID()) {
+            return decodeDevice(device).map(this::getThingType)
+                    .map(type -> new ThingUID(type, device.getAdapter().getUID(), device.getDeviceId())).orElse(null);
+        } else {
+            return decodeDevice(device).map(this::getThingType).map(type -> new ThingUID(type, device.getDeviceId()))
+                    .orElse(null);
+        }
     }
 
     protected @Nullable ThingUID getThingUID(TechemDevice device) {
-        return Optional.ofNullable(getThingType(device)).map(type -> new ThingUID(type, device.getDeviceId()))
-                .orElse(null);
+        if (configuration.getIncludeBridgeUID()) {
+            return Optional.ofNullable(getThingType(device))
+                    .map(type -> new ThingUID(type, device.getAdapter().getUID(), device.getDeviceId())).orElse(null);
+        } else {
+            return Optional.ofNullable(getThingType(device)).map(type -> new ThingUID(type, device.getDeviceId()))
+                    .orElse(null);
+        }
     }
 
     @Override

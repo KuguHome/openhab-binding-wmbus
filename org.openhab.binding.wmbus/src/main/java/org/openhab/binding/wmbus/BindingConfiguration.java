@@ -17,4 +17,6 @@ public interface BindingConfiguration {
 
     Long getTimeToLive();
 
+    Boolean getIncludeBridgeUID();
+
 }

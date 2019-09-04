@@ -38,6 +38,8 @@ import org.osgi.service.component.annotations.Deactivate;
 import org.osgi.service.component.annotations.Reference;
 import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Very basic servlet which allows to send a test frame to deployed binding.
@@ -46,6 +48,8 @@ import org.osgi.service.http.NamespaceException;
  */
 @Component
 public class InjectorServlet extends HttpServlet {
+
+    private final Logger logger = LoggerFactory.getLogger(InjectorServlet.class);
 
     private ThingRegistry thingregistry;
     private HttpService httpService;
@@ -101,6 +105,7 @@ public class InjectorServlet extends HttpServlet {
     private void inject(WMBusAdapter adapter, String frames, HttpServletRequest req, HttpServletResponse resp,
             String aesKey) throws IOException {
         int skipBytes = Optional.ofNullable(req.getParameter("skipBytes")).map(Integer::parseInt).orElse(0);
+        boolean stripCRC = Optional.ofNullable(req.getParameter("stripCRC")).map(value -> Boolean.TRUE).orElse(false);
         boolean calculateLength = Optional.ofNullable(req.getParameter("calculateLength")).map(value -> Boolean.TRUE)
                 .orElse(false);
 
@@ -114,11 +119,32 @@ public class InjectorServlet extends HttpServlet {
                     frame = frame.substring(skipBytes * 2);
                 }
 
+                if (stripCRC) {
+                    String strippedframe = "";
+                    strippedframe += frame.substring(Math.min(0, frame.length()), Math.min(18, frame.length()));
+                    strippedframe += frame.substring(Math.min(22, frame.length()), Math.min(54, frame.length()));
+                    strippedframe += frame.substring(Math.min(58, frame.length()), Math.min(90, frame.length()));
+                    // String strippedframe = frame.substring(0, 18) + frame.substring(22, frame.length());
+                    /*
+                     * TODO: general implementation
+                     *
+                     *
+                     * Integer position = 2;
+                     * while (position < frame.length()) {
+                     * strippedframe += frame.substring(position, position+16);
+                     * position += 16 ;
+                     * }
+                     */
+                    frame = strippedframe;
+                }
+
                 if (calculateLength) {
                     // remember of hex notation which doubles length
                     Integer len = frame.length() / 2;
                     frame = Integer.toHexString(len) + frame;
                 }
+                // logger.debug("Seen frame:");
+                // logger.debug(frame);
 
                 byte[] bytes = HexUtils.hexToBytes(frame);
                 WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());

@@ -174,5 +174,6 @@ public class WMBusBindingConstants {
             DeviceType.RADIO_CONVERTER_METER_SIDE);
 
     public static final String CONFKEY_BINDING_TIME_TO_LIVE = "timeToLive";
+    public static final String CONFKEY_BINDING_INCLUDE_BRIDGE_UID = "includeBridgeUID";
 
 }

@@ -93,6 +93,10 @@ public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> impleme
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
+    protected final float parseTemperature(byte[] buffer, int index) {
+        return parseValue(buffer, index, _SCALE_FACTOR_1_100th);
+    }
+
     @Override
     public T decode(WMBusDevice device) {
         WMBusMessage message = device.getOriginalMessage();

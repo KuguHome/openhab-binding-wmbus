@@ -107,12 +107,12 @@
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
 
-    <thing-type id="techem_hkv76">
+    <thing-type id="techem_hkv94">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
         </supported-bridge-type-refs>
 
-        <label>Techem HKV variant 76</label>
+        <label>Techem HKV variant 94</label>
         <description>A heat cost allocator of Techem</description>
 
         <channels>
@@ -123,8 +123,18 @@
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
             <channel id="current_date" typeId="current_date" />
-            <channel id="almanac" typeId="almanac" />
         </channels>
+
+        <config-description-ref uri="wmbus:meter"/>
+    </thing-type>
+
+    <thing-type id="techem_sd76">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Techem Smoke Detector variant 76</label>
+        <description>A smoke detector of Techem</description>
 
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>

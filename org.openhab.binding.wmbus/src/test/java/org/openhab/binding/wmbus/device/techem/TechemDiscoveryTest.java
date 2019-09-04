@@ -46,10 +46,10 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
     }
 
     @Test
-    public void testHKV76Support() throws Exception {
+    public void testSD76Support() throws Exception {
         DiscoveryResult result = result(MESSAGE_118);
         Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV76);
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_SD76);
     }
 
     @Test
