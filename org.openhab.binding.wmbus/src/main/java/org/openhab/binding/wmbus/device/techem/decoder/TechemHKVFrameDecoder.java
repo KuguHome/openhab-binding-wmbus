@@ -59,6 +59,7 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
             records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
             records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
+            records.add(new Record<>(Record.Type.ALMANAC, ""));
 
             if (reportsTemperature) {
                 float temp1 = parseTemperature(buffer, offset + 10 + complexShift);

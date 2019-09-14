@@ -140,7 +140,8 @@ public interface TechemBindingConstants {
             .put(CHANNEL_CURRENTDATE, Type.CURRENT_READING_DATE) // present date
             .put(CHANNEL_LASTREADING, Type.PAST_VOLUME) // last billing value
             .put(CHANNEL_LASTDATE, Type.PAST_READING_DATE) // past billing date
-            .put(CHANNEL_RECEPTION, Type.RSSI) // past billing date
+            .put(CHANNEL_RECEPTION, Type.RSSI) // Received Signal Strength Indicator
+            .put(CHANNEL_ALMANAC, Type.ALMANAC) // bi-weekly history
             .build();
 
     Map<String, Type> HEAT_ALLOCATOR_MAPPING_69 = ImmutableMap.<String, Record.Type> builder()

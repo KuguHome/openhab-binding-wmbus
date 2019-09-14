@@ -17,7 +17,8 @@ public class Record<T> {
         PAST_READING_DATE,
         ROOM_TEMPERATURE,
         RADIATOR_TEMPERATURE,
-        RSSI
+        RSSI,
+        ALMANAC
     }
 
     private final Type type;
