@@ -15,7 +15,6 @@ import org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.device.techem.decoder.TechemFrameDecoder;
-import org.openhab.binding.wmbus.device.techem.handler.TechemHKVHandler;
 import org.openhab.binding.wmbus.device.techem.handler.TechemMeterHandler;
 import org.osgi.service.component.ComponentContext;
 import org.osgi.service.component.annotations.Activate;
@@ -51,11 +50,6 @@ public class TechemHandlerFactory extends BaseThingHandlerFactory {
     @Override
     protected ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
-
-        if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV)) {
-            logger.warn("Detected legacy thing type, please migrate!", thing.getUID().getId());
-            return new TechemHKVHandler(thing, techemFrameDecoder);
-        }
 
         if (thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV45)
                 || thingTypeUID.equals(TechemBindingConstants.THING_TYPE_TECHEM_HKV61)

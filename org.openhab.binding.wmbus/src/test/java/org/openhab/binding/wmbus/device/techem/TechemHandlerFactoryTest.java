@@ -17,14 +17,6 @@ public class TechemHandlerFactoryTest implements TechemBindingConstants {
     }
 
     @Test
-    public void testLegacyHKVSupport() {
-        ThingImpl thing = new ThingImpl(THING_TYPE_TECHEM_HKV, "00000");
-
-        ThingHandler handler = handlerFactory.createHandler(thing);
-        Assertions.assertThat(handler).isNotNull();
-    }
-
-    @Test
     public void testHKV61Support() {
         ThingImpl thing = new ThingImpl(THING_TYPE_TECHEM_HKV61, "00000");
 

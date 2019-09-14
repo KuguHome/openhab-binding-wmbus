@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.wmbus;
 
-import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
@@ -16,7 +15,6 @@ import java.util.function.Function;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openmuc.jmbus.DeviceType;
 
-import com.google.common.collect.ImmutableMap;
 import com.google.common.collect.ImmutableSet;
 
 /**
@@ -31,7 +29,6 @@ public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
-    public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
     public static final String THING_TYPE_NAME_METER = "meter";
     public static final String THING_TYPE_NAME_ENCRYPTED_METER = "encrypted_meter";
 
@@ -40,45 +37,12 @@ public class WMBusBindingConstants {
      */
     public static final Long DEFAULT_TIME_TO_LIVE = TimeUnit.HOURS.toSeconds(24);
 
-    // add new devices here - string must not contain "." or you get InitializerError on WMBusHandlerFactory even before
-    // constructor
-
-    public static final String THING_TYPE_NAME_KAMSTRUP_MULTICAL_302 = "kamstrup_multical_302"; // (water) heat meter
-                                                                                                // (Wärmemengenzähler)
-                                                                                                // with water (flow)
-                                                                                                // meter
-    public static final String THING_TYPE_NAME_QUNDIS_QHEAT_5 = "qundis_qheat_5"; // (water) heat meter
-                                                                                  // (Wärmemengenzähler)
-    public static final String THING_TYPE_NAME_QUNDIS_QWATER_5_5 = "qundis_qwater_5_5"; // water (flow) meter
-                                                                                        // (Wasserzähler)
-    public static final String THING_TYPE_NAME_QUNDIS_QCALORIC_5_5 = "qundis_qcaloric_5_5"; // heat cost allocator
-                                                                                            // (Heizkostenverteiler)
-
-    public static final String THING_TYPE_NAME_ENGELMANN_SENSOSTAR = "engelmann_heat_meter_v0";
-    public static final String THING_TYPE_NAME_ADEUNIS_GAS_METER_3 = "adeunis_rf_gas_meter_v3";
-
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
-    public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_VIRTUAL_BRIDGE);
 
     public final static ThingTypeUID THING_TYPE_METER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_METER);
     public final static ThingTypeUID THING_TYPE_ENCRYPTED_METER = new ThingTypeUID(BINDING_ID,
             THING_TYPE_NAME_ENCRYPTED_METER);
-
-    // add new devices here
-    public final static ThingTypeUID THING_TYPE_KAMSTRUP_MULTICAL_302 = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_KAMSTRUP_MULTICAL_302);
-    public final static ThingTypeUID THING_TYPE_QUNDIS_QHEAT_5 = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_QUNDIS_QHEAT_5);
-    public final static ThingTypeUID THING_TYPE_QUNDIS_QWATER_5_5 = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_QUNDIS_QWATER_5_5);
-    public final static ThingTypeUID THING_TYPE_QUNDIS_QCALORIC_5_5 = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_QUNDIS_QCALORIC_5_5);
-    public static final ThingTypeUID THING_TYPE_ENGELMANN_SENSOSTAR = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_ENGELMANN_SENSOSTAR);
-    public static final ThingTypeUID THING_TYPE_ADEUNIS_GAS_METER_3 = new ThingTypeUID(BINDING_ID,
-            THING_TYPE_NAME_ADEUNIS_GAS_METER_3);
 
     // List all channels
     // general channels
@@ -110,9 +74,7 @@ public class WMBusBindingConstants {
 
     // add new devices here
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
-            THING_TYPE_KAMSTRUP_MULTICAL_302, THING_TYPE_QUNDIS_QHEAT_5, THING_TYPE_QUNDIS_QWATER_5_5,
-            THING_TYPE_QUNDIS_QCALORIC_5_5, THING_TYPE_VIRTUAL_BRIDGE, THING_TYPE_ADEUNIS_GAS_METER_3,
-            THING_TYPE_ENGELMANN_SENSOSTAR, THING_TYPE_METER, THING_TYPE_ENCRYPTED_METER);
+            THING_TYPE_METER, THING_TYPE_ENCRYPTED_METER);
 
     // Bridge config properties
     public static final String CONFKEY_STICK_MODEL = "stickModel";
@@ -121,15 +83,10 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_ENCRYPTION_KEYS = "encryptionKeys";
     public static final String CONFKEY_DEVICEID_FILTER = "deviceIDFilter";
 
-    public static final String CONFKEY_VIRTUAL_CF = "control_field";
-    public static final String CONFKEY_VIRTUAL_BYTES = "bytes";
-    public static final String CONFKEY_VIRTUAL_ADDRESS = "address";
-    public static final String CONFKEY_VIRTUAL_RSSI = "rssi";
-
     // device config properties
     public static final String PROPERTY_DEVICE_ADDRESS = "deviceAddress";
     public static final String PROPERTY_DEVICE_FREQUENCY_OF_UPDATES = "frequencyOfUpdates";
-    public static final String PROPERTY_DEVICE_ENCRYPTION_KEY = "enryptionKey";
+    public static final String PROPERTY_DEVICE_ENCRYPTION_KEY = "encryptionKey";
     // device property which says if we expected secure communication
     public static final String PROPERTY_DEVICE_ENCRYPTED = "encrypted";
 
@@ -150,11 +107,6 @@ public class WMBusBindingConstants {
      * A default encryption key.
      */
     public static final byte[] DEFAULT_DEVICE_ENCRYPTION_KEY = new byte[0];
-
-    public static final Map<String, ThingTypeUID> WMBUS_TYPE_MAP = new ImmutableMap.Builder<String, ThingTypeUID>()
-            .put("68KAM484", THING_TYPE_KAMSTRUP_MULTICAL_302).put("68LSE264", THING_TYPE_QUNDIS_QHEAT_5)
-            .put("68QDS227", THING_TYPE_QUNDIS_QWATER_5_5).put("68QDS528", THING_TYPE_QUNDIS_QCALORIC_5_5)
-            .put("68EFE04", THING_TYPE_ENGELMANN_SENSOSTAR).put("68ARF33", THING_TYPE_ADEUNIS_GAS_METER_3).build();
 
     public static final Function<DeviceType, String> DEVICE_TYPE_TRANSFORMATION = deviceType -> deviceType.name()
             .toLowerCase().replace("_", " ");

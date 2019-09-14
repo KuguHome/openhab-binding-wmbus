@@ -3,29 +3,6 @@
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <!-- thing definition for Techem HKV -->
-    <thing-type id="techem_hkv">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Techem HKV (legacy definition)</label>
-        <description>A heat cost allocator of Techem</description>
-
-        <channels>
-            <channel id="room_temperature" typeId="room_temperature" />
-            <channel id="radiator_temperature" typeId="radiator_temperature" />
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="last_reading" typeId="last_reading" />
-            <channel id="reception" typeId="reception" />
-            <channel id="last_date" typeId="last_date" />
-            <channel id="current_date" typeId="current_date" />
-            <channel id="almanac" typeId="almanac" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter"/>
-    </thing-type>
-
     <thing-type id="techem_hkv45">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
