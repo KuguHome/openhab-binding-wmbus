@@ -89,6 +89,7 @@ public class WMBusReceiver implements WMBusListener {
 
     @Override
     public void stoppedListening(IOException e) {
+        wmBusBridgeHandler.reset();
         logger.warn("Stopped listening for new messages. Reason: {}", e);
     }
 

@@ -190,6 +190,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
 
                 logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
                 connectionBuilder.setMode(radioMode);
+                connectionBuilder.setTimeout(1000); // infinite
                 // connectionBuilder.setTimeout(0); // infinite
 
                 try {
@@ -413,6 +414,11 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
         if (childHandler instanceof WMBusDeviceHandler) {
             handlers.remove(childHandler);
         }
+    }
+
+    public void reset() {
+        wmbusReceiver = null;
+        initialize();
     }
 
     static class StatusRunnable implements Runnable {

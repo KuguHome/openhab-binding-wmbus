@@ -1,15 +1,12 @@
 package org.openmuc.jrxtx;
 
 import static java.text.MessageFormat.format;
-import static org.eclipse.smarthome.io.transport.serial.SerialPort.FLOWCONTROL_NONE;
-import static org.eclipse.smarthome.io.transport.serial.SerialPort.FLOWCONTROL_RTSCTS_IN;
-import static org.eclipse.smarthome.io.transport.serial.SerialPort.FLOWCONTROL_RTSCTS_OUT;
-import static org.eclipse.smarthome.io.transport.serial.SerialPort.FLOWCONTROL_XONXOFF_IN;
-import static org.eclipse.smarthome.io.transport.serial.SerialPort.FLOWCONTROL_XONXOFF_OUT;
+import static org.eclipse.smarthome.io.transport.serial.SerialPort.*;
 
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+
 import org.eclipse.smarthome.io.transport.serial.PortInUseException;
 import org.eclipse.smarthome.io.transport.serial.SerialPortIdentifier;
 import org.eclipse.smarthome.io.transport.serial.SerialPortManager;
@@ -28,7 +25,7 @@ import org.osgi.util.tracker.ServiceTracker;
  *
  * @author MatthiasS
  *
- * (copied from org.openhab.binding.smartmeter)
+ *         (copied from org.openhab.binding.smartmeter)
  */
 class JRxTxPort implements SerialPort {
 
@@ -197,7 +194,6 @@ class JRxTxPort implements SerialPort {
                     throw new SerialPortException("Serial port has been closed.");
                 }
             } while (getSerialPortTimeout() == 0 || elapsedTime <= getSerialPortTimeout());
-
             throw new SerialPortTimeoutException();
         }
 

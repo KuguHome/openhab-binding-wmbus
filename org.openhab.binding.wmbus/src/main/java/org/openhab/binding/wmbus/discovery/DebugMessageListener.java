@@ -52,7 +52,7 @@ public class DebugMessageListener implements WMBusMessageListener {
                     logger.debug("Encrypted block {}", vdr);
                 }
             } catch (DecodingException e) {
-                logger.debug("Could not decode frame ({})", secondaryAddress, e);
+                logger.debug("Could not decode frame ({})", secondaryAddress, e.getMessage());
             }
         }
 

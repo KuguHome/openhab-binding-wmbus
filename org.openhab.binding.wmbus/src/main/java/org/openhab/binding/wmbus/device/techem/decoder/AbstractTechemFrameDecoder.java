@@ -49,6 +49,9 @@ abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements Tec
     }
 
     protected final int parseBigEndianInt(byte[] buffer, int index) {
+        if (buffer.length < index + 1) {
+            return 0x00;
+        }
         return parseBigEndianInt(buffer, index, index + 1);
     }
 
