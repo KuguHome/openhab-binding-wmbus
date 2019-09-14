@@ -255,9 +255,9 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
             return false;
         }
 
-        logger.debug("register listener: Adding");
+        logger.trace("register listener: Adding");
         boolean result = wmBusMessageListeners.add(wmBusMessageListener);
-        logger.debug("register listener: Success");
+        logger.trace("register listener: Success");
         if (result) {
             // inform the listener initially about all devices and their states
             for (WMBusDevice device : knownDevices.values()) {
@@ -343,16 +343,17 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
                 try {
                     WMBusMessage message = VirtualWMBusMessageHelper.decode(device.getOriginalMessage().asBlob(),
                             device.getOriginalMessage().getRssi(), keyStorage.toMap());
-                    logger.info("Message from {} successfully deecrypted, forwarding it to receivers",
-                            device.getDeviceAddress());
                     message.getVariableDataResponse().decode();
+                    logger.info("Message from {} successfully decrypted, forwarding it to receivers",
+                            device.getDeviceAddress());
                     return new WMBusDevice(message, this);
                 } catch (DecodingException decodingException) {
                     logger.info(
                             "Could not decode frame, probably we still miss enryption key, forwarding frame in original form");
                 }
-            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:")) {
-                logger.trace("Found frame with manufacturer specific encoding, forwarding for futher processing.");
+            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:")
+                    || parseException.getMessage().startsWith("Unable to decode message with this CI Field")) {
+                logger.debug("Found frame with manufacturer specific encoding, forwarding for futher processing.");
             } else {
                 logger.debug("Unexpected error while parsing frame, forwarding frame in original form", parseException);
             }
