@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.openhab.binding.wmbus.internal.units.CompositeUnitRegistry">
+   <property name="composite" value="true"/>
+   <service>
+      <provide interface="org.openhab.binding.wmbus.UnitRegistry"/>
+   </service>
+   <reference bind="setUnitRegistry" cardinality="0..n" interface="org.openhab.binding.wmbus.UnitRegistry" name="UnitRegistry" target="(!(composite=true))" unbind="unsetUnitRegistry"/>
+   <implementation class="org.openhab.binding.wmbus.internal.units.CompositeUnitRegistry"/>
+</scr:component>

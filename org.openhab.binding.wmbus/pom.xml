@@ -48,8 +48,6 @@
             <groupId>org.openmuc</groupId>
             <artifactId>jrxtx</artifactId>
             <version>1.0.1</version>
-            <scope>system</scope>
-            <systemPath>${basedir}/lib/jrxtx-1.0.1.jar</systemPath>
         </dependency>
 
         <dependency>

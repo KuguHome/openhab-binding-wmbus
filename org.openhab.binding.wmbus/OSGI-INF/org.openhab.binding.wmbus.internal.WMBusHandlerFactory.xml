@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" activate="activate" deactivate="deactivate" name="org.openhab.binding.wmbus.internal.WMBusHandlerFactory">
+   <service>
+      <provide interface="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.BaseThingHandlerFactory"/>
+      <provide interface="org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory"/>
+   </service>
+   <reference bind="setChannelTypeProvider" interface="org.openhab.binding.wmbus.internal.WMBusChannelTypeProvider" name="ChannelTypeProvider" unbind="unsetChannelTypeProvider"/>
+   <reference bind="setKeyStorage" interface="org.openhab.io.transport.mbus.wireless.KeyStorage" name="KeyStorage" unbind="unsetKeyStorage"/>
+   <reference bind="setUnitRegistry" interface="org.openhab.binding.wmbus.UnitRegistry" name="UnitRegistry" unbind="unsetUnitRegistry"/>
+   <reference bind="registerWMBusMessageListener" cardinality="0..n" interface="org.openhab.binding.wmbus.handler.WMBusMessageListener" name="registerWMBusMessageListener" policy="dynamic" unbind="unregisterWMBusMessageListener"/>
+   <implementation class="org.openhab.binding.wmbus.internal.WMBusHandlerFactory"/>
+</scr:component>
