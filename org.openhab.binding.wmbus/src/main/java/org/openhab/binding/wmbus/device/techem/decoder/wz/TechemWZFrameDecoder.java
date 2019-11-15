@@ -19,11 +19,15 @@ public class TechemWZFrameDecoder extends TechemVariantFrameDecoder {
     private static final ImmutableMap<Byte, TechemFrameDecoder> CODEC_MAP = ImmutableMap
             .<Byte, TechemFrameDecoder> builder()
             // warm water
-            .put(Byte.valueOf((byte) 0x62), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116255_6))
+            .put(Byte.valueOf((byte) 0x62), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11298_6))
             // cold water
-            .put(Byte.valueOf((byte) 0x72), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116255_16))
+            .put(Byte.valueOf((byte) 0x72), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH112114_16))
+            // warm water
+            .put(Byte.valueOf((byte) 0x62), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11698_6))
+            // cold water
+            .put(Byte.valueOf((byte) 0x72), new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116114_16))
             // heat meter
-            .put(Byte.valueOf((byte) 0x43), new TechemHeatMeterFrameDecoder(TechemBindingConstants._68TCH113255_4))
+            .put(Byte.valueOf((byte) 0x43), new TechemHeatMeterFrameDecoder(TechemBindingConstants._68TCH11367_4))
             .build();
 
     public TechemWZFrameDecoder() {

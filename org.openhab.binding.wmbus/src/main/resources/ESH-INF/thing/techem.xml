@@ -177,7 +177,7 @@
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
 
-    <thing-type id="techem_wz43">
+    <thing-type id="techem_wmz43">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
         </supported-bridge-type-refs>

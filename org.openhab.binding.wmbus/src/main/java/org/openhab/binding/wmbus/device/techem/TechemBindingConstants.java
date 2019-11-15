@@ -32,24 +32,28 @@ public interface TechemBindingConstants {
 
     String MANUFACTURER_ID = "TCH";
 
-    // warm water, type 0x62
-    Variant _68TCH116255_6 = new Variant(116, 0x62, DeviceType.WARM_WATER_METER);
-    // cold water, type 0x72
-    Variant _68TCH116255_16 = new Variant(116, 0x72, DeviceType.COLD_WATER_METER);
-    // heat, type 0x43
-    Variant _68TCH113255_4 = new Variant(113, 0x43, DeviceType.HEAT_METER);
-    // hkv version byte 0x45 -> v 69
+    // warm water version byte 0x74 -> v 116, type 0x62 (not specified in standard)
+    Variant _68TCH11298_6 = new Variant(0x70, 0x62, DeviceType.WARM_WATER_METER);
+    // cold water version byte 0x74 -> v 116, type 0x72 (not specified in standard)
+    Variant _68TCH112114_16 = new Variant(0x70, 0x72, DeviceType.COLD_WATER_METER);
+    // warm water version byte 0x74 -> v 116, type 0x62 (not specified in standard)
+    Variant _68TCH11698_6 = new Variant(0x74, 0x62, DeviceType.WARM_WATER_METER);
+    // cold water version byte 0x74 -> v 116, type 0x72 (not specified in standard)
+    Variant _68TCH116114_16 = new Variant(0x74, 0x72, DeviceType.COLD_WATER_METER);
+    // heat version byte 0x71 -> v 113, type 0x43 (not specified in standard)
+    Variant _68TCH11367_4 = new Variant(0x71, 0x43, DeviceType.HEAT_METER);
+    // hkv version byte 0x45 -> v 69, type 0xff (standard: RESERVED)
     Variant _68TCH69255_8 = new Variant(0x45, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // hkv version byte 0x61 -> v 97
+    // hkv version byte 0x61 -> v 97, type 0xff (standard: RESERVED)
     Variant _68TCH97255_8 = new Variant(0x61, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // khv version byte 0x64 -> v 100
+    // khv version byte 0x64 -> v 100, type 0xff (standard: RESERVED)
     Variant _68TCH100255_8 = new Variant(0x64, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // kkv version byte 0x69 -> v 105
+    // kkv version byte 0x69 -> v 105, type 0xff (standard: RESERVED)
     Variant _68TCH105255_8 = new Variant(0x69, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // hkv version byte 0x94 -> v 148
+    // hkv version byte 0x94 -> v 148, type 0xff (standard: RESERVED)
     Variant _68TCH148255_8 = new Variant(0x94, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
-    // smoke detector version byte 0x76 -> v 118
-    Variant _68TCH118255_8 = new Variant(0x76, DeviceType.RESERVED, DeviceType.SMOKE_DETECTOR);
+    // smoke detector version byte 0x76 -> v 118, type 0xff (standard: RESERVED)
+    Variant _68TCH118255_161 = new Variant(0x76, DeviceType.RESERVED, DeviceType.SMOKE_DETECTOR);
 
     // 68TCH113255
 
@@ -67,7 +71,7 @@ public interface TechemBindingConstants {
     String THING_TYPE_NAME_TECHEM_WARM_WATER_METER = "techem_wz62";
     String THING_TYPE_NAME_TECHEM_COLD_WATER_METER = "techem_wz72";
     // heat meter
-    String THING_TYPE_NAME_TECHEM_HEAT_METER = "techem_wz43";
+    String THING_TYPE_NAME_TECHEM_HEAT_METER = "techem_wmz43";
 
     ThingTypeUID THING_TYPE_TECHEM_HKV45 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_TECHEM_HKV45);
@@ -81,7 +85,7 @@ public interface TechemBindingConstants {
             THING_TYPE_NAME_TECHEM_HKV94);
 
     ThingTypeUID THING_TYPE_TECHEM_SD76 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
-        THING_TYPE_NAME_TECHEM_SD76);
+            THING_TYPE_NAME_TECHEM_SD76);
 
     ThingTypeUID THING_TYPE_TECHEM_WARM_WATER_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_TECHEM_WARM_WATER_METER);
@@ -96,15 +100,17 @@ public interface TechemBindingConstants {
     ThingTypeUID THING_TYPE_TECHEM_HKV = new ThingTypeUID(WMBusBindingConstants.BINDING_ID, THING_TYPE_NAME_TECHEM_HKV);
 
     Map<Variant, ThingTypeUID> SUPPORTED_DEVICE_VARIANTS = ImmutableMap.<Variant, ThingTypeUID> builder()
-            .put(_68TCH116255_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 62
-            .put(_68TCH116255_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 72
-            .put(_68TCH113255_4, THING_TYPE_TECHEM_HEAT_METER) // WZ 43
+            .put(_68TCH11298_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 112_62
+            .put(_68TCH112114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 112_72
+            .put(_68TCH11698_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 116_62
+            .put(_68TCH116114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 116_72
+            .put(_68TCH11367_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 43
             .put(_68TCH69255_8, THING_TYPE_TECHEM_HKV45) // HKV 45
             .put(_68TCH97255_8, THING_TYPE_TECHEM_HKV61) // HKV 61
             .put(_68TCH100255_8, THING_TYPE_TECHEM_HKV64) // HKV 64
             .put(_68TCH105255_8, THING_TYPE_TECHEM_HKV69) // HKV 69
             .put(_68TCH148255_8, THING_TYPE_TECHEM_HKV94) // HKV 94
-            .put(_68TCH118255_8, THING_TYPE_TECHEM_SD76) // SD 76
+            .put(_68TCH118255_161, THING_TYPE_TECHEM_SD76) // SD 76
             .build();
 
     Set<String> SUPPORTED_DEVICE_TYPES = ImmutableSet
@@ -133,7 +139,8 @@ public interface TechemBindingConstants {
             .put(THING_TYPE_TECHEM_HKV64, TECHEM_METER_MAPPING) // again basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV69, HEAT_ALLOCATOR_MAPPING_69) // here we have two temperature channels
             .put(THING_TYPE_TECHEM_HKV94, HEAT_ALLOCATOR_MAPPING_69) // try to decode 0x94 variant in same way as 0x69
-            .put(THING_TYPE_TECHEM_SD76, Collections.emptyMap()) // v118 is smoke detector, not sure what to do about it channels
+            .put(THING_TYPE_TECHEM_SD76, Collections.emptyMap()) // v118 is smoke detector, not sure what to do about it
+                                                                 // channels
             .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
             .put(THING_TYPE_TECHEM_COLD_WATER_METER, TECHEM_METER_MAPPING) // cold
             .put(THING_TYPE_TECHEM_HEAT_METER, TECHEM_METER_MAPPING) // heat meter have same set of channels as heat

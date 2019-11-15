@@ -17,7 +17,7 @@ import org.openmuc.jmbus.SecondaryAddress;
 public class TechemSD76FrameDecoder extends AbstractTechemFrameDecoder<TechemSmokeDetector> {
 
     public TechemSD76FrameDecoder() {
-        super(TechemBindingConstants._68TCH118255_8);
+        super(TechemBindingConstants._68TCH118255_161);
     }
 
     @Override
