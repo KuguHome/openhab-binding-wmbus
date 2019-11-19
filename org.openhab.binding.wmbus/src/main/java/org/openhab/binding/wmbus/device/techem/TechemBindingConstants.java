@@ -40,6 +40,7 @@ public interface TechemBindingConstants {
     Variant _68TCH11698_6 = new Variant(0x74, 0x62, DeviceType.WARM_WATER_METER);
     // cold water version 0x74 -> 116, type 0x72
     Variant _68TCH116114_16 = new Variant(0x74, 0x72, DeviceType.COLD_WATER_METER);
+
     // heat version 0x71 -> v 113, type 0x43
     Variant _68TCH11367_4 = new Variant(0x71, 0x43, DeviceType.HEAT_METER);
 
@@ -59,6 +60,13 @@ public interface TechemBindingConstants {
 
     // 68TCH113255
 
+    // water meters
+    String THING_TYPE_NAME_TECHEM_WARM_WATER_METER = "techem_wz62";
+    String THING_TYPE_NAME_TECHEM_COLD_WATER_METER = "techem_wz72";
+
+    // heat meter
+    String THING_TYPE_NAME_TECHEM_HEAT_METER = "techem_wmz43";
+
     // techem heat cost allocators (Heizkostenverteiler)
     String THING_TYPE_NAME_TECHEM_HKV45 = "techem_hkv45";
     String THING_TYPE_NAME_TECHEM_HKV61 = "techem_hkv61";
@@ -69,11 +77,13 @@ public interface TechemBindingConstants {
     // techem smoke detector
     String THING_TYPE_NAME_TECHEM_SD76 = "techem_sd76";
 
-    // water meters
-    String THING_TYPE_NAME_TECHEM_WARM_WATER_METER = "techem_wz62";
-    String THING_TYPE_NAME_TECHEM_COLD_WATER_METER = "techem_wz72";
-    // heat meter
-    String THING_TYPE_NAME_TECHEM_HEAT_METER = "techem_wmz43";
+    ThingTypeUID THING_TYPE_TECHEM_WARM_WATER_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_TECHEM_WARM_WATER_METER);
+    ThingTypeUID THING_TYPE_TECHEM_COLD_WATER_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_TECHEM_COLD_WATER_METER);
+
+    ThingTypeUID THING_TYPE_TECHEM_HEAT_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            THING_TYPE_NAME_TECHEM_HEAT_METER);
 
     ThingTypeUID THING_TYPE_TECHEM_HKV45 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_TECHEM_HKV45);
@@ -88,13 +98,6 @@ public interface TechemBindingConstants {
 
     ThingTypeUID THING_TYPE_TECHEM_SD76 = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
             THING_TYPE_NAME_TECHEM_SD76);
-
-    ThingTypeUID THING_TYPE_TECHEM_WARM_WATER_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
-            THING_TYPE_NAME_TECHEM_WARM_WATER_METER);
-    ThingTypeUID THING_TYPE_TECHEM_COLD_WATER_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
-            THING_TYPE_NAME_TECHEM_COLD_WATER_METER);
-    ThingTypeUID THING_TYPE_TECHEM_HEAT_METER = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
-            THING_TYPE_NAME_TECHEM_HEAT_METER);
 
     // TODO remove this part once all deployments are migrated
     // old device type, remained here as alias for hkv64
@@ -136,18 +139,18 @@ public interface TechemBindingConstants {
 
     // channel mapping for thing types
     Map<ThingTypeUID, Map<String, Type>> RECORD_MAP = ImmutableMap.<ThingTypeUID, Map<String, Type>> builder()
+            .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
+            .put(THING_TYPE_TECHEM_COLD_WATER_METER, TECHEM_METER_MAPPING) // cold
+
+            .put(THING_TYPE_TECHEM_HEAT_METER, TECHEM_METER_MAPPING) // heat meter have same set of channels as heat
+                                                                     // cost allocator
             .put(THING_TYPE_TECHEM_HKV45, TECHEM_METER_MAPPING) // basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV61, TECHEM_METER_MAPPING) // basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV64, TECHEM_METER_MAPPING) // again basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV69, HEAT_ALLOCATOR_MAPPING_69) // here we have two temperature channels
             .put(THING_TYPE_TECHEM_HKV94, HEAT_ALLOCATOR_MAPPING_69) // try to decode 0x94 variant in same way as 0x69
+
             .put(THING_TYPE_TECHEM_SD76, Collections.emptyMap()) // v118 is smoke detector, not sure what to do about it
                                                                  // channels
-            .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
-            .put(THING_TYPE_TECHEM_COLD_WATER_METER, TECHEM_METER_MAPPING) // cold
-            .put(THING_TYPE_TECHEM_HEAT_METER, TECHEM_METER_MAPPING) // heat meter have same set of channels as heat
-                                                                     // cost allocator
-
             .build();
-
 }

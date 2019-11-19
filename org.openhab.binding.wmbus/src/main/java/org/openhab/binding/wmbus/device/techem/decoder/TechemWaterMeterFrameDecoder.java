@@ -37,7 +37,7 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWate
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA2) {
+        if (coding == 0xA0 || coding == 0xA2) {
             LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
             float lastValue = parseValue(buffer, offset + 4, _SCALE_FACTOR_1_10th);
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);

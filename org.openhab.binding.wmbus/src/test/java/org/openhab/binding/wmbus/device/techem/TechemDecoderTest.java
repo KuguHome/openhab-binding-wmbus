@@ -22,20 +22,33 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     private final CompositeTechemFrameDecoder reader = new CompositeTechemFrameDecoder();
 
     @Test
-    public void testColdWaterParser() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_116_COLD_WATER));
+    public void testWarmWater112Parser() throws Exception {
+        TechemDevice device = reader.decode(message(MESSAGE_112_WARM_WATER));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemWaterMeter.class,
-                expectedDevice(DeviceType.COLD_WATER_METER));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH116114_16.getTechemType());
+                expectedDevice(DeviceType.WARM_WATER_METER));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11298_6.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(5)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 18.1, Units.CUBIC_METRE))
-                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 43.5, Units.CUBIC_METRE)).areAtLeastOne(rssi());
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 6.5, Units.CUBIC_METRE))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 59.7, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
 
     @Test
-    public void testWarmWaterParser() throws Exception {
+    public void testColdWater112Parser() throws Exception {
+        TechemDevice device = reader.decode(message(MESSAGE_112_COLD_WATER));
+
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemWaterMeter.class,
+                expectedDevice(DeviceType.COLD_WATER_METER));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH112114_16.getTechemType());
+
+        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 36.3, Units.CUBIC_METRE))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 190.2, Units.CUBIC_METRE)).areAtLeastOne(rssi());
+    }
+
+    @Test
+    public void testWarmWater116Parser() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_116_WARM_WATER));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemWaterMeter.class,
@@ -48,7 +61,20 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     }
 
     @Test
-    public void testHeatParser() throws Exception {
+    public void testColdWater116Parser() throws Exception {
+        TechemDevice device = reader.decode(message(MESSAGE_116_COLD_WATER));
+
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemWaterMeter.class,
+                expectedDevice(DeviceType.COLD_WATER_METER));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH116114_16.getTechemType());
+
+        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 18.1, Units.CUBIC_METRE))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 43.5, Units.CUBIC_METRE)).areAtLeastOne(rssi());
+    }
+
+    @Test
+    public void testHeat113Parser() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_113_HEAT));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatMeter.class,
@@ -58,6 +84,19 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         Assertions.assertThat(device.getMeasurements()).hasSize(5)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 1769472.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 8913920.0)).areAtLeastOne(rssi());
+    }
+
+    @Test
+    public void testHKV45() throws Exception {
+        TechemDevice device = reader.decode(message(MESSAGE_69_HKV));
+
+        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
+                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
+
+        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
+                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
 
     @Test
@@ -89,19 +128,6 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     }
 
     @Test
-    public void testHKV45() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_69_HKV));
-
-        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
-                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
-
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
-                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
-    }
-
-    @Test
     public void testHKV148() throws Exception {
         TechemDevice device = reader.decode(message(MESSAGE_148_HKV));
 
@@ -118,11 +144,12 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testSD76F0() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_118_SD));
+        TechemDevice device = reader.decode(message(MESSAGE_118_SD_1));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
+        Assertions.assertThat(device.getDeviceType())
+                .isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
 
         // FIXME add parsing of frame
         Assertions.assertThat(device.getMeasurements()).isEmpty();
@@ -131,12 +158,12 @@ public class TechemDecoderTest extends AbstractWMBusTest {
     @Test
     public void testSD76F0_extra() throws Exception {
         // just another test frame
-        TechemDevice device = reader.decode(
-                message("294468508364866476F0A000DE246F2500586F25010019000013006BA1007CB2008DC3009ED4000FE500F40000"));
+        TechemDevice device = reader.decode(message(MESSAGE_118_SD_2));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
+        Assertions.assertThat(device.getDeviceType())
+                .isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
 
         // FIXME add parsing of frame
         Assertions.assertThat(device.getMeasurements()).isEmpty();

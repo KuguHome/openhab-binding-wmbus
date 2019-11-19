@@ -32,35 +32,28 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
     }
 
     @Test
-    public void testHKV64Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_100_HKV);
+    public void testWZ7062Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_112_WARM_WATER);
         Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV64);
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_WARM_WATER_METER);
     }
 
     @Test
-    public void testHKV69Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_105_HKV);
+    public void testWZ7072Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_112_COLD_WATER);
         Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV69);
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_COLD_WATER_METER);
     }
 
     @Test
-    public void testSD76Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_118_SD);
-        Assertions.assertThat(result).isNotNull();
-        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_SD76);
-    }
-
-    @Test
-    public void testWZ62Support() throws Exception {
+    public void testWZ7462Support() throws Exception {
         DiscoveryResult result = result(MESSAGE_116_WARM_WATER);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_WARM_WATER_METER);
     }
 
     @Test
-    public void testWZ72Support() throws Exception {
+    public void testWZ7472Support() throws Exception {
         DiscoveryResult result = result(MESSAGE_116_COLD_WATER);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_COLD_WATER_METER);
@@ -71,6 +64,41 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
         DiscoveryResult result = result(MESSAGE_113_HEAT);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HEAT_METER);
+    }
+
+    @Test
+    public void testHKV4543Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_69_HKV);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV45);
+    }
+
+    @Test
+    public void testHKV6480Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_100_HKV);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV64);
+    }
+
+    @Test
+    public void testHKV6980Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_105_HKV);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV69);
+    }
+
+    @Test
+    public void testHKV9480Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_148_HKV);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV94);
+    }
+
+    @Test
+    public void testSD76Support() throws Exception {
+        DiscoveryResult result = result(MESSAGE_118_SD_1);
+        Assertions.assertThat(result).isNotNull();
+        Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_SD76);
     }
 
     private DiscoveryResult result(String message) throws DecodingException {
