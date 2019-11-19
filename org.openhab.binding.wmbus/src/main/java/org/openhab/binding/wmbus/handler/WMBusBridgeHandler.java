@@ -349,8 +349,7 @@ public class WMBusBridgeHandler extends ConfigStatusBridgeHandler implements WMB
                     return new WMBusDevice(message, this);
                 } catch (DecodingException decodingException) {
                     logger.info(
-                            "Could not decode frame, probably we still miss enryption key, forwarding frame in original form",
-                            decodingException);
+                            "Could not decode frame, probably we still miss enryption key, forwarding frame in original form");
                 }
             } else if (parseException.getMessage().startsWith("Manufacturer specific CI:")) {
                 logger.trace("Found frame with manufacturer specific encoding, forwarding for futher processing.");

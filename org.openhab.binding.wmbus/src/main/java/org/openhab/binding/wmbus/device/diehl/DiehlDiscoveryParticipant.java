@@ -68,7 +68,7 @@ public class DiehlDiscoveryParticipant extends AbstractWMBusDiscoveryParticipant
 
             return super.getThingUID(qloudDevice);
         } catch (DecodingException e) {
-            logger.debug("Could not decode message '{}', not a diehl device", message, e);
+            logger.debug("Could not decode message '{}', not a diehl device", message);
         }
 
         return null;

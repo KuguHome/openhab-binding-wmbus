@@ -32,7 +32,7 @@ import org.slf4j.LoggerFactory;
  * @author Roman Malyugin - Initial contribution
  */
 
-@Component(service = { UnknownMeter.class }, properties = "OSGI-INF/unknown.properties")
+@Component(service = { UnknownMeter.class })
 public class UnknownMeter extends Meter {
 
     public static final Logger logger = LoggerFactory.getLogger(UnknownMeter.class);
