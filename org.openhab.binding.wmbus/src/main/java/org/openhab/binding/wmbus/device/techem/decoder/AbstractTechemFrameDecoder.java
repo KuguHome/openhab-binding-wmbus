@@ -21,7 +21,7 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements TechemFrameDecoder<T> {
+abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements TechemFrameDecoder<T> {
 
     private final Logger logger = LoggerFactory.getLogger(AbstractTechemFrameDecoder.class);
     protected final Variant variant;
@@ -35,7 +35,9 @@ public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> impleme
 
     @Override
     public final boolean suports(String deviceVariant) {
-        return variant.getRawType().equals(deviceVariant);
+        boolean supports = variant.getRawType().equals(deviceVariant);
+        // logger.debug("Does decoder {} support meter variant {}? {}", variant, deviceVariant, supports);
+        return supports;
     }
 
     protected final byte[] read(byte[] buffer, int... indexes) {
@@ -84,8 +86,8 @@ public abstract class AbstractTechemFrameDecoder<T extends TechemDevice> impleme
             day = 1;
         }
         if (month <= 0) {
-            logger.trace("Detected invalid month number {} in byte representation: {}, changing to last month of year", month,
-                    HexUtils.bytesToHex(read(buffer, index, index + 1)));
+            logger.trace("Detected invalid month number {} in byte representation: {}, changing to last month of year",
+                    month, HexUtils.bytesToHex(read(buffer, index, index + 1)));
             month = 12;
         }
 

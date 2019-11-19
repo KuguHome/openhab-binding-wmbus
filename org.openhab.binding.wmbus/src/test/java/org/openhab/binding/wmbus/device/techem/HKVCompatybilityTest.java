@@ -22,9 +22,9 @@ public class HKVCompatybilityTest extends AbstractWMBusTest {
 
     @Test
     public void testLegacyParsingAfterMigration() throws Exception {
-        TechemDevice newDevice = reader.decode(message(MESSAGE_118));
+        TechemDevice newDevice = reader.decode(message(MESSAGE_118_SD));
 
-        TechemHKV oldDevice = new TechemHKV(message(MESSAGE_118).getOriginalMessage(), null);
+        TechemHKV oldDevice = new TechemHKV(message(MESSAGE_118_SD).getOriginalMessage(), null);
         oldDevice.decode();
 
         LocalDateTime lastDate = oldDevice.getLastDate().toLocalDateTime();
@@ -51,9 +51,9 @@ public class HKVCompatybilityTest extends AbstractWMBusTest {
 
     @Test
     public void testLegacyParsingBeforeMigration() throws Exception {
-        TechemDevice newDevice = reader.decode(message(MESSAGE_118));
+        TechemDevice newDevice = reader.decode(message(MESSAGE_118_SD));
 
-        LegacyTechemHKV oldDevice = new LegacyTechemHKV(message(MESSAGE_118).getOriginalMessage());
+        LegacyTechemHKV oldDevice = new LegacyTechemHKV(message(MESSAGE_118_SD).getOriginalMessage());
         oldDevice.decode();
 
         LocalDateTime lastDate = oldDevice.getLastDate().toLocalDateTime();

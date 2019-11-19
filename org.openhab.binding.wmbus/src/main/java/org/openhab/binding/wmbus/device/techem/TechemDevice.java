@@ -30,25 +30,19 @@ public class TechemDevice extends WMBusDevice {
     private final List<Record<?>> measurements;
     private final Variant variant;
 
-    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType, List<Record<?>> measurements) {
+    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType,
+            List<Record<?>> measurements) {
         super(originalMessage, adapter);
 
         SecondaryAddress address = getOriginalMessage().getSecondaryAddress();
-        this.variant = new Variant(address.getVersion(), address.getDeviceType(), deviceType);
+        this.variant = new Variant(address.getVersion(), getOriginalDeviceTypeField(), deviceType,
+                address.getDeviceType());
         this.deviceType = deviceType;
         this.measurements = measurements;
     }
 
     public final DeviceType getTechemDeviceType() {
         return deviceType;
-    }
-
-    public List<Record<?>> getMeasurements() {
-        return measurements;
-    }
-
-    public Optional<Record<?>> getRecord(Type type) {
-        return measurements.stream().filter(record -> record.getType().equals(type)).findFirst();
     }
 
     public Variant getDeviceVariant() {
@@ -58,6 +52,14 @@ public class TechemDevice extends WMBusDevice {
     @Override
     public String getDeviceType() {
         return variant.getTechemType();
+    }
+
+    public List<Record<?>> getMeasurements() {
+        return measurements;
+    }
+
+    public Optional<Record<?>> getRecord(Type type) {
+        return measurements.stream().filter(record -> record.getType().equals(type)).findFirst();
     }
 
 }

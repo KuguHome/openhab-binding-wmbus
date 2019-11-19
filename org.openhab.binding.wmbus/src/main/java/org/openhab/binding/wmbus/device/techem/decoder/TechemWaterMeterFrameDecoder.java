@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.wmbus.device.techem.decoder.wz;
+package org.openhab.binding.wmbus.device.techem.decoder;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -26,9 +26,9 @@ import org.openmuc.jmbus.SecondaryAddress;
 import tec.uom.se.quantity.Quantities;
 import tec.uom.se.unit.Units;
 
-class TechemWaterMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemWaterMeter> {
+class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWaterMeter> {
 
-    public TechemWaterMeterFrameDecoder(Variant variant) {
+    TechemWaterMeterFrameDecoder(Variant variant) {
         super(variant);
     }
 

@@ -14,10 +14,12 @@ import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
 import org.openmuc.jmbus.SecondaryAddress;
 
+import com.google.common.collect.ImmutableMap;
+
 /**
  * Frame decoder which passes actual work to delegate after confirming matching device variant.
  *
- * Since Techem devices tend to use very similar wmbus identification and most of them reports themselves as OTHER we
+ * Since Techem devices tend to use very similar wmbus identification and most of them reports themselves as RESERVED we
  * need to determine its type based on device version. This decoder reads byte at fixed, given position and then try to
  * match given decoders with it.
  * Since standard leaves space for vendor specific device types this type is an attempt to sort it in a way which does
@@ -28,16 +30,14 @@ import org.openmuc.jmbus.SecondaryAddress;
  *
  * @author Łukasz Dywicki - initial contribution
  */
-public class TechemVariantFrameDecoder implements TechemFrameDecoder<TechemDevice> {
+class TechemVariantFrameDecoderSelector implements TechemFrameDecoder<TechemDevice> {
 
-    private final Map<Byte, TechemFrameDecoder> decoders;
+    private final Map<Byte, TechemFrameDecoder<?>> decoders;
     private final int tagOffset;
+    protected static final int BASED_ON_VERSION = -1;
+    protected static final int BASED_ON_DEVICETYPE = 0;
 
-    protected TechemVariantFrameDecoder(Map<Byte, TechemFrameDecoder> codecMap) {
-        this(0, codecMap);
-    }
-
-    protected TechemVariantFrameDecoder(int tagOffset, Map<Byte, TechemFrameDecoder> codecMap) {
+    protected TechemVariantFrameDecoderSelector(int tagOffset, ImmutableMap<Byte, TechemFrameDecoder<?>> codecMap) {
         this.tagOffset = tagOffset;
         this.decoders = codecMap;
     }

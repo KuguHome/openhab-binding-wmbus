@@ -11,13 +11,8 @@ package org.openhab.binding.wmbus.device.techem.decoder;
 import java.util.List;
 
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
-import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV45FrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV69FrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKV94FrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.sd.TechemSD76FrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.hkv.TechemHKVFrameDecoder;
-import org.openhab.binding.wmbus.device.techem.decoder.wz.TechemWZFrameDecoder;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -29,9 +24,13 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
 
     private final Logger logger = LoggerFactory.getLogger(CompositeTechemFrameDecoder.class);
 
-    private final List<TechemFrameDecoder<?>> decoders = ImmutableList.of(new TechemHKVFrameDecoder(),
-            new TechemSD76FrameDecoder(), new TechemHKV69FrameDecoder(), new TechemHKV45FrameDecoder(),
-            new TechemHKV94FrameDecoder(), new TechemWZFrameDecoder());
+    private final List<TechemFrameDecoder<?>> decoders = ImmutableList.of(new TechemVersionFrameDecoderSelector(),
+            // warm water
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11298_6),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11698_6),
+            // cold water
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH112114_16),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116114_16));
 
     @Override
     public boolean suports(String deviceVariant) {
@@ -49,19 +48,22 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
         if (device instanceof TechemDevice) {
             return (TechemDevice) device;
         }
-
+        TechemDevice result = null;
+        // TODO failing test: wrong water meter returned?
         for (TechemFrameDecoder<?> decoder : decoders) {
-            if (decoder.suports(device.getDeviceType())) {
+            if (decoder.suports(device.getRawDeviceType())) {
                 // same variant might be supported by multiple decoders
-                logger.debug("Found parser capable handling device {}, {}", device.getDeviceType(), decoder);
-                TechemDevice result = decoder.decode(device);
-                if (result != null) {
-                    return result;
-                }
+                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder);
+                result = decoder.decode(device);
+                logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
+                        result.getTechemDeviceType());
             }
         }
+        if (result != null) {
+            return result;
+        }
 
-        logger.debug("Could not find parser capable handling device {}", device.getDeviceType());
+        logger.debug("Could not find decoder capable of handling device {}", device.getRawDeviceType());
 
         return null;
     }

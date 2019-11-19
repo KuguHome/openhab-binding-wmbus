@@ -49,7 +49,7 @@ public class WMBusDevice {
     }
 
     public DataRecord findRecord(RecordType recordType) {
-        for (DataRecord record : getOriginalMessage().getVariableDataResponse().getDataRecords()) {
+        for (DataRecord record : originalMessage.getVariableDataResponse().getDataRecords()) {
             if (recordType.matches(record)) {
                 return record;
             }
@@ -62,22 +62,31 @@ public class WMBusDevice {
     }
 
     public boolean isEnrypted() {
-        return getOriginalMessage().getVariableDataResponse().getEncryptionMode() != EncryptionMode.NONE;
+        return originalMessage.getVariableDataResponse().getEncryptionMode() != EncryptionMode.NONE;
     }
 
     public String getDeviceAddress() {
-        return HexUtils.bytesToHex(getOriginalMessage().getSecondaryAddress().asByteArray());
+        return HexUtils.bytesToHex(originalMessage.getSecondaryAddress().asByteArray());
     }
 
     public String getDeviceType() {
-        return getOriginalMessage().getControlField() + ""
-                + getOriginalMessage().getSecondaryAddress().getManufacturerId() + ""
-                + getOriginalMessage().getSecondaryAddress().getVersion() + ""
-                + getOriginalMessage().getSecondaryAddress().getDeviceType().getId();
+        return originalMessage.getControlField() + "" + originalMessage.getSecondaryAddress().getManufacturerId() + ""
+                + originalMessage.getSecondaryAddress().getVersion() + ""
+                + originalMessage.getSecondaryAddress().getDeviceType().getId();
+    }
+
+    public String getRawDeviceType() {
+        return originalMessage.getControlField() + "" + originalMessage.getSecondaryAddress().getManufacturerId() + ""
+                + originalMessage.getSecondaryAddress().getVersion() + "" + getOriginalDeviceTypeField();
+    }
+
+    public int getOriginalDeviceTypeField() {
+        byte[] addressArray = originalMessage.getSecondaryAddress().asByteArray();
+        return addressArray[addressArray.length - 1] & 0xFF;
     }
 
     @Override
     public String toString() {
-        return getOriginalMessage().getSecondaryAddress().toString();
+        return originalMessage.getSecondaryAddress().toString();
     }
 }

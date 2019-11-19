@@ -6,7 +6,7 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
-package org.openhab.binding.wmbus.device.techem.decoder.wz;
+package org.openhab.binding.wmbus.device.techem.decoder;
 
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -20,7 +20,7 @@ import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.SecondaryAddress;
 
 // TODO adjust after finding test frame
-class TechemHeatMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemHeatMeter> {
+class TechemHeatMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatMeter> {
 
     TechemHeatMeterFrameDecoder(Variant variant) {
         super(variant);
@@ -62,7 +62,7 @@ class TechemHeatMeterFrameDecoder extends AbstractTechemWZFrameDecoder<TechemHea
         return (value[2] & 0xFF) + ((value[1] & 0xFF) << 8) + ((value[0] & 0xFF) << 16);
     }
 
-    private LocalDateTime parseActualDate(byte[] buffer, int dayIndex, int monthIndex) {
+    protected LocalDateTime parseActualDate(byte[] buffer, int dayIndex, int monthIndex) {
         int dateint = parseBigEndianInt(buffer, dayIndex);
 
         int day = (dateint >> 7) & 0x1F;

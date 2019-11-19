@@ -33,21 +33,21 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
 
     @Test
     public void testHKV64Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_100);
+        DiscoveryResult result = result(MESSAGE_100_HKV);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV64);
     }
 
     @Test
     public void testHKV69Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_105);
+        DiscoveryResult result = result(MESSAGE_105_HKV);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HKV69);
     }
 
     @Test
     public void testSD76Support() throws Exception {
-        DiscoveryResult result = result(MESSAGE_118);
+        DiscoveryResult result = result(MESSAGE_118_SD);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_SD76);
     }
@@ -67,7 +67,7 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
     }
 
     @Test
-    public void testWZ43Support() throws Exception {
+    public void testWMZ43Support() throws Exception {
         DiscoveryResult result = result(MESSAGE_113_HEAT);
         Assertions.assertThat(result).isNotNull();
         Assertions.assertThat(result.getThingTypeUID()).isEqualTo(THING_TYPE_TECHEM_HEAT_METER);

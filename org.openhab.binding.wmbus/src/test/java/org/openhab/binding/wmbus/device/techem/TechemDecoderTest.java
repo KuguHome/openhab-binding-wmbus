@@ -62,11 +62,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testHKV6480() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_100));
+        TechemDevice device = reader.decode(message(MESSAGE_100_HKV));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH100255_8.getTechemType());
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH100128_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(5)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 65.0))
@@ -75,11 +75,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testHKV6980() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_105));
+        TechemDevice device = reader.decode(message(MESSAGE_105_HKV));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH105255_8.getTechemType());
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH105128_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(7)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 410.0))
@@ -90,11 +90,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testHKV45() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_69));
+        TechemDevice device = reader.decode(message(MESSAGE_69_HKV));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH69255_8.getTechemType());
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(5)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
@@ -103,11 +103,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testHKV148() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_148));
+        TechemDevice device = reader.decode(message(MESSAGE_148_HKV));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148255_8.getTechemType());
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148128_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(7)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 258.0))
@@ -118,7 +118,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testSD76F0() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_118));
+        TechemDevice device = reader.decode(message(MESSAGE_118_SD));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));

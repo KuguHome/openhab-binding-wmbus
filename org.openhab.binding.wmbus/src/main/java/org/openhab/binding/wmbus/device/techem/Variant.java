@@ -5,31 +5,27 @@ import org.openmuc.jmbus.DeviceType;
 public class Variant {
 
     public final int version;
-    public final int type;
-    public final DeviceType reportedType;
+    public final int reportedType;
     public final int desiredType;
+    public final int matchingType; // since all unknown device types are converted to RESERVED/255 by jMBus
 
-    public Variant(int version, DeviceType type, DeviceType desiredType) {
-        this(version, type.getId(), type, desiredType.getId());
+    public Variant(int version, DeviceType reportedType, DeviceType desiredType) {
+        this(version, reportedType.getId(), desiredType);
     }
 
-    public Variant(int version, int type, DeviceType desiredType) {
-        this(version, type, DeviceType.getInstance(type), desiredType.getId());
+    public Variant(int version, int reportedType, DeviceType desiredType) {
+        this(version, reportedType, desiredType, DeviceType.getInstance(reportedType));
     }
 
-    public Variant(int version, int type, DeviceType reportedType, DeviceType desiredType) {
-        this(version, type, reportedType, desiredType.getId());
-    }
-
-    public Variant(int version, int type, DeviceType reportedType, int desiredType) {
+    public Variant(int version, int reportedType, DeviceType desiredType, DeviceType matchingType) {
         this.version = version;
-        this.type = type;
         this.reportedType = reportedType;
-        this.desiredType = desiredType;
+        this.desiredType = desiredType.getId();
+        this.matchingType = matchingType.getId();
     }
 
     public String getRawType() {
-        return "68" + TechemBindingConstants.MANUFACTURER_ID + version + "" + reportedType.getId();
+        return "68" + TechemBindingConstants.MANUFACTURER_ID + version + "" + reportedType;
     }
 
     public String getTechemType() {
@@ -41,7 +37,7 @@ public class Variant {
         final int prime = 31;
         int result = 1;
         result = prime * result + desiredType;
-        result = prime * result + reportedType.hashCode();
+        result = prime * result + reportedType;
         result = prime * result + version;
         return result;
     }

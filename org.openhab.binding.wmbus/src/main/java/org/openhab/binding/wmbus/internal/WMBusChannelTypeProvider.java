@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus.internal;
 
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
@@ -67,7 +68,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     private UnitRegistry unitRegistry;
 
     @Override
-    public @Nullable Collection<@NonNull ChannelType> getChannelTypes(@Nullable Locale locale) {
+    public @NonNull Collection<@NonNull ChannelType> getChannelTypes(@Nullable Locale locale) {
         return wmbusChannelMap.values();
     }
 
@@ -84,8 +85,8 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     }
 
     @Override
-    public @Nullable Collection<@NonNull ChannelGroupType> getChannelGroupTypes(@Nullable Locale locale) {
-        return null;
+    public @NonNull Collection<@NonNull ChannelGroupType> getChannelGroupTypes(@Nullable Locale locale) {
+        return new HashSet<@NonNull ChannelGroupType>();
     }
 
     @Override
