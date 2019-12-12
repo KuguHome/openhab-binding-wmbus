@@ -10,20 +10,14 @@ package org.openhab.binding.wmbus.internal;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.measure.Unit;
-
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.CoreItemFactory;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupType;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupTypeUID;
 import org.eclipse.smarthome.core.thing.type.ChannelKind;
 import org.eclipse.smarthome.core.thing.type.ChannelType;
 import org.eclipse.smarthome.core.thing.type.ChannelTypeProvider;
@@ -68,25 +62,14 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     private UnitRegistry unitRegistry;
 
     @Override
-    public @NonNull Collection<@NonNull ChannelType> getChannelTypes(@Nullable Locale locale) {
+    public Collection<ChannelType> getChannelTypes(@Nullable Locale locale) {
         return wmbusChannelMap.values();
     }
 
     @Override
     public @Nullable ChannelType getChannelType(ChannelTypeUID channelTypeUID, @Nullable Locale locale) {
         return wmbusChannelMap.values().stream().filter(channelType -> channelType.getUID().equals(channelTypeUID))
-                .findFirst().orElse(null);
-    }
-
-    @Override
-    public @Nullable ChannelGroupType getChannelGroupType(ChannelGroupTypeUID channelGroupTypeUID,
-            @Nullable Locale locale) {
-        return null;
-    }
-
-    @Override
-    public @NonNull Collection<@NonNull ChannelGroupType> getChannelGroupTypes(@Nullable Locale locale) {
-        return new HashSet<@NonNull ChannelGroupType>();
+            .findFirst().orElse(null);
     }
 
     @Override

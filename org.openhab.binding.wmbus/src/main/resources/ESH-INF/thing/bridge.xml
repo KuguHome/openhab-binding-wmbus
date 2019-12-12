@@ -44,7 +44,20 @@
             </parameter>
         </config-description>
     </bridge-type>
-      
+
+    <bridge-type id="wmbusvirtualbridge">
+        <label>Virtual WMBus Receiver</label>
+        <description>The WMBus receiver which is not attached to serial port.</description>
+
+        <config-description>
+            <parameter name="deviceIDFilter" type="text">
+                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled. Device ID in decumal format as shown in WMBus message prints and given out by the jMBus message printer test program.</description>
+                <label>Device Filter</label>
+                <advanced>true</advanced>
+            </parameter>
+        </config-description>
+    </bridge-type>
+
     <channel-type id="bytes_code">
         <item-type>String</item-type>
         <label>Code Bytes</label>

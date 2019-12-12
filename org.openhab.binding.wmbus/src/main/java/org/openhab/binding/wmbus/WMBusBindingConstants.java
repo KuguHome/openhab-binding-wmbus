@@ -29,6 +29,7 @@ public class WMBusBindingConstants {
 
     public static final String BINDING_ID = "wmbus";
     public static final String THING_TYPE_NAME_BRIDGE = "wmbusbridge";
+    public static final String THING_TYPE_NAME_VIRTUAL_BRIDGE = "wmbusvirtualbridge";
     public static final String THING_TYPE_NAME_METER = "meter";
     public static final String THING_TYPE_NAME_ENCRYPTED_METER = "encrypted_meter";
 
@@ -39,6 +40,8 @@ public class WMBusBindingConstants {
 
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
+    public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
+        THING_TYPE_NAME_VIRTUAL_BRIDGE);
 
     public final static ThingTypeUID THING_TYPE_METER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_METER);
     public final static ThingTypeUID THING_TYPE_ENCRYPTED_METER = new ThingTypeUID(BINDING_ID,
@@ -74,7 +77,7 @@ public class WMBusBindingConstants {
 
     // add new devices here
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,
-            THING_TYPE_METER, THING_TYPE_ENCRYPTED_METER);
+            THING_TYPE_VIRTUAL_BRIDGE, THING_TYPE_METER, THING_TYPE_ENCRYPTED_METER);
 
     // Bridge config properties
     public static final String CONFKEY_STICK_MODEL = "stickModel";

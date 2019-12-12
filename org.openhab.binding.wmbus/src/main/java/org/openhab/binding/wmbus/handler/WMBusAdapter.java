@@ -1,6 +1,6 @@
 /**
  * Copyright (c) 2010-2018 by the respective copyright holders.
- *
+ * <p>
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -14,7 +14,7 @@ import org.openhab.binding.wmbus.WMBusDevice;
 
 /**
  * Representation of WMBus device which is holds a link to radio device.
- *
+ * <p>
  * Main purpose of this interface is to cut off hard dependency on {@link WMBusBridgeHandler}.
  *
  * @author Łukasz Dywicki
@@ -23,4 +23,5 @@ public interface WMBusAdapter extends Identifiable<ThingUID> {
 
     void processMessage(WMBusDevice device);
 
+    void reset();
 }

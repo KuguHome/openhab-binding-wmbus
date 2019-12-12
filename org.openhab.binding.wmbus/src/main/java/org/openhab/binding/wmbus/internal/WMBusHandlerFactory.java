@@ -20,6 +20,7 @@ import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.device.UnknownMeter.UnknownWMBusDeviceHandler;
 import org.openhab.binding.wmbus.device.generic.DynamicWMBusThingHandler;
 import org.openhab.binding.wmbus.discovery.CompositeMessageListener;
+import org.openhab.binding.wmbus.handler.VirtualWMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openhab.io.transport.mbus.wireless.FilteredKeyStorage;
@@ -65,16 +66,17 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     protected ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
-            // create handler for WMBus bridge
-            logger.debug("Creating (handler for) WMBus bridge.");
-            if (thing instanceof Bridge) {
+        if (thing instanceof Bridge) {
+            if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
+                logger.debug("Creating handler for WMBus bridge.");
                 WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing, keyStorage);
                 handler.registerWMBusMessageListener(messageListener);
                 return handler;
-            } else {
-                logger.warn("An attempt to create wmbus bridge from regular thing {}. Skipping request.", thing);
-                return null;
+            } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE)) {
+                logger.debug("Creating handler for virtual WMBus bridge.");
+                VirtualWMBusBridgeHandler handler = new VirtualWMBusBridgeHandler((Bridge) thing, keyStorage);
+                handler.registerWMBusMessageListener(messageListener);
+                return handler;
             }
         }
 
