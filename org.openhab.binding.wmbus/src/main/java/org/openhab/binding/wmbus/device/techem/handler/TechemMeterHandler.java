@@ -88,23 +88,24 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
     }
 
     private State map(Record<?> measurement, Object value) {
+        State returnvalue = null; // maybe Undef would be better?
         if (value instanceof Quantity) {
             Quantity<?> quantity = (Quantity<?>) value;
-            return new QuantityType<>(quantity.getValue(), quantity.getUnit());
+            returnvalue = new QuantityType<>(quantity.getValue(), quantity.getUnit());
         } else if (value instanceof Integer) {
-            return new DecimalType(((Integer) value).floatValue());
+            returnvalue = new DecimalType(((Integer) value).floatValue());
         } else if (value instanceof Double) {
-            return new DecimalType(((Double) value).floatValue());
+            returnvalue = new DecimalType(((Double) value).floatValue());
         } else if (value instanceof Float) {
-            return new DecimalType(((Float) value).floatValue());
+            returnvalue = new DecimalType(((Float) value).floatValue());
         } else if (value instanceof LocalDateTime) {
-            return new DateTimeType(ZonedDateTime.of((LocalDateTime) value, ZoneId.systemDefault()));
+            returnvalue = convertDate(
+                    new DateTimeType(ZonedDateTime.of((LocalDateTime) value, ZoneId.systemDefault())));
         } else if (value instanceof ZonedDateTime) {
-            return new DateTimeType((ZonedDateTime) value);
+            returnvalue = convertDate(new DateTimeType((ZonedDateTime) value));
         }
 
-        // maybe Undef would be better?
-        return null;
+        return returnvalue;
     }
 
     @Override

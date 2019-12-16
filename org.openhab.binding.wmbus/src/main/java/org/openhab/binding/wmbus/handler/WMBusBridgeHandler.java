@@ -77,7 +77,7 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
         // check serial device name
         if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)
                 || getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) == null
-                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE)).isEmpty()) {
+                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)).isEmpty()) {
             logger.error("Cannot open WMBus device. Serial device name not given.");
             updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
                     "Cannot open WMBus device. Serial device name not given.");
@@ -230,4 +230,13 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
         }
     }
 
+    public int getDatefieldMode() {
+        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE)
+                || getConfig().get(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE) == null
+                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE)).isEmpty()) {
+            return 0; // Default: Object
+    
+        }
+        return Integer.parseInt((String) getConfig().get(CONFKEY_DATEFIELD_MODE));
+    }
 }

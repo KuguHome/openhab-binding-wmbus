@@ -35,6 +35,16 @@
                 </options>
                 <required>true</required>
             </parameter>
+            <parameter name="dateFieldMode" type="text">
+                <description>Type of which date/time channels should be.</description>
+                <label>Date Field Mode</label>
+                <options>
+                    <option value="-1">Formatted (string)</option>
+                    <option value="0">Timestamp (int)</option>
+                    <option value="1">Calendar (object) - Default</option>
+                </options>
+                <advanced>true</advanced>
+            </parameter>
             <parameter name="encryptionKeys" type="text">
                 <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the jMBus message printer test program.</description>
                 <label>Encryption Keys</label>

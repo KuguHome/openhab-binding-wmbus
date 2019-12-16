@@ -134,6 +134,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     }
 
     protected State convertRecordData(DataRecord record) {
+
         switch (record.getDataValueType()) {
             case LONG:
             case DOUBLE:
@@ -148,14 +149,36 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return null;
     }
 
-    protected DateTimeType convertDate(Object input) {
+    protected int getDatefieldMode() {
+        try {
+            return getBridgeHandler().getDatefieldMode();
+        } catch (WMBusException e) {
+            // e.printStackTrace(); // suppress, use default
+            return 1;
+        }
+    }
+
+    protected State convertDate(Object input) {
+        DateTimeType value = null;
         if (input instanceof Date) {
             Date date = (Date) input;
             ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
             zonedDateTime.truncatedTo(ChronoUnit.SECONDS); // throw away millisecond value to avoid, eg. _previous_date
                                                            // changed from 2018-02-28T00:00:00.353+0100 to
                                                            // 2018-02-28T00:00:00.159+0100
-            return new DateTimeType(zonedDateTime);
+            value = new DateTimeType(zonedDateTime);
+        }
+        if (input instanceof DateTimeType) {
+            value = (DateTimeType) input;
+        }
+        if (value != null) {
+            int dateStyle = getDatefieldMode();
+            if (dateStyle == -1) {
+                return new DecimalType(value.getZonedDateTime().toEpochSecond());
+            } else if (dateStyle == 0) {
+                return new StringType(value.format(null));
+            }
+            return value;
         }
         return null;
     }

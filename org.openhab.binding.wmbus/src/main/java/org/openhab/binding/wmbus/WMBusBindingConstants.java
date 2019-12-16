@@ -87,6 +87,7 @@ public class WMBusBindingConstants {
     public static final String CONFKEY_STICK_MODEL = "stickModel";
     public static final String CONFKEY_INTERFACE_NAME = "serialDevice";
     public static final String CONFKEY_RADIO_MODE = "radioMode";
+    public static final String CONFKEY_DATEFIELD_MODE = "dateFieldMode";
     public static final String CONFKEY_ENCRYPTION_KEYS = "encryptionKeys";
     public static final String CONFKEY_DEVICEID_FILTER = "deviceIDFilter";
 
