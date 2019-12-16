@@ -40,7 +40,15 @@ public interface TechemBindingConstants {
     Variant _68TCH11698_6 = new Variant(0x74, 0x62, DeviceType.WARM_WATER_METER);
     // cold water version 0x74 -> 116, type 0x72
     Variant _68TCH116114_16 = new Variant(0x74, 0x72, DeviceType.COLD_WATER_METER);
+    // warm water version 0x95 -> 149, type 0x62
+    Variant _68TCH14998_6 = new Variant(0x95, 0x62, DeviceType.WARM_WATER_METER);
+    // cold water version 0x95 -> 149, type 0x72
+    Variant _68TCH149114_16 = new Variant(0x95, 0x72, DeviceType.COLD_WATER_METER);
 
+    // heat version 0x22 -> v 34, type 0x43
+    Variant _68TCH3467_4 = new Variant(0x22, 0x43, DeviceType.HEAT_METER);
+    // heat version 0x39 -> v 57, type 0x43
+    Variant _68TCH5767_4 = new Variant(0x39, 0x43, DeviceType.HEAT_METER);
     // heat version 0x71 -> v 113, type 0x43
     Variant _68TCH11367_4 = new Variant(0x71, 0x43, DeviceType.HEAT_METER);
 
@@ -109,7 +117,11 @@ public interface TechemBindingConstants {
             .put(_68TCH112114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 112_72
             .put(_68TCH11698_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 116_62
             .put(_68TCH116114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 116_72
-            .put(_68TCH11367_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 43
+            .put(_68TCH14998_6, THING_TYPE_TECHEM_WARM_WATER_METER) // WZ 149_62
+            .put(_68TCH149114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 149_72
+            .put(_68TCH3467_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 34_43
+            .put(_68TCH5767_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 57_43
+            .put(_68TCH11367_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 113_43
             .put(_68TCH6967_8, THING_TYPE_TECHEM_HKV45) // HKV 45
             .put(_68TCH97255_8, THING_TYPE_TECHEM_HKV61) // HKV 61
             .put(_68TCH100128_8, THING_TYPE_TECHEM_HKV64) // HKV 64
