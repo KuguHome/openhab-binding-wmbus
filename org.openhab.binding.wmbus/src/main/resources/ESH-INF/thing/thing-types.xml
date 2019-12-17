@@ -9,6 +9,7 @@
     <thing-type id="meter">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>WMBus device</label>
@@ -37,6 +38,7 @@
     <thing-type id="encrypted_meter">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Encrypted WMBus device</label>
