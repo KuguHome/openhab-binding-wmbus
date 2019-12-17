@@ -39,7 +39,8 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
         super(bridge, keyStorage);
     }
 
-    @Override public Collection<ConfigStatusMessage> getConfigStatus() {
+    @Override
+    public Collection<ConfigStatusMessage> getConfigStatus() {
         return Collections.emptyList(); // all good, otherwise add some messages
     }
 
@@ -48,7 +49,8 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
      *
      * @see org.eclipse.smarthome.core.thing.binding.BaseThingHandler#initialize()
      */
-    @Override public void initialize() {
+    @Override
+    public void initialize() {
         logger.debug("WMBusBridgeHandler: initialize()");
 
         updateStatus(ThingStatus.UNKNOWN);
@@ -67,7 +69,8 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
         updateStatus(ThingStatus.ONLINE);
     }
 
-    @Override public void dispose() {
+    @Override
+    public void dispose() {
         super.dispose();
 
         if (wmbusReceiver != null) {

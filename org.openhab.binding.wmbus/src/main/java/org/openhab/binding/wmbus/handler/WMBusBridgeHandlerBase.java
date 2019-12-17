@@ -65,12 +65,14 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         this.statusFuture = SCHEDULER.scheduleAtFixedRate(new StatusRunnable(handlers), 60, 60, TimeUnit.SECONDS);
     }
 
-    @Override public void handleCommand(ChannelUID channelUID, Command command) {
+    @Override
+    public void handleCommand(ChannelUID channelUID, Command command) {
         // judging from the hue bridge, this seems to be not needed...?
         logger.warn("Unexpected command for bridge. Parameters are channelUID={} and command={}", channelUID, command);
     }
 
-    @Override public void dispose() {
+    @Override
+    public void dispose() {
         if (statusFuture != null) {
             statusFuture.cancel(true);
             statusFuture = null;
@@ -161,7 +163,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         return device;
     }
 
-    @Override public void processMessage(WMBusDevice device) {
+    @Override
+    public void processMessage(WMBusDevice device) {
         logger.trace("bridge: processMessage begin");
 
         String deviceAddress = device.getDeviceAddress();
@@ -195,17 +198,20 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         return idInts;
     }
 
-    @Override public ThingUID getUID() {
+    @Override
+    public ThingUID getUID() {
         return getThing().getUID();
     }
 
-    @Override public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
+    @Override
+    public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
         if (childHandler instanceof WMBusDeviceHandler) {
             handlers.add((WMBusDeviceHandler<WMBusDevice>) childHandler);
         }
     }
 
-    @Override public void childHandlerDisposed(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
+    @Override
+    public void childHandlerDisposed(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
         if (childHandler instanceof WMBusDeviceHandler) {
             handlers.remove(childHandler);
         }
