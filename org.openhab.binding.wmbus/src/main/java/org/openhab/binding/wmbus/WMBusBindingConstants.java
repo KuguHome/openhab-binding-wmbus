@@ -13,6 +13,7 @@ import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
+import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
 import org.openmuc.jmbus.DeviceType;
 
 import com.google.common.collect.ImmutableSet;
@@ -51,6 +52,7 @@ public class WMBusBindingConstants {
     // general channels
     public static final String CHANNEL_RECEPTION = "reception";
     public static final String CHANNEL_ALMANAC = "almanac";
+    public static final String CHANNEL_LAST_FRAME = "last_frame";
     public static final String CHANNEL_ERRORDATE = "error_date";
     public static final String CHANNEL_ERRORFLAGS = "error_flags";
 
@@ -74,6 +76,8 @@ public class WMBusBindingConstants {
 
     public static final String CHANNEL_LASTREADING = "last_reading";
     public static final String CHANNEL_LASTDATE = "last_date";
+
+    public final static ChannelTypeUID CHANNEL_LAST_FRAME_TYPE = new ChannelTypeUID(BINDING_ID, CHANNEL_LAST_FRAME);
 
     // add new devices here
     public final static Set<ThingTypeUID> SUPPORTED_THING_TYPES_UIDS = ImmutableSet.of(THING_TYPE_BRIDGE,

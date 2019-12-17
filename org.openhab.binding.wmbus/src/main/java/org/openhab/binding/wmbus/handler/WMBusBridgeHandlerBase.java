@@ -8,6 +8,8 @@
  */
 package org.openhab.binding.wmbus.handler;
 
+import static org.openhab.binding.wmbus.WMBusBindingConstants.CHANNEL_LAST_FRAME;
+
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -18,8 +20,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicBoolean;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.common.ThreadPoolManager;
+import org.eclipse.smarthome.core.library.types.StringType;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -27,6 +31,7 @@ import org.eclipse.smarthome.core.thing.ThingUID;
 import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.types.Command;
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
@@ -58,6 +63,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
     private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
     protected WMBusReceiver wmbusReceiver;
     private ScheduledFuture<?> statusFuture;
+    private AtomicBoolean updateFrames = new AtomicBoolean(false);
 
     public WMBusBridgeHandlerBase(Bridge bridge, KeyStorage keyStorage) {
         super(bridge);
@@ -165,6 +171,10 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
 
     @Override
     public void processMessage(WMBusDevice device) {
+        if (updateFrames.get()) {
+            StringType frame = StringType.valueOf(HexUtils.bytesToHex(device.getOriginalMessage().asBlob()));
+            getCallback().stateUpdated(new ChannelUID(getUID(), WMBusBindingConstants.CHANNEL_LAST_FRAME), frame);
+        }
         logger.trace("bridge: processMessage begin");
 
         String deviceAddress = device.getDeviceAddress();
@@ -202,6 +212,21 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
     public ThingUID getUID() {
         return getThing().getUID();
     }
+
+    @Override
+    public void channelLinked(ChannelUID channelUID) {
+        if (CHANNEL_LAST_FRAME.equals(channelUID.getId())) {
+            updateFrames.set(true);
+        }
+    }
+
+    @Override
+    public void channelUnlinked(ChannelUID channelUID) {
+        if (CHANNEL_LAST_FRAME.equals(channelUID.getId())) {
+            updateFrames.set(false);
+        }
+    }
+
 
     @Override
     public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
