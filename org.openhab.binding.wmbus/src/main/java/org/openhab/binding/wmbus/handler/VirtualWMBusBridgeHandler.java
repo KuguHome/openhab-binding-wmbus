@@ -83,17 +83,4 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
         initialize();
     }
 
-    static class StatusRunnable implements Runnable {
-
-        private final Set<WMBusDeviceHandler<WMBusDevice>> handlers;
-
-        public StatusRunnable(Set<WMBusDeviceHandler<WMBusDevice>> handlers) {
-            this.handlers = handlers;
-        }
-
-        @Override public void run() {
-            handlers.stream().forEach(WMBusDeviceHandler::checkStatus);
-        }
-
-    }
 }
