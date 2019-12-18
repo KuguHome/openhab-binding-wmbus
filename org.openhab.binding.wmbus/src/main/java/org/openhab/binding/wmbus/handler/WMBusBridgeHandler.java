@@ -12,6 +12,7 @@ package org.openhab.binding.wmbus.handler;
 import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
@@ -22,11 +23,15 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
+import org.eclipse.smarthome.config.core.Configuration;
 import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
 import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
+import org.openhab.binding.wmbus.config.DateFieldMode;
+import org.openhab.binding.wmbus.config.StickModel;
+import org.openhab.binding.wmbus.config.WMBusSerialBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.wireless.WMBusConnection;
@@ -52,7 +57,23 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
 
     @Override
     public Collection<ConfigStatusMessage> getConfigStatus() {
-        return Collections.emptyList(); // all good, otherwise add some messages
+        List<ConfigStatusMessage> messages = new ArrayList<>();
+        WMBusSerialBridgeConfig config = getConfigAs(WMBusSerialBridgeConfig.class);
+
+        // check stick model
+        if (config.stickModel == null) {
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_STICK_MODEL).withMessageKeySuffix(CONFKEY_STICK_MODEL).build());
+        }
+        // check serial device name
+        if (config.serialDevice == null) {
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_INTERFACE_NAME).withMessageKeySuffix(CONFKEY_INTERFACE_NAME).build());
+        }
+        // check radio mode
+        if (config.radioMode == null) {
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_RADIO_MODE).withMessageKeySuffix(CONFKEY_RADIO_MODE).build());
+        }
+
+        return messages;
     }
 
     /**
@@ -64,49 +85,51 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
     public void initialize() {
         logger.debug("WMBusBridgeHandler: initialize()");
 
+        WMBusSerialBridgeConfig config = getConfigAs(WMBusSerialBridgeConfig.class);
         // check stick model
-        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_STICK_MODEL)
-                || getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL) == null
-                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL)).isEmpty()) {
-            logger.error("Cannot open WMBus device. Stick model not given.");
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                    "Cannot open WMBus device. Stick model not given.");
-            return;
-        }
+//        WMBusSerialBridgeConfig config = getConfig().as(WMBusSerialBridgeConfig.class);
+//        if (!config.containsKey(WMBusBindingConstants.CONFKEY_STICK_MODEL)
+//                || config.get(WMBusBindingConstants.CONFKEY_STICK_MODEL) == null
+//                || ((String) config.get(WMBusBindingConstants.CONFKEY_STICK_MODEL)).isEmpty()) {
+//            logger.error("Cannot open WMBus device. Stick model not given.");
+//            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+//                    "Cannot open WMBus device. Stick model not given.");
+//            return;
+//        }
 
         // check serial device name
-        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)
-                || getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) == null
-                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)).isEmpty()) {
-            logger.error("Cannot open WMBus device. Serial device name not given.");
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                    "Cannot open WMBus device. Serial device name not given.");
-            return;
-        }
+//        if (!config.containsKey(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)
+//                || config.get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME) == null
+//                || ((String) config.get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME)).isEmpty()) {
+//            logger.error("Cannot open WMBus device. Serial device name not given.");
+//            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+//                    "Cannot open WMBus device. Serial device name not given.");
+//            return;
+//        }
 
         // check radio mode
-        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_RADIO_MODE)
-                || getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE) == null
-                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE)).isEmpty()) {
-            logger.error("Cannot open WMBus device. Radio mode not given.");
-            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                    "Cannot open WMBus device. Radio mode not given.");
-            return;
-        }
+//        if (!config.containsKey(WMBusBindingConstants.CONFKEY_RADIO_MODE)
+//                || config.get(WMBusBindingConstants.CONFKEY_RADIO_MODE) == null
+//                || ((String) config.get(WMBusBindingConstants.CONFKEY_RADIO_MODE)).isEmpty()) {
+//            logger.error("Cannot open WMBus device. Radio mode not given.");
+//            updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+//                    "Cannot open WMBus device. Radio mode not given.");
+//            return;
+//        }
 
         updateStatus(ThingStatus.UNKNOWN);
         initFuture = scheduler.schedule(() -> {
             // set up WMBus receiver = handler for radio telegrams
             if (wmbusReceiver == null) {
-                String stickModel = (String) getConfig().get(WMBusBindingConstants.CONFKEY_STICK_MODEL);
-                String interfaceName = (String) getConfig().get(WMBusBindingConstants.CONFKEY_INTERFACE_NAME);
-                String radioModeStr = (String) getConfig().get(WMBusBindingConstants.CONFKEY_RADIO_MODE);
+                StickModel stickModel = config.stickModel;
+                String interfaceName = config.serialDevice;
+                WMBusMode radioMode = config.radioMode;
 
                 // connect to the radio module / open WMBus connection
                 logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName,
-                        radioModeStr);
+                        radioMode);
 
-                WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel);
+                WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel.name().toUpperCase());
                 if (wmBusManufacturer == null) {
                     logger.error("Cannot open WMBus device. Unknown manufacturer given: " + stickModel
                             + ". Expected 'amber' or 'imst' or 'rc'.");
@@ -119,9 +142,7 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
 
                 wmbusReceiver = new WMBusReceiver(this);
 
-                if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)
-                        || getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) == null
-                        || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).isEmpty()) {
+                if (config.deviceIDFilter == null || config.deviceIDFilter.trim().isEmpty()) {
                     logger.debug("Device ID filter is empty.");
                 } else {
                     wmbusReceiver.setFilterIDs(parseDeviceIDFilter());
@@ -130,17 +151,16 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
                 WMBusSerialBuilder connectionBuilder = new WMBusSerialBuilder(wmBusManufacturer, wmbusReceiver,
                         interfaceName);
 
-                WMBusMode radioMode = null;
-                try {
-                    radioMode = WMBusMode.valueOf(radioModeStr.trim().toUpperCase());
-                } catch (IllegalArgumentException e) {
-                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                            + ". Expected 'S', 'T', or 'C'.");
-                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
-                            "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
-                                    + ". Expected 'S', 'T', or 'C'.");
-                    return;
-                }
+//                try {
+//                    radioMode = WMBusMode.valueOf(radioModeStr.trim().toUpperCase());
+//                } catch (IllegalArgumentException e) {
+//                    logger.error("Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+//                            + ". Expected 'S', 'T', or 'C'.");
+//                    updateStatus(ThingStatus.OFFLINE, ThingStatusDetail.OFFLINE.CONFIGURATION_ERROR,
+//                            "Cannot open WMBus device. Unknown radio mode given: " + radioModeStr
+//                                    + ". Expected 'S', 'T', or 'C'.");
+//                    return;
+//                }
 
                 logger.debug("Setting WMBus radio mode to {}", radioMode.toString());
                 connectionBuilder.setMode(radioMode);
@@ -230,13 +250,4 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
         }
     }
 
-    public int getDatefieldMode() {
-        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE)
-                || getConfig().get(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE) == null
-                || ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DATEFIELD_MODE)).isEmpty()) {
-            return 0; // Default: Object
-    
-        }
-        return Integer.parseInt((String) getConfig().get(CONFKEY_DATEFIELD_MODE));
-    }
 }

@@ -37,6 +37,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
@@ -149,13 +150,8 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return null;
     }
 
-    protected int getDatefieldMode() {
-        try {
-            return getBridgeHandler().getDatefieldMode();
-        } catch (WMBusException e) {
-            // e.printStackTrace(); // suppress, use default
-            return 1;
-        }
+    protected DateFieldMode getDatefieldMode() {
+        return getBridgeHandler().getDatefieldMode();
     }
 
     protected State convertDate(Object input) {
@@ -171,16 +167,19 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         if (input instanceof DateTimeType) {
             value = (DateTimeType) input;
         }
-        if (value != null) {
-            int dateStyle = getDatefieldMode();
-            if (dateStyle == -1) {
-                return new DecimalType(value.getZonedDateTime().toEpochSecond());
-            } else if (dateStyle == 0) {
-                return new StringType(value.format(null));
-            }
-            return value;
+
+        if (value == null) {
+            return null;
         }
-        return null;
+
+        switch (getDatefieldMode()) {
+            case FORMATTED_STRING:
+                return new StringType(value.format(null));
+            case UNIX_TIMESTAMP:
+                return new DecimalType(value.getZonedDateTime().toEpochSecond());
+            default:
+                return value;
+        }
     }
 
     @Override
@@ -239,7 +238,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         this.wmbusDevice = null;
     }
 
-    protected synchronized WMBusBridgeHandler getBridgeHandler() throws WMBusException {
+    protected synchronized WMBusBridgeHandler getBridgeHandler() {
         logger.trace("getBridgeHandler() begin");
         if (bridgeHandler == null) {
             Bridge bridge = getBridge();

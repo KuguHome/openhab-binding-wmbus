@@ -8,13 +8,14 @@
  */
 package org.openhab.binding.wmbus.handler;
 
-import static org.openhab.binding.wmbus.WMBusBindingConstants.CHANNEL_LAST_FRAME;
+import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -36,6 +37,8 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
+import org.openhab.binding.wmbus.config.WMBusBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DecodingException;
@@ -255,6 +258,12 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
     public void reset() {
         wmbusReceiver = null;
         initialize();
+    }
+
+    public DateFieldMode getDatefieldMode() {
+        return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class))
+            .map(cfg -> cfg.dateFieldMode)
+            .orElse(DateFieldMode.DATE_TIME);
     }
 
     static class StatusRunnable implements Runnable {
