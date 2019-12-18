@@ -10,6 +10,7 @@ package org.openhab.binding.wmbus.handler;
 
 import static org.openhab.binding.wmbus.WMBusBindingConstants.CHANNEL_LAST_FRAME;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.stream.Collectors;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.common.ThreadPoolManager;
 import org.eclipse.smarthome.core.library.types.StringType;
@@ -109,15 +111,22 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
      */
     private void notifyWMBusMessageListeners(final WMBusDevice device, final String type) {
         logger.trace("bridge: notify message listeners: sending to all");
-        for (WMBusMessageListener wmBusMessageListener : wmBusMessageListeners) {
+        WMBusDevice decrypt = decrypt(device);
+
+        // below we append thing handlers which are configured for given device address
+        ArrayList<WMBusMessageListener> listeners = new ArrayList<>(this.wmBusMessageListeners);
+        handlers.stream().filter(h -> device.getDeviceAddress().equals(h.getDeviceAddress()))
+            .collect(Collectors.toCollection(() -> listeners));
+
+        for (WMBusMessageListener wmBusMessageListener : listeners) {
             try {
                 switch (type) {
                     case DEVICE_STATE_ADDED: {
-                        wmBusMessageListener.onNewWMBusDevice(this, decrypt(device));
+                        wmBusMessageListener.onNewWMBusDevice(this, decrypt);
                         break;
                     }
                     case DEVICE_STATE_CHANGED: {
-                        wmBusMessageListener.onChangedWMBusDevice(this, decrypt(device));
+                        wmBusMessageListener.onChangedWMBusDevice(this, decrypt);
                         break;
                     }
                     default: {
@@ -129,22 +138,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
                 logger.error("An exception occurred while notifying the WMBusMessageListener", e);
             }
         }
-        for (WMBusDeviceHandler<WMBusDevice> handler : handlers) {
-            switch (type) {
-                case DEVICE_STATE_ADDED: {
-                    handler.onNewWMBusDevice(this, decrypt(device));
-                    break;
-                }
-                case DEVICE_STATE_CHANGED: {
-                    handler.onChangedWMBusDevice(this, decrypt(device));
-                    break;
-                }
-                default: {
-                    throw new IllegalArgumentException(
-                            "Could not notify wmBusMessageListeners for unknown event type " + type);
-                }
-            }
-        }
+
         logger.trace("bridge: notify message listeners: return");
     }
 

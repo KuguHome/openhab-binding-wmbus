@@ -283,4 +283,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return (T) device;
     }
 
+    public String getDeviceAddress() {
+        return deviceAddress;
+    }
 }
