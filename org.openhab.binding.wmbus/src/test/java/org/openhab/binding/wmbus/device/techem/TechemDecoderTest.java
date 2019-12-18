@@ -136,7 +136,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148128_8.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(8)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 258.0))
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 657.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 412.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.48, SIUnits.CELSIUS))
                 .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 26.31, SIUnits.CELSIUS)).areAtLeastOne(rssi());
