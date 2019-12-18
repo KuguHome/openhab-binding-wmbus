@@ -94,7 +94,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
@@ -125,19 +125,6 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 1999.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 21.52, SIUnits.CELSIUS))
                 .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 23.73, SIUnits.CELSIUS)).areAtLeastOne(rssi());
-    }
-
-    @Test
-    public void testHKV45() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_69));
-
-        Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatCostAllocator.class,
-                expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH69255_8.getTechemType());
-
-        Assertions.assertThat(device.getMeasurements()).hasSize(6)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
-                .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
 
     @Test
