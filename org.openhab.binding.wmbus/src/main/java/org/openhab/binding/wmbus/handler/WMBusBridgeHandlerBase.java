@@ -129,6 +129,22 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
                 logger.error("An exception occurred while notifying the WMBusMessageListener", e);
             }
         }
+        for (WMBusDeviceHandler<WMBusDevice> handler : handlers) {
+            switch (type) {
+                case DEVICE_STATE_ADDED: {
+                    handler.onNewWMBusDevice(this, decrypt(device));
+                    break;
+                }
+                case DEVICE_STATE_CHANGED: {
+                    handler.onChangedWMBusDevice(this, decrypt(device));
+                    break;
+                }
+                default: {
+                    throw new IllegalArgumentException(
+                            "Could not notify wmBusMessageListeners for unknown event type " + type);
+                }
+            }
+        }
         logger.trace("bridge: notify message listeners: return");
     }
 

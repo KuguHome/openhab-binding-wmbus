@@ -27,7 +27,6 @@ import org.eclipse.smarthome.core.thing.Bridge;
 import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingStatusDetail;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.wireless.WMBusConnection;
@@ -44,12 +43,7 @@ import org.openmuc.jmbus.wireless.WMBusMode;
 
 public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
 
-    private final Map<String, WMBusDevice> knownDevices = new ConcurrentHashMap<>();
-    private final Set<WMBusDeviceHandler<WMBusDevice>> handlers = Collections.synchronizedSet(new HashSet<>());
-
-    private final List<WMBusMessageListener> wmBusMessageListeners = new CopyOnWriteArrayList<>();
-
-    private ScheduledFuture<?> statusFuture;
+    private ScheduledFuture<?> initFuture;
     private WMBusConnection wmbusConnection;
 
     public WMBusBridgeHandler(Bridge bridge, KeyStorage keyStorage) {
@@ -230,9 +224,9 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
             wmbusReceiver = null;
         }
 
-        if (statusFuture != null) {
-            statusFuture.cancel(true);
-            statusFuture = null;
+        if (initFuture != null) {
+            initFuture.cancel(true);
+            initFuture = null;
         }
     }
 
