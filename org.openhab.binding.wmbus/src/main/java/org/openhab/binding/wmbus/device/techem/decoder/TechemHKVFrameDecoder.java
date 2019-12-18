@@ -51,7 +51,7 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
             LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
             float lastValue = parseBigEndianInt(buffer, offset + 4);
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-            float currentValue = parseBigEndianInt(buffer, offset + 8 + complexShift);
+            float currentValue = parseBigEndianInt(buffer, offset + 8);
 
             List<Record<?>> records = new ArrayList<>();
             records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
