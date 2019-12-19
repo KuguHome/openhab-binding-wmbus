@@ -12,13 +12,27 @@ public class Record<T> {
 
     public enum Type {
         CURRENT_VOLUME,
-        CURRENT_READING_DATE,
+        CURRENT_READING_DATE(true),
         PAST_VOLUME,
-        PAST_READING_DATE,
+        PAST_READING_DATE(true),
         ROOM_TEMPERATURE,
         RADIATOR_TEMPERATURE,
         RSSI,
-        ALMANAC
+        ALMANAC;
+
+        private final boolean dateField;
+
+        Type() {
+            this(false);
+        }
+
+        Type(boolean dateField) {
+            this.dateField = dateField;
+        }
+
+        public boolean isDate() {
+            return dateField;
+        }
     }
 
     private final Type type;
