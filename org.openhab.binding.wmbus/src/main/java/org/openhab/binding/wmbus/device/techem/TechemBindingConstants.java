@@ -33,38 +33,40 @@ public interface TechemBindingConstants {
     String MANUFACTURER_ID = "TCH";
 
     // warm water version 0x70 -> 112, type 0x62
-    Variant _68TCH11298_6 = new Variant(0x70, 0x62, DeviceType.WARM_WATER_METER);
+    Variant _68TCH11298_6 = new Variant(0x70, 0x62, 0xA0, DeviceType.WARM_WATER_METER);
     // cold water version 0x70 -> 112, type 0x72
-    Variant _68TCH112114_16 = new Variant(0x70, 0x72, DeviceType.COLD_WATER_METER);
+    Variant _68TCH112114_16 = new Variant(0x70, 0x72, 0xA0, DeviceType.COLD_WATER_METER);
     // warm water version 0x74 -> 116, type 0x62
-    Variant _68TCH11698_6 = new Variant(0x74, 0x62, DeviceType.WARM_WATER_METER);
+    Variant _68TCH11698_6 = new Variant(0x74, 0x62, 0xA2, DeviceType.WARM_WATER_METER);
     // cold water version 0x74 -> 116, type 0x72
-    Variant _68TCH116114_16 = new Variant(0x74, 0x72, DeviceType.COLD_WATER_METER);
+    Variant _68TCH116114_16 = new Variant(0x74, 0x72, 0xA2, DeviceType.COLD_WATER_METER);
     // warm water version 0x95 -> 149, type 0x62
-    Variant _68TCH14998_6 = new Variant(0x95, 0x62, DeviceType.WARM_WATER_METER);
+    Variant _68TCH14998_6 = new Variant(0x95, 0x62, 0xA2, DeviceType.WARM_WATER_METER);
     // cold water version 0x95 -> 149, type 0x72
-    Variant _68TCH149114_16 = new Variant(0x95, 0x72, DeviceType.COLD_WATER_METER);
+    Variant _68TCH149114_16 = new Variant(0x95, 0x72, 0xA2, DeviceType.COLD_WATER_METER);
 
     // heat version 0x22 -> v 34, type 0x43
-    Variant _68TCH3467_4 = new Variant(0x22, 0x43, DeviceType.HEAT_METER);
+    Variant _68TCH3467_4 = new Variant(0x22, 0x43, 0xA2, DeviceType.HEAT_METER);
     // heat version 0x39 -> v 57, type 0x43
-    Variant _68TCH5767_4 = new Variant(0x39, 0x43, DeviceType.HEAT_METER);
+    Variant _68TCH5767_4 = new Variant(0x39, 0x43, 0xA2, DeviceType.HEAT_METER);
     // heat version 0x71 -> v 113, type 0x43
-    Variant _68TCH11367_4 = new Variant(0x71, 0x43, DeviceType.HEAT_METER);
+    Variant _68TCH11367_4_A0 = new Variant(0x71, 0x43, 0xA0, DeviceType.HEAT_METER);
+    Variant _68TCH11367_4_A2 = new Variant(0x71, 0x43, 0xA2, DeviceType.HEAT_METER);
 
     // hkv version 0x45 -> 69, type 0x43 -> 67
-    Variant _68TCH6967_8 = new Variant(0x45, 0x43, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH6967_8 = new Variant(0x45, 0x43, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x61 -> 97, type ?
-    Variant _68TCH97255_8 = new Variant(0x61, DeviceType.RESERVED, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH97255_8 = new Variant(0x61, DeviceType.RESERVED.getId(), 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x64 -> 100, type 0x80 -> 128
-    Variant _68TCH100128_8 = new Variant(0x64, 0x80, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH100128_8 = new Variant(0x64, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x69 -> 105, type 0x80 -> 128
-    Variant _68TCH105128_8 = new Variant(0x69, 0x80, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH105128_8 = new Variant(0x69, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x94 -> 148, type 0x80 -> 128
-    Variant _68TCH148128_8 = new Variant(0x94, 0x80, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH148128_8 = new Variant(0x94, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
 
     // smoke detector version 0x76 -> 118, type 0xf0
-    Variant _68TCH118255_161 = new Variant(0x76, 0xf0, DeviceType.SMOKE_DETECTOR);
+    Variant _68TCH118255_161_A0 = new Variant(0x76, 0xf0, 0xA0, DeviceType.SMOKE_DETECTOR);
+    Variant _68TCH118255_161_A1 = new Variant(0x76, 0xf0, 0xA1, DeviceType.SMOKE_DETECTOR);
 
     // 68TCH113255
 
@@ -121,13 +123,15 @@ public interface TechemBindingConstants {
             .put(_68TCH149114_16, THING_TYPE_TECHEM_COLD_WATER_METER) // WZ 149_72
             .put(_68TCH3467_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 34_43
             .put(_68TCH5767_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 57_43
-            .put(_68TCH11367_4, THING_TYPE_TECHEM_HEAT_METER) // WMZ 113_43
+            .put(_68TCH11367_4_A0, THING_TYPE_TECHEM_HEAT_METER) // WMZ 113_43 with A0 encoding
+            .put(_68TCH11367_4_A2, THING_TYPE_TECHEM_HEAT_METER) // WMZ 113_43 with A2 encoding
             .put(_68TCH6967_8, THING_TYPE_TECHEM_HKV45) // HKV 45
             .put(_68TCH97255_8, THING_TYPE_TECHEM_HKV61) // HKV 61
             .put(_68TCH100128_8, THING_TYPE_TECHEM_HKV64) // HKV 64
             .put(_68TCH105128_8, THING_TYPE_TECHEM_HKV69) // HKV 69
             .put(_68TCH148128_8, THING_TYPE_TECHEM_HKV94) // HKV 94
-            .put(_68TCH118255_161, THING_TYPE_TECHEM_SD76) // SD 76
+            .put(_68TCH118255_161_A0, THING_TYPE_TECHEM_SD76) // SD 76 with A0 encoding
+            .put(_68TCH118255_161_A1, THING_TYPE_TECHEM_SD76) // SD 76 with A1 encoding
             .build();
 
     Set<String> SUPPORTED_DEVICE_TYPES = ImmutableSet

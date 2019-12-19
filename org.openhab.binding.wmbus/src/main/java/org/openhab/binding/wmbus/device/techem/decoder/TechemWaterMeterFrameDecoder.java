@@ -37,7 +37,7 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWate
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA0 || coding == 0xA2) {
+        if (coding == variant.getCoding()) {
             LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
             float lastValue = parseValue(buffer, offset + 4, _SCALE_FACTOR_1_10th);
             LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
@@ -54,8 +54,7 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWate
             records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
-            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(),
-                    DeviceType.getInstance(variant.desiredType), records);
+            return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(), variant, records);
         }
 
         return null;

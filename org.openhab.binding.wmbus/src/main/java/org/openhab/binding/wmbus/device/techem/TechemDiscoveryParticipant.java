@@ -111,7 +111,7 @@ public class TechemDiscoveryParticipant implements WMBusDiscoveryParticipant {
         }
 
         if (!TechemBindingConstants.SUPPORTED_DEVICE_TYPES.contains(device.getRawDeviceType())) {
-            logger.trace("Found unsupported Techem device {}, ommiting it from discovery results.",
+            logger.trace("Found unsupported Techem device {}, omitting it from discovery results.",
                     device.getDeviceType());
             return Optional.empty();
         }

@@ -22,8 +22,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemSmokeDetector extends TechemDevice {
 
-    public TechemSmokeDetector(WMBusMessage originalMessage, WMBusAdapter adapter) {
-        super(originalMessage, adapter, DeviceType.SMOKE_DETECTOR, Collections.emptyList());
+    public TechemSmokeDetector(WMBusMessage originalMessage, WMBusAdapter adapter, Variant variant) {
+        super(originalMessage, adapter, variant, Collections.emptyList());
     }
 
 }

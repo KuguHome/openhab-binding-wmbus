@@ -22,8 +22,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemUnknownDevice extends TechemHeatCostAllocator {
 
-    public TechemUnknownDevice(WMBusMessage originalMessage, WMBusAdapter adapter) {
-        super(originalMessage, adapter, DeviceType.UNKNOWN, new ArrayList<>());
+    public TechemUnknownDevice(WMBusMessage originalMessage, WMBusAdapter adapter, Variant variant) {
+        super(originalMessage, adapter, variant, new ArrayList<>());
     }
 
 }

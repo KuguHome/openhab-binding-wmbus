@@ -35,9 +35,9 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
             new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH149114_16));
 
     @Override
-    public boolean suports(String deviceVariant) {
+    public boolean supports(String deviceVariant) {
         for (TechemFrameDecoder<?> decoder : decoders) {
-            if (decoder.suports(deviceVariant)) {
+            if (decoder.supports(deviceVariant)) {
                 return true;
             }
         }
@@ -53,7 +53,7 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
         TechemDevice result = null;
         // TODO failing test: wrong water meter returned?
         for (TechemFrameDecoder<?> decoder : decoders) {
-            if (decoder.suports(device.getRawDeviceType())) {
+            if (decoder.supports(device.getRawDeviceType())) {
                 // same variant might be supported by multiple decoders
                 logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder);
                 result = decoder.decode(device);

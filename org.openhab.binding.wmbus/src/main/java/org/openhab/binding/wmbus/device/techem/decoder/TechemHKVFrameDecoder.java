@@ -18,6 +18,7 @@ import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
 import org.openhab.binding.wmbus.device.techem.TechemUnknownDevice;
 import org.openhab.binding.wmbus.device.techem.Variant;
+import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 
 import tec.uom.se.quantity.Quantities;
@@ -69,11 +70,11 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
                         new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));
             }
 
-            return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), records);
+            return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), variant, records);
         }
 
         if (coding == 0xA3) {
-            return new TechemUnknownDevice(device.getOriginalMessage(), device.getAdapter());
+            return new TechemUnknownDevice(device.getOriginalMessage(), device.getAdapter(), new Variant(variant.version, variant.reportedType, coding, DeviceType.UNKNOWN));
         }
 
         return null;

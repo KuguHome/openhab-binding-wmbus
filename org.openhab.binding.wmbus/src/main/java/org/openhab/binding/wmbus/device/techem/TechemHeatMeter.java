@@ -22,8 +22,8 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemHeatMeter extends TechemDevice {
 
-    public TechemHeatMeter(WMBusMessage originalMessage, WMBusAdapter adapter, List<Record<?>> measures) {
-        super(originalMessage, adapter, DeviceType.HEAT_METER, measures);
+    public TechemHeatMeter(WMBusMessage originalMessage, WMBusAdapter adapter, Variant variant, List<Record<?>> measures) {
+        super(originalMessage, adapter, variant, measures);
     }
 
 }

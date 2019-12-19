@@ -61,7 +61,7 @@ class TechemVariantFrameDecoderSelector implements TechemFrameDecoder<TechemDevi
     }
 
     @Override
-    public boolean suports(String deviceVariant) {
-        return decoders.values().stream().filter(decoder -> decoder.suports(deviceVariant)).findFirst().isPresent();
+    public boolean supports(String deviceVariant) {
+        return decoders.values().stream().filter(decoder -> decoder.supports(deviceVariant)).findFirst().isPresent();
     }
 }

@@ -79,7 +79,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemHeatMeter.class,
                 expectedDevice(DeviceType.HEAT_METER));
-        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11367_4.getTechemType());
+        Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11367_4_A2.getTechemType());
 
         Assertions.assertThat(device.getMeasurements()).hasSize(5)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 1769472.0))
@@ -149,7 +149,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType())
-                .isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
+                .isEqualTo(TechemBindingConstants._68TCH118255_161_A0.getTechemType());
 
         // FIXME add parsing of frame
         Assertions.assertThat(device.getMeasurements()).isEmpty();
@@ -163,7 +163,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType())
-                .isEqualTo(TechemBindingConstants._68TCH118255_161.getTechemType());
+                .isEqualTo(TechemBindingConstants._68TCH118255_161_A0.getTechemType());
 
         // FIXME add parsing of frame
         Assertions.assertThat(device.getMeasurements()).isEmpty();

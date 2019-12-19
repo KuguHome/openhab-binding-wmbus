@@ -22,8 +22,11 @@ import org.openmuc.jmbus.SecondaryAddress;
 // TODO adjust after finding test frame
 class TechemHeatMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatMeter> {
 
-    TechemHeatMeterFrameDecoder(Variant variant) {
-        super(variant);
+    private final Variant[] variants;
+
+    TechemHeatMeterFrameDecoder(Variant ... variants) {
+        super(variants[0]);
+        this.variants = variants;
     }
 
     @Override
@@ -31,20 +34,22 @@ class TechemHeatMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatM
         int offset = address.asByteArray().length + 2;
         int coding = buffer[offset] & 0xFF;
 
-        if (coding == 0xA0 || coding == 0xA1 || coding == 0xA2) {
-            LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
-            float lastValue = parseLastPeriod(buffer, offset + 4);
-            LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-            float currentValue = parseActualPeriod(buffer, offset + 8);
+        for (Variant variant : variants) {
+            if (variant.getCoding() == coding) {
+                LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
+                float lastValue = parseLastPeriod(buffer, offset + 4);
+                LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
+                float currentValue = parseActualPeriod(buffer, offset + 8);
 
-            List<Record<?>> records = new ArrayList<>();
-            records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
-            records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
-            records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
-            records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
+                List<Record<?>> records = new ArrayList<>();
+                records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
+                records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
+                records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
+                records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
+                records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
-            return new TechemHeatMeter(device.getOriginalMessage(), device.getAdapter(), records);
+                return new TechemHeatMeter(device.getOriginalMessage(), device.getAdapter(), variant, records);
+            }
         }
 
         return null;

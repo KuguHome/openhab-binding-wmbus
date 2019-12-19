@@ -34,9 +34,9 @@ abstract class AbstractTechemFrameDecoder<T extends TechemDevice> implements Tec
     }
 
     @Override
-    public final boolean suports(String deviceVariant) {
+    public final boolean supports(String deviceVariant) {
         boolean supports = variant.getRawType().equals(deviceVariant);
-        // logger.debug("Does decoder {} support meter variant {}? {}", variant, deviceVariant, supports);
+        logger.debug("Does decoder {} support meter variant {}? {}", variant, deviceVariant, supports);
         return supports;
     }
 
