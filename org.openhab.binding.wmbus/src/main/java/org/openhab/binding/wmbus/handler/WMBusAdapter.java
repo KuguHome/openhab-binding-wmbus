@@ -11,6 +11,7 @@ package org.openhab.binding.wmbus.handler;
 import org.eclipse.smarthome.core.common.registry.Identifiable;
 import org.eclipse.smarthome.core.thing.ThingUID;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
 
 /**
  * Representation of WMBus device which is holds a link to radio device.
@@ -24,4 +25,7 @@ public interface WMBusAdapter extends Identifiable<ThingUID> {
     void processMessage(WMBusDevice device);
 
     void reset();
+
+    DateFieldMode getDateFieldMode();
+
 }

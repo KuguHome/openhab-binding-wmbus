@@ -19,4 +19,14 @@ public class WMBusBridgeConfig {
     public String deviceIDFilter;
     public DateFieldMode dateFieldMode = DateFieldMode.DATE_TIME;
 
+    public int[] getDeviceIDFilter() {
+        String[] ids = deviceIDFilter.split(";");
+        int[] idInts = new int[ids.length];
+        for (int i = 0; i < ids.length; i++) {
+            String curID = ids[i];
+            idInts[i] = Integer.parseInt(curID);
+        }
+        return idInts;
+    }
+
 }

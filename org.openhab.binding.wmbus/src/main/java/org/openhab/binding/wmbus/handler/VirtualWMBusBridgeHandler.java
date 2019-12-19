@@ -19,6 +19,7 @@ import org.eclipse.smarthome.core.thing.ThingStatus;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.WMBusBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 
@@ -56,12 +57,11 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
         updateStatus(ThingStatus.UNKNOWN);
         wmbusReceiver = new WMBusReceiver(this);
 
-        if (!getConfig().containsKey(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) || getConfig()
-                .get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER) == null || ((String) getConfig()
-                .get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).isEmpty()) {
+        WMBusBridgeConfig config = getConfigAs(WMBusBridgeConfig.class);
+        if (config.deviceIDFilter == null || config.deviceIDFilter.trim().isEmpty()) {
             logger.debug("Device ID filter is empty.");
         } else {
-            wmbusReceiver.setFilterIDs(parseDeviceIDFilter());
+            wmbusReceiver.setFilterIDs(config.getDeviceIDFilter());
         }
 
         // success

@@ -211,16 +211,6 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         return knownDevices.get(deviceAddress);
     }
 
-    protected int[] parseDeviceIDFilter() {
-        String[] ids = ((String) getConfig().get(WMBusBindingConstants.CONFKEY_DEVICEID_FILTER)).split(";");
-        int[] idInts = new int[ids.length];
-        for (int i = 0; i < ids.length; i++) {
-            String curID = ids[i];
-            idInts[i] = Integer.valueOf(curID);
-        }
-        return idInts;
-    }
-
     @Override
     public ThingUID getUID() {
         return getThing().getUID();
@@ -260,7 +250,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         initialize();
     }
 
-    public DateFieldMode getDatefieldMode() {
+    @Override
+    public DateFieldMode getDateFieldMode() {
         return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class))
             .map(cfg -> cfg.dateFieldMode)
             .orElse(DateFieldMode.DATE_TIME);

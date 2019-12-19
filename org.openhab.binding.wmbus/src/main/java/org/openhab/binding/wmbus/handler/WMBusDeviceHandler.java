@@ -60,7 +60,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     private final KeyStorage keyStorage;
 
     protected String deviceAddress;
-    private WMBusBridgeHandler bridgeHandler;
+    private WMBusBridgeHandlerBase bridgeHandler;
     protected T wmbusDevice;
     protected Long lastUpdate;
     private Long frequencyOfUpdates = WMBusBindingConstants.DEFAULT_DEVICE_FREQUENCY_OF_UPDATES;
@@ -150,8 +150,8 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return null;
     }
 
-    protected DateFieldMode getDatefieldMode() {
-        return getBridgeHandler().getDatefieldMode();
+    protected DateFieldMode getDateFieldMode() {
+        return getBridgeHandler().getDateFieldMode();
     }
 
     protected State convertDate(Object input) {
@@ -172,7 +172,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
             return null;
         }
 
-        switch (getDatefieldMode()) {
+        switch (getDateFieldMode()) {
             case FORMATTED_STRING:
                 return new StringType(value.format(null));
             case UNIX_TIMESTAMP:
@@ -238,7 +238,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         this.wmbusDevice = null;
     }
 
-    protected synchronized WMBusBridgeHandler getBridgeHandler() {
+    protected synchronized WMBusBridgeHandlerBase getBridgeHandler() {
         logger.trace("getBridgeHandler() begin");
         if (bridgeHandler == null) {
             Bridge bridge = getBridge();
@@ -246,9 +246,8 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                 return null;
             }
             ThingHandler handler = bridge.getHandler();
-            if (handler instanceof WMBusBridgeHandler) {
-                bridgeHandler = (WMBusBridgeHandler) handler;
-                bridgeHandler.registerWMBusMessageListener(this);
+            if (handler instanceof WMBusBridgeHandlerBase) {
+                bridgeHandler = (WMBusBridgeHandlerBase) handler;
             } else {
                 return null;
             }
@@ -259,7 +258,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
 
     protected T getDevice() throws WMBusException {
         logger.trace("getDevice() begin");
-        WMBusBridgeHandler bridgeHandler = getBridgeHandler();
+        WMBusBridgeHandlerBase bridgeHandler = getBridgeHandler();
         if (bridgeHandler == null) {
             logger.debug("Device handler is not linked with bridge, skipping call");
             return null;
