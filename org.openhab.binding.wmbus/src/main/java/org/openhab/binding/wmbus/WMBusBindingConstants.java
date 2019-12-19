@@ -67,6 +67,8 @@ public class WMBusBindingConstants {
     public static final String CHANNEL_CURRENTVOLUMEFLOW = "current_volume_flow_m3h";
     public static final String CHANNEL_CURRENTVOLUMETOTAL = "current_volume_total_m3";
     public static final String CHANNEL_CURRENTDATE = "current_date";
+    public static final String CHANNEL_CURRENTDATE_STRING = "current_date_string";
+    public static final String CHANNEL_CURRENTDATE_NUMBER = "current_date_number";
     public static final String CHANNEL_RETURNTEMPERATURE = "return_temperature";
     public static final String CHANNEL_TEMPERATUREDIFFERENCE = "temperature_difference";
 
@@ -76,6 +78,8 @@ public class WMBusBindingConstants {
 
     public static final String CHANNEL_LASTREADING = "last_reading";
     public static final String CHANNEL_LASTDATE = "last_date";
+    public static final String CHANNEL_LASTDATE_STRING = "last_date_string";
+    public static final String CHANNEL_LASTDATE_NUMBER = "last_date_number";
 
     public final static ChannelTypeUID CHANNEL_LAST_FRAME_TYPE = new ChannelTypeUID(BINDING_ID, CHANNEL_LAST_FRAME);
 

@@ -138,8 +138,12 @@ public interface TechemBindingConstants {
     Map<String, Type> TECHEM_METER_MAPPING = ImmutableMap.<String, Record.Type> builder()
             .put(CHANNEL_CURRENTREADING, Type.CURRENT_VOLUME) // current value
             .put(CHANNEL_CURRENTDATE, Type.CURRENT_READING_DATE) // present date
+            .put(CHANNEL_CURRENTDATE_STRING, Type.CURRENT_READING_DATE) // present date
+            .put(CHANNEL_CURRENTDATE_NUMBER, Type.CURRENT_READING_DATE) // present date
             .put(CHANNEL_LASTREADING, Type.PAST_VOLUME) // last billing value
             .put(CHANNEL_LASTDATE, Type.PAST_READING_DATE) // past billing date
+            .put(CHANNEL_LASTDATE_STRING, Type.PAST_READING_DATE) // past billing date
+            .put(CHANNEL_LASTDATE_NUMBER, Type.PAST_READING_DATE) // past billing date
             .put(CHANNEL_RECEPTION, Type.RSSI) // Received Signal Strength Indicator
             .put(CHANNEL_ALMANAC, Type.ALMANAC) // bi-weekly history
             .build();

@@ -16,7 +16,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -37,7 +41,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -58,7 +66,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -81,7 +93,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -104,7 +120,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
         </channels>
 
         <config-description-ref uri="wmbus:meter"/>
@@ -135,7 +155,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -155,7 +179,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -175,7 +203,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 

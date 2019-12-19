@@ -121,6 +121,22 @@
         <state readOnly="true">
         </state>
     </channel-type>
+    <channel-type id="current_date_string">
+        <item-type>String</item-type>
+        <label>Date of Current Reading as string</label>
+        <description>The time when the current reading was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="current_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Current Reading as number</label>
+        <description>The time when the current reading was taken, formatted as UNIX timestmap.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
     <channel-type id="previous_date">
         <item-type>DateTime</item-type>
         <label>Date of Previous Reading</label>
@@ -129,10 +145,42 @@
         <state readOnly="true">
         </state>
     </channel-type>
+    <channel-type id="previous_date_string">
+        <item-type>String</item-type>
+        <label>Date of Previous Reading as string</label>
+        <description>The time when the previous month's reading was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="previous_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Previous Reading as number</label>
+        <description>The time when the previous month's reading was taken, formatted as UNIX timestmap.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
     <channel-type id="last_date">
         <item-type>DateTime</item-type>
         <label>Date of Last Reading</label>
         <description>The time when the reading of the previous period was taken.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="last_date_string">
+        <item-type>String</item-type>
+        <label>Date of Last Reading as string</label>
+        <description>The time when the reading of the previous period was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="last_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Last Reading as number</label>
+        <description>The time when the reading of the previous period was taken, formatted as UNIX timestmap.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>
