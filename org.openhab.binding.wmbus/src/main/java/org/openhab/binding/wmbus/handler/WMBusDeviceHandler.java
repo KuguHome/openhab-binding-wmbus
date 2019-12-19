@@ -292,7 +292,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         }
 
         long currentTime = System.currentTimeMillis();
-        if (lastUpdate + frequencyOfUpdates <= currentTime) {
+        if (lastUpdate == null || lastUpdate + frequencyOfUpdates <= currentTime) {
             logger.info("WMBus device was not seen since {}, marking it as offline", new Date(lastUpdate));
             updateStatus(ThingStatus.OFFLINE);
         }
