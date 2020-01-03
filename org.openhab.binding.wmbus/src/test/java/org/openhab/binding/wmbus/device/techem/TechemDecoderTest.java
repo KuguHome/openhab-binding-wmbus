@@ -94,7 +94,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
@@ -107,7 +107,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH100128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 65.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 104.0)).areAtLeastOne(rssi());
     }
@@ -120,7 +120,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH105128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(7)
+        Assertions.assertThat(device.getMeasurements()).hasSize(8)
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 410.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 1999.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 21.52, SIUnits.CELSIUS))
@@ -135,8 +135,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(7)
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 258.0))
+        Assertions.assertThat(device.getMeasurements()).hasSize(8)
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 657.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 412.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.48, SIUnits.CELSIUS))
                 .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 26.31, SIUnits.CELSIUS)).areAtLeastOne(rssi());

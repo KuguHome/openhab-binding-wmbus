@@ -10,20 +10,14 @@ package org.openhab.binding.wmbus.internal;
 
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
-
 import javax.measure.Unit;
-
-import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.CoreItemFactory;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupType;
-import org.eclipse.smarthome.core.thing.type.ChannelGroupTypeUID;
 import org.eclipse.smarthome.core.thing.type.ChannelKind;
 import org.eclipse.smarthome.core.thing.type.ChannelType;
 import org.eclipse.smarthome.core.thing.type.ChannelTypeProvider;
@@ -34,6 +28,7 @@ import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
 import org.openmuc.jmbus.DataRecord;
@@ -68,25 +63,14 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     private UnitRegistry unitRegistry;
 
     @Override
-    public @NonNull Collection<@NonNull ChannelType> getChannelTypes(@Nullable Locale locale) {
+    public Collection<ChannelType> getChannelTypes(@Nullable Locale locale) {
         return wmbusChannelMap.values();
     }
 
     @Override
     public @Nullable ChannelType getChannelType(ChannelTypeUID channelTypeUID, @Nullable Locale locale) {
         return wmbusChannelMap.values().stream().filter(channelType -> channelType.getUID().equals(channelTypeUID))
-                .findFirst().orElse(null);
-    }
-
-    @Override
-    public @Nullable ChannelGroupType getChannelGroupType(ChannelGroupTypeUID channelGroupTypeUID,
-            @Nullable Locale locale) {
-        return null;
-    }
-
-    @Override
-    public @NonNull Collection<@NonNull ChannelGroupType> getChannelGroupTypes(@Nullable Locale locale) {
-        return new HashSet<@NonNull ChannelGroupType>();
+            .findFirst().orElse(null);
     }
 
     @Override
@@ -101,6 +85,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
 
     private void calculateChannelTypes(WMBusDevice device) {
         VariableDataStructure response = device.getOriginalMessage().getVariableDataResponse();
+        DateFieldMode dateFieldMode = device.getAdapter().getDateFieldMode();
 
         for (DataRecord record : response.getDataRecords()) {
             Optional<ChannelTypeUID> channelTypeUID = getChannelType(record);
@@ -119,13 +104,13 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
 
                     logger.info("Calculating new channel type {} for record {}", channelTypeUID, record);
 
-                    Optional<String> itemType = getItemType(record.getDataValueType(), record.getUnit());
+                    Optional<String> itemType = getItemType(record.getDataValueType(), record.getUnit(), dateFieldMode);
                     ChannelKind kind = ChannelKind.STATE;
                     String description = getDescription(record);
                     String category = "";
                     Set<String> tags = Collections.emptySet();
                     StateDescription state = getStateDescription(record.getDataValueType(), record.getDescription(),
-                            unit);
+                            unit, dateFieldMode);
                     EventDescription event = null;
                     ChannelType channelType = new ChannelType(typeUID, false, itemType.get(), kind, label, description,
                             category, tags, state, event, null);
@@ -137,7 +122,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     }
 
     private StateDescription getStateDescription(DataValueType type, Description description,
-            Optional<Unit<?>> mappedUnit) {
+            Optional<Unit<?>> mappedUnit, DateFieldMode dateFieldMode) {
 
         boolean number;
         if (type == DataValueType.BCD || type == DataValueType.DOUBLE || type == DataValueType.LONG) {
@@ -146,16 +131,29 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
             number = false;
         }
 
-        String pattern = mappedUnit.map(unit -> formatUnit(false, number)).orElseGet(() -> formatUnit(true, number));
+        boolean date = type == DataValueType.DATE;
+
+        String pattern = mappedUnit.map(unit -> formatUnit(false, number, date, dateFieldMode))
+            .orElseGet(() -> formatUnit(true, number, date, dateFieldMode));
         return new StateDescription(null, null, null, pattern, true, null);
     }
 
-    private String formatUnit(boolean unitless, boolean number) {
+    private String formatUnit(boolean unitless, boolean number, boolean date, DateFieldMode dateFieldMode) {
         if (number) {
             if (unitless) {
                 return "%.2f";
             } else {
                 return "%.2f %unit%";
+            }
+        }
+
+        if (date) {
+            switch (dateFieldMode) {
+                case UNIX_TIMESTAMP:
+                    return "%d";
+                case DATE_TIME:
+                    return "";
+                // default in this case is string
             }
         }
 
@@ -186,7 +184,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
         return "Unknown";
     }
 
-    private Optional<String> getItemType(DataValueType dataValueType, DlmsUnit dlmsUnit) {
+    private Optional<String> getItemType(DataValueType dataValueType, DlmsUnit dlmsUnit, DateFieldMode dateFieldMode) {
         switch (dataValueType) {
             case BCD:
             case DOUBLE:
@@ -195,7 +193,14 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                         .map(quantityName -> ":" + quantityName).orElse("");
                 return Optional.of(CoreItemFactory.NUMBER + quantity);
             case DATE:
-                return Optional.of(CoreItemFactory.DATETIME);
+                switch (dateFieldMode) {
+                    case FORMATTED_STRING:
+                        return Optional.of(CoreItemFactory.STRING);
+                    case UNIX_TIMESTAMP:
+                        return Optional.of(CoreItemFactory.NUMBER);
+                    default:
+                        return Optional.of(CoreItemFactory.DATETIME);
+                }
             case STRING:
                 return Optional.of(CoreItemFactory.STRING);
         }

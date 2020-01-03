@@ -3,6 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <title>Frame injection tool</title>
+    <style>
+        input {
+            display: block;
+        }
+    </style>
 </head>
 <body>
 
@@ -19,14 +24,43 @@
     <p>Enter hex encoded frame contents:</p>
     <textarea name="frame" style="width: 500px; height: 400px"></textarea>
 
-    <p>AES key</p>
-    <input type="text" name="aesKey" />
-    <p>Initial  bytes to skip</p>
-    <input type="text" name="skipBytes" value="0" />
-    <p>Strip CRC</p>
-    Yes <input type="checkbox" name="stripCRC" />    
-    <p>Calculate length</p>
-    Yes <input type="checkbox" name="calculateLength" />
+    <fieldset>
+        <legend>AES key</legend>
+        <input type="text" name="aesKey" />
+    </fieldset>
+
+    <fieldset>
+        <legend>RSSI value</legend>
+        <p>
+            RSSI can be added to all injected frames, by default RSSI value is set at 100.
+        </p>
+
+        <fieldset>
+            <label for="rssiIndex">Take RSSI from every injected frame</label>
+            <strong>RSS byte is skipped from frame</strong>, so it reduces frame length by one byte.
+            Value 1 means first byte, -1 means last byte, 0 means not available (skip this operation and use static rssi).
+            <input type="text" id="rssiIndex" name="rssiIndex" value="0" />
+        </fieldset>
+        <fieldset>
+            <label for="rssiValue">Static RSSI value.</label>
+            <input type="text" id="rssiValue" name="rssiValue" value="100" />
+        </label>
+        </fieldset>
+    </fieldset>
+
+    <fieldset>
+        <legend>Initial  bytes to skip</legend>
+        <input type="text" name="skipBytes" value="0" />
+    </fieldset>
+
+    <fieldset>
+        <legend>Strip CRC</legend>
+        Yes <input type="checkbox" name="stripCRC" />
+    </fieldset>
+    <fieldset>
+        <legend>Calculate length</legend>
+        Yes <input type="checkbox" name="calculateLength" />
+    </fieldset>
 
     <p>
         <input type="submit">

@@ -18,9 +18,12 @@ import java.util.Optional;
 import javax.measure.Quantity;
 
 import org.eclipse.jdt.annotation.NonNull;
+import org.eclipse.jdt.annotation.Nullable;
+import org.eclipse.smarthome.core.library.CoreItemFactory;
 import org.eclipse.smarthome.core.library.types.DateTimeType;
 import org.eclipse.smarthome.core.library.types.DecimalType;
 import org.eclipse.smarthome.core.library.types.QuantityType;
+import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingTypeUID;
@@ -28,6 +31,7 @@ import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
@@ -74,8 +78,28 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
                 if (recordType != null) {
                     Optional<Record<?>> record = wmbusDevice.getRecord(recordType);
 
-                    record.map(measurement -> map(measurement, measurement.getValue()))
-                            .ifPresent(state -> updateState(channelUID.getId(), state));
+                    if (recordType.isDate()) {
+                        String acceptedType = "";
+                        Channel channel = getThing().getChannel(channelUID);
+                        if (channel != null) {
+                            acceptedType = channel.getAcceptedItemType();
+                        }
+                        if (CoreItemFactory.DATETIME.equals(acceptedType) && DateFieldMode.DATE_TIME == getDateFieldMode()) {
+                            record.map(measurement -> map(measurement, measurement.getValue()))
+                                    .ifPresent(state -> updateState(channelUID.getId(), state));
+                        } else if (CoreItemFactory.STRING.equals(acceptedType) && DateFieldMode.FORMATTED_STRING == getDateFieldMode()) {
+                            record.map(measurement -> map(measurement, measurement.getValue()))
+                                    .ifPresent(state -> updateState(channelUID.getId(), state));
+                        } else if (CoreItemFactory.NUMBER.equals(acceptedType) && DateFieldMode.UNIX_TIMESTAMP == getDateFieldMode()) {
+                            record.map(measurement -> map(measurement, measurement.getValue()))
+                                    .ifPresent(state -> updateState(channelUID.getId(), state));
+                        } else {
+                            logger.info("Ignoring update of channel {}, it is date field with no proper mapping available.", channelUID);
+                        }
+                    } else {
+                        record.map(measurement -> map(measurement, measurement.getValue()))
+                                .ifPresent(state -> updateState(channelUID.getId(), state));
+                    }
 
                     if (!record.isPresent()) {
                         logger.warn("Could not read value of record {} in received frame", recordType);
@@ -88,23 +112,24 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
     }
 
     private State map(Record<?> measurement, Object value) {
+        State returnvalue = null; // maybe Undef would be better?
         if (value instanceof Quantity) {
             Quantity<?> quantity = (Quantity<?>) value;
-            return new QuantityType<>(quantity.getValue(), quantity.getUnit());
+            returnvalue = new QuantityType<>(quantity.getValue(), quantity.getUnit());
         } else if (value instanceof Integer) {
-            return new DecimalType(((Integer) value).floatValue());
+            returnvalue = new DecimalType(((Integer) value).floatValue());
         } else if (value instanceof Double) {
-            return new DecimalType(((Double) value).floatValue());
+            returnvalue = new DecimalType(((Double) value).floatValue());
         } else if (value instanceof Float) {
-            return new DecimalType(((Float) value).floatValue());
+            returnvalue = new DecimalType(((Float) value).floatValue());
         } else if (value instanceof LocalDateTime) {
-            return new DateTimeType(ZonedDateTime.of((LocalDateTime) value, ZoneId.systemDefault()));
+            returnvalue = convertDate(
+                    new DateTimeType(ZonedDateTime.of((LocalDateTime) value, ZoneId.systemDefault())));
         } else if (value instanceof ZonedDateTime) {
-            return new DateTimeType((ZonedDateTime) value);
+            returnvalue = convertDate(new DateTimeType((ZonedDateTime) value));
         }
 
-        // maybe Undef would be better?
-        return null;
+        return returnvalue;
     }
 
     @Override

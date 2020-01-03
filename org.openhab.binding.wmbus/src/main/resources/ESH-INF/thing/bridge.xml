@@ -5,6 +5,9 @@
         <label>WMBus Stick</label>
         <description>The WMBus bridge represents the USB stick used to receive WMBus messages. There are three different sticks supported: Amber Wireless AMB8465-M, Radiocrafts RC1180-MBUS and IMST iM871A-USB</description>
 
+        <channels>
+            <channel id="last_frame" typeId="last_frame" />
+        </channels>
         <config-description>
             <parameter name="stickModel" type="text">
                 <description>The stick model used.</description>
@@ -32,6 +35,17 @@
                 </options>
                 <required>true</required>
             </parameter>
+            <parameter name="dateFieldMode" type="text">
+                <description>Type of which date/time channels should be.</description>
+                <label>Date Field Mode</label>
+                <options>
+                    <option value="FORMATTED_STRING">Formatted (string)</option>
+                    <option value="UNIX_TIMESTAMP">Timestamp (int)</option>
+                    <option value="DATE_TIME">Calendar (object) - Default</option>
+                </options>
+                <advanced>true</advanced>
+                <default>DATE_TIME</default>
+            </parameter>
             <parameter name="encryptionKeys" type="text">
                 <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the jMBus message printer test program.</description>
                 <label>Encryption Keys</label>
@@ -44,44 +58,45 @@
             </parameter>
         </config-description>
     </bridge-type>
-    
+
     <bridge-type id="wmbusvirtualbridge">
-        <label>WMBus Virtual Bridge</label>
-        <description>WMBus Virtual Bridge for testing</description>
+        <label>Virtual WMBus Receiver</label>
+        <description>The WMBus receiver which is not attached to serial port.</description>
+
         <channels>
-            <channel id="wmbusvirtualbridge_code" typeId="bytes_code" />
+            <channel id="last_frame" typeId="last_frame" />
         </channels>
+
         <config-description>
-            <parameter name="bytes" type="text">
-                <description>Bytes to decode from WMBus message</description>
-                <label>Bytes to decode</label>
-                <required>true</required>
+            <parameter name="dateFieldMode" type="text">
+                <description>Type of which date/time channels should be.</description>
+                <label>Date Field Mode</label>
+                <options>
+                    <option value="FORMATTED_STRING">Formatted (string)</option>
+                    <option value="UNIX_TIMESTAMP">Timestamp (int)</option>
+                    <option value="DATE_TIME">Calendar (object) - Default</option>
+                </options>
+                <advanced>true</advanced>
+                <default>DATE_TIME</default>
             </parameter>
-            <parameter name="address" type="text">
-                <description>Secondary Address</description>
-                <label>Address</label>
-                <required>true</required>
+            <parameter name="encryptionKeys" type="text">
+                <description>Encryption Keys in form ID:KEY;ID:KEY all in hex format like given to the jMBus message printer test program.</description>
+                <label>Encryption Keys</label>
+                <advanced>true</advanced>
             </parameter>
-            <parameter name="control_field" type="text">
-                <description>control field</description>
-                <label>control field</label>
-                <required>true</required>
-            </parameter>
-            <parameter name="rssi" type="text">
-                <description>Received_signal_strength_indication</description>
-                <label>RSSI</label>
-                <required>true</required>
+            <parameter name="deviceIDFilter" type="text">
+                <description>List of device IDs to filter during receive. If empty, all received devices will be handled, if at least one ID is set, only messages from this device will be handled. Device ID in decumal format as shown in WMBus message prints and given out by the jMBus message printer test program.</description>
+                <label>Device Filter</label>
+                <advanced>true</advanced>
             </parameter>
         </config-description>
-        
     </bridge-type>
-    
-    <channel-type id="bytes_code">
+
+    <channel-type id="last_frame">
         <item-type>String</item-type>
-        <label>Code Bytes</label>
-        <description>Code Bytes in HEX</description>
-        <category>Text</category>
-        <state readOnly="false">
+        <label>Last frame</label>
+        <description>Raw representation of last frame received by device encoded in HEX form.</description>
+        <state readOnly="true">
         </state>
     </channel-type>
     

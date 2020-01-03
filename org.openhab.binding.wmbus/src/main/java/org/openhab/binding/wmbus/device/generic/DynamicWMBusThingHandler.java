@@ -131,7 +131,7 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
                     logger.warn("Could not read value of record {} in received frame", recordType);
                 }
             } else {
-                logger.warn("Unown channel {}, not supported by {}", channelUID, thing);
+                logger.warn("Unknown channel {}, not supported by {}", channelUID, thing);
             }
         }
     }

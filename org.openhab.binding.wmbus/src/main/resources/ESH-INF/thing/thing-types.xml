@@ -9,6 +9,7 @@
     <thing-type id="meter">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>WMBus device</label>
@@ -37,6 +38,7 @@
     <thing-type id="encrypted_meter">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Encrypted WMBus device</label>
@@ -58,7 +60,7 @@
                 <required>false</required>
                 <unitLabel>minutes</unitLabel>
             </parameter>
-            <parameter name="enryptionKey" type="text">
+            <parameter name="encryptionKey" type="text">
                 <label>Encryption key</label>
                 <description>
                     Encryption key in hexadecimal format to decode frames sent by this device. Value of this configuration parameter
@@ -68,146 +70,6 @@
                 <context>encryption</context>
             </parameter>
         </config-description>
-    </thing-type>
-
-    <!-- thing definition for Qundis Qcaloric 5,5 -->
-    <thing-type id="qundis_qcaloric_5_5">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Qundis Qcaloric 5,5</label>
-        <description>A heat cost allocator model Qcaloric 5,5 by Qundis GmbH.</description>
-
-        <channels>
-            <channel id="reception" typeId="reception" />
-            <channel id="error_date" typeId="error_date" />
-
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="current_date" typeId="current_date" />
-
-            <channel id="previous_reading" typeId="previous_reading" />
-            <channel id="previous_date" typeId="previous_date" />
-
-            <channel id="last_reading" typeId="last_reading" />
-            <channel id="last_date" typeId="last_date" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
-    </thing-type>
-
-
-    <!-- thing definition for Qundis Qwater 5,5 -->
-    <thing-type id="qundis_qwater_5_5">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Qundis Qwater 5,5</label>
-        <description>A water flow meter model Qwater 5,5 by Qundis GmbH.</description>
-
-        <channels>
-            <channel id="reception" typeId="reception" />
-            <channel id="error_date" typeId="error_date" />
-
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="current_volume_flow_m3h" typeId="current_volume_flow_m3h" />
-            <channel id="current_date" typeId="current_date" />
-
-            <channel id="previous_reading" typeId="previous_reading" />
-            <channel id="previous_date" typeId="previous_date" />
-
-            <channel id="last_reading" typeId="last_reading" />
-            <channel id="last_date" typeId="last_date" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
-    </thing-type>
-
-
-    <!-- thing definition for Qundis Qheat 5 -->
-    <thing-type id="qundis_qheat_5">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Qundis Qheat 5</label>
-        <description>A water energy meter (Wärmemengenzähler) model Qheat 5 by Qundis GmbH.</description>
-
-        <channels>
-            <channel id="reception" typeId="reception" />
-            <channel id="error_flags" typeId="error_flags" />
-
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="current_date" typeId="current_date" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
-    </thing-type>
-
-
-    <!-- thing definition for Kamstrup MultiCal 302 -->
-    <thing-type id="kamstrup_multical_302">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Kamstrup MultiCal 302</label>
-        <description>A (water) heat meter with (water) flow meter function model MultiCal 302 by Kamstrup.</description>
-
-        <channels>
-            <channel id="reception" typeId="reception" />
-
-            <channel id="current_power_w" typeId="current_reading" />
-            <channel id="current_volume_total_m3" typeId="current_reading" />   <!-- TODO make more specific channel types -->
-            <channel id="current_energy_total_kwh" typeId="current_reading" />
-            <!-- NOTE: this device does not publish a current reading's date in its WMBus messages - is filled using now time -->
-            <channel id="current_date" typeId="current_date" />
-
-            <channel id="previous_energy_total_kwh" typeId="previous_reading" />
-            <channel id="previous_date" typeId="previous_date" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
-    </thing-type>
-
-    <!-- thing definition for adeunis_rf gas meter_v3 -->
-    <thing-type id="adeunis_rf_gas_meter_v3">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>ADEUNIS_RF Gas Meter v3</label>
-        <description>A gas meter model ADEUNIS_RF v3 by ADEUNIS_RF.</description>
-
-        <channels>
-            <channel id="current_volume_total_m3" typeId="current_gas_volume_reading" />   <!-- TODO make more specific channel types -->
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
-    </thing-type>
-    
-    <thing-type id="engelmann_heat_meter_v0">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Engelmann SensoStar2C</label>
-        <description>A heat meter model SensoStar2C by Engelmann Sensor GmbH.</description>
-
-        <channels>
-            <channel id="reception" typeId="reception" />
-            <channel id="current_date" typeId="current_date" />
-            <channel id="current_energy_total_kwh" typeId="current_reading" />
-            <channel id="error_flags" typeId="error_flags" />
-            <channel id="current_volume_total_m3" typeId="current_reading" />
-            <channel id="current_volume_flow_m3h" typeId="current_volume_flow_m3h" />
-            <channel id="current_power_w" typeId="current_reading" />
-            <channel id="return_temperature" typeId="room_temperature" />   <!-- TODO make more specific channel types -->
-            <channel id="temperature_difference" typeId="room_temperature" />   <!-- TODO make more specific channel types -->
-        </channels>
-
-        <config-description-ref uri="wmbus:meter" />
     </thing-type>
 
     <!-- channel definitions for all WMBus devices -->
@@ -235,22 +97,6 @@
 		<state readOnly="true" pattern="%.2f">
 		</state>
 	</channel-type>
-    <channel-type id="current_gas_volume_reading">    <!-- TODO change reading to own channel type of what it actually is -->
-        <item-type>Number</item-type>
-        <label>Current Reading</label>
-        <description>Current gas cost allocation reading.</description>
-        <category>Gas</category>
-        <state readOnly="true" pattern="%.2f m³">
-        </state>
-    </channel-type>	
-    <channel-type id="current_volume_flow_m3h">
-        <item-type>Number</item-type>
-        <label>Current Reading (Volume Flow)</label>
-        <description>Current volume flow reading.</description>
-        <category>Energy</category>
-        <state readOnly="true" pattern="%.2f m³/h"> <!-- TODO change %d to %2.f for most numeric values -->
-        </state>
-    </channel-type>
     <channel-type id="previous_reading">
         <item-type>Number</item-type>
         <label>Previous Reading</label>
@@ -275,6 +121,22 @@
         <state readOnly="true">
         </state>
     </channel-type>
+    <channel-type id="current_date_string">
+        <item-type>String</item-type>
+        <label>Date of Current Reading as string</label>
+        <description>The time when the current reading was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="current_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Current Reading as number</label>
+        <description>The time when the current reading was taken, formatted as UNIX timestmap.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
     <channel-type id="previous_date">
         <item-type>DateTime</item-type>
         <label>Date of Previous Reading</label>
@@ -283,10 +145,42 @@
         <state readOnly="true">
         </state>
     </channel-type>
+    <channel-type id="previous_date_string">
+        <item-type>String</item-type>
+        <label>Date of Previous Reading as string</label>
+        <description>The time when the previous month's reading was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="previous_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Previous Reading as number</label>
+        <description>The time when the previous month's reading was taken, formatted as UNIX timestmap.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
     <channel-type id="last_date">
         <item-type>DateTime</item-type>
         <label>Date of Last Reading</label>
         <description>The time when the reading of the previous period was taken.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="last_date_string">
+        <item-type>String</item-type>
+        <label>Date of Last Reading as string</label>
+        <description>The time when the reading of the previous period was taken, formatted as text.</description>
+        <category>Date</category>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+    <channel-type id="last_date_number">
+        <item-type>Number</item-type>
+        <label>Date of Last Reading as number</label>
+        <description>The time when the reading of the previous period was taken, formatted as UNIX timestmap.</description>
         <category>Date</category>
         <state readOnly="true">
         </state>

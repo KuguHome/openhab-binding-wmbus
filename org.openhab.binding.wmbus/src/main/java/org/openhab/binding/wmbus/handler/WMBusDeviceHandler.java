@@ -37,6 +37,7 @@ import org.eclipse.smarthome.core.types.State;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
+import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.internal.WMBusException;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
@@ -59,7 +60,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     private final KeyStorage keyStorage;
 
     protected String deviceAddress;
-    private WMBusBridgeHandler bridgeHandler;
+    private WMBusBridgeHandlerBase bridgeHandler;
     protected T wmbusDevice;
     protected Long lastUpdate;
     private Long frequencyOfUpdates = WMBusBindingConstants.DEFAULT_DEVICE_FREQUENCY_OF_UPDATES;
@@ -134,6 +135,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
     }
 
     protected State convertRecordData(DataRecord record) {
+
         switch (record.getDataValueType()) {
             case LONG:
             case DOUBLE:
@@ -148,16 +150,36 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return null;
     }
 
-    protected DateTimeType convertDate(Object input) {
+    protected DateFieldMode getDateFieldMode() {
+        return getBridgeHandler().getDateFieldMode();
+    }
+
+    protected State convertDate(Object input) {
+        DateTimeType value = null;
         if (input instanceof Date) {
             Date date = (Date) input;
             ZonedDateTime zonedDateTime = ZonedDateTime.ofInstant(date.toInstant(), ZoneId.systemDefault());
             zonedDateTime.truncatedTo(ChronoUnit.SECONDS); // throw away millisecond value to avoid, eg. _previous_date
                                                            // changed from 2018-02-28T00:00:00.353+0100 to
                                                            // 2018-02-28T00:00:00.159+0100
-            return new DateTimeType(zonedDateTime);
+            value = new DateTimeType(zonedDateTime);
         }
-        return null;
+        if (input instanceof DateTimeType) {
+            value = (DateTimeType) input;
+        }
+
+        if (value == null) {
+            return null;
+        }
+
+        switch (getDateFieldMode()) {
+            case FORMATTED_STRING:
+                return new StringType(value.format(null));
+            case UNIX_TIMESTAMP:
+                return new DecimalType(value.getZonedDateTime().toEpochSecond());
+            default:
+                return value;
+        }
     }
 
     @Override
@@ -216,7 +238,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         this.wmbusDevice = null;
     }
 
-    protected synchronized WMBusBridgeHandler getBridgeHandler() throws WMBusException {
+    protected synchronized WMBusBridgeHandlerBase getBridgeHandler() {
         logger.trace("getBridgeHandler() begin");
         if (bridgeHandler == null) {
             Bridge bridge = getBridge();
@@ -224,9 +246,8 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                 return null;
             }
             ThingHandler handler = bridge.getHandler();
-            if (handler instanceof WMBusBridgeHandler) {
-                bridgeHandler = (WMBusBridgeHandler) handler;
-                bridgeHandler.registerWMBusMessageListener(this);
+            if (handler instanceof WMBusBridgeHandlerBase) {
+                bridgeHandler = (WMBusBridgeHandlerBase) handler;
             } else {
                 return null;
             }
@@ -237,7 +258,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
 
     protected T getDevice() throws WMBusException {
         logger.trace("getDevice() begin");
-        WMBusBridgeHandler bridgeHandler = getBridgeHandler();
+        WMBusBridgeHandlerBase bridgeHandler = getBridgeHandler();
         if (bridgeHandler == null) {
             logger.debug("Device handler is not linked with bridge, skipping call");
             return null;
@@ -271,7 +292,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         }
 
         long currentTime = System.currentTimeMillis();
-        if (lastUpdate + frequencyOfUpdates <= currentTime) {
+        if (lastUpdate == null || lastUpdate + frequencyOfUpdates <= currentTime) {
             logger.info("WMBus device was not seen since {}, marking it as offline", new Date(lastUpdate));
             updateStatus(ThingStatus.OFFLINE);
         }
@@ -283,4 +304,7 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
         return (T) device;
     }
 
+    public String getDeviceAddress() {
+        return deviceAddress;
+    }
 }

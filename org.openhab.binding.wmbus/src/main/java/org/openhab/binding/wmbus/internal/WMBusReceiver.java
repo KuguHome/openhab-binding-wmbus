@@ -14,7 +14,7 @@ import java.util.Arrays;
 
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
-import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
+import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openmuc.jmbus.wireless.WMBusListener;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
@@ -30,11 +30,11 @@ public class WMBusReceiver implements WMBusListener {
 
     int[] filterIDs = new int[] {};
 
-    private final WMBusBridgeHandler wmBusBridgeHandler;
+    private final WMBusAdapter wmBusBridgeHandler;
 
     private final Logger logger = LoggerFactory.getLogger(WMBusReceiver.class);
 
-    public WMBusReceiver(WMBusBridgeHandler wmBusBridgeHandler) {
+    public WMBusReceiver(WMBusAdapter wmBusBridgeHandler) {
         this.wmBusBridgeHandler = wmBusBridgeHandler;
     }
 
@@ -89,6 +89,7 @@ public class WMBusReceiver implements WMBusListener {
 
     @Override
     public void stoppedListening(IOException e) {
+        wmBusBridgeHandler.reset();
         logger.warn("Stopped listening for new messages. Reason: {}", e);
     }
 

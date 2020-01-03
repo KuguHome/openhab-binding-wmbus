@@ -3,32 +3,10 @@
 	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
 	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
 
-    <!-- thing definition for Techem HKV -->
-    <thing-type id="techem_hkv">
-        <supported-bridge-type-refs>
-            <bridge-type-ref id="wmbusbridge" />
-        </supported-bridge-type-refs>
-
-        <label>Techem HKV (legacy definition)</label>
-        <description>A heat cost allocator of Techem</description>
-
-        <channels>
-            <channel id="room_temperature" typeId="room_temperature" />
-            <channel id="radiator_temperature" typeId="radiator_temperature" />
-            <channel id="current_reading" typeId="current_reading" />
-            <channel id="last_reading" typeId="last_reading" />
-            <channel id="reception" typeId="reception" />
-            <channel id="last_date" typeId="last_date" />
-            <channel id="current_date" typeId="current_date" />
-            <channel id="almanac" typeId="almanac" />
-        </channels>
-
-        <config-description-ref uri="wmbus:meter"/>
-    </thing-type>
-
     <thing-type id="techem_hkv45">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem HKV variant 45</label>
@@ -38,7 +16,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -48,6 +30,7 @@
     <thing-type id="techem_hkv61">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem HKV variant 61</label>
@@ -58,7 +41,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -68,6 +55,7 @@
     <thing-type id="techem_hkv64">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem HKV variant 64</label>
@@ -78,7 +66,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -88,6 +80,7 @@
     <thing-type id="techem_hkv69">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem HKV variant 69</label>
@@ -100,7 +93,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="almanac" typeId="almanac" />
         </channels>
 
@@ -110,6 +107,7 @@
     <thing-type id="techem_hkv94">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem HKV variant 94</label>
@@ -122,7 +120,11 @@
             <channel id="last_reading" typeId="last_reading" />
             <channel id="reception" typeId="reception" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
         </channels>
 
         <config-description-ref uri="wmbus:meter"/>
@@ -131,6 +133,7 @@
     <thing-type id="techem_sd76">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem Smoke Detector variant 76</label>
@@ -142,6 +145,7 @@
     <thing-type id="techem_wz62">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem Warm Water Meter</label>
@@ -151,7 +155,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -161,6 +169,7 @@
     <thing-type id="techem_wz72">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem Cold Water Meter</label>
@@ -170,7 +179,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 
@@ -180,6 +193,7 @@
     <thing-type id="techem_wmz43">
         <supported-bridge-type-refs>
             <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
         </supported-bridge-type-refs>
 
         <label>Techem Heat Meter</label>
@@ -189,7 +203,11 @@
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
+            <channel id="last_date_string" typeId="last_date_string" />
+            <channel id="last_date_number" typeId="last_date_number" />
             <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
         </channels>
 

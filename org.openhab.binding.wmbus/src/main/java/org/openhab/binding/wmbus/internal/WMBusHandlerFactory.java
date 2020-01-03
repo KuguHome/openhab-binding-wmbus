@@ -17,18 +17,12 @@ import org.eclipse.smarthome.core.thing.binding.ThingHandler;
 import org.eclipse.smarthome.core.thing.binding.ThingHandlerFactory;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.device.ADEUNISGasMeter.ADEUNISGasMeterHandler;
-import org.openhab.binding.wmbus.device.EngelmannHeatMeter.EngelmannHeatMeterHandler;
 import org.openhab.binding.wmbus.device.UnknownMeter.UnknownWMBusDeviceHandler;
 import org.openhab.binding.wmbus.device.generic.DynamicWMBusThingHandler;
 import org.openhab.binding.wmbus.discovery.CompositeMessageListener;
-import org.openhab.binding.wmbus.handler.KamstrupMultiCal302Handler;
-import org.openhab.binding.wmbus.handler.QundisQCaloricHandler;
-import org.openhab.binding.wmbus.handler.QundisQHeatHandler;
-import org.openhab.binding.wmbus.handler.QundisQWaterHandler;
+import org.openhab.binding.wmbus.handler.VirtualWMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
-import org.openhab.binding.wmbus.handler.WMBusVirtualBridgeHandler;
 import org.openhab.io.transport.mbus.wireless.FilteredKeyStorage;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.osgi.service.component.ComponentContext;
@@ -72,26 +66,17 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
     protected ThingHandler createHandler(Thing thing) {
         ThingTypeUID thingTypeUID = thing.getThingTypeUID();
 
-        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
-            // create handler for WMBus bridge
-            logger.debug("Creating (handler for) WMBus bridge.");
-            if (thing instanceof Bridge) {
+        if (thing instanceof Bridge) {
+            if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_BRIDGE)) {
+                logger.debug("Creating handler for WMBus bridge.");
                 WMBusBridgeHandler handler = new WMBusBridgeHandler((Bridge) thing, keyStorage);
                 handler.registerWMBusMessageListener(messageListener);
                 return handler;
-            } else {
-                logger.warn("An attempt to create wmbus bridge from regular thing {}. Skipping request.", thing);
-                return null;
-            }
-        }
-
-        if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE)) {
-            logger.debug("Creating (handler for) WMBus virtual bridge.");
-            if (thing instanceof Bridge) {
-                return new WMBusVirtualBridgeHandler((Bridge) thing, keyStorage);
-            } else {
-                logger.warn("An attempt to create virtual bridge from regular thing {}. Skipping request.", thing);
-                return null;
+            } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE)) {
+                logger.debug("Creating handler for virtual WMBus bridge.");
+                VirtualWMBusBridgeHandler handler = new VirtualWMBusBridgeHandler((Bridge) thing, keyStorage);
+                handler.registerWMBusMessageListener(messageListener);
+                return handler;
             }
         }
 
@@ -101,24 +86,6 @@ public class WMBusHandlerFactory extends BaseThingHandlerFactory {
             logger.debug("Creating standard wmbus handler.");
             return new DynamicWMBusThingHandler<>(thing, new FilteredKeyStorage(keyStorage, thing), unitRegistry,
                     channelTypeProvider);
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QCALORIC_5_5)) {
-            logger.debug("Creating (handler for) Qundis Qcaloric 5,5 device.");
-            return new QundisQCaloricHandler(thing, new FilteredKeyStorage(keyStorage, thing));
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QWATER_5_5)) {
-            logger.debug("Creating (handler for) Qundis Qwater 5,5 device.");
-            return new QundisQWaterHandler(thing, new FilteredKeyStorage(keyStorage, thing));
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_QUNDIS_QHEAT_5)) {
-            logger.debug("Creating (handler for) Qundis Qheat 5 device.");
-            return new QundisQHeatHandler(thing, new FilteredKeyStorage(keyStorage, thing));
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_KAMSTRUP_MULTICAL_302)) {
-            logger.debug("Creating (handler for) Kamstrup MultiCal 302 device.");
-            return new KamstrupMultiCal302Handler(thing, new FilteredKeyStorage(keyStorage, thing));
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_ADEUNIS_GAS_METER_3)) {
-            logger.debug("Creating (handler for) ADEUNIS_RF Gas Meter (v.3) device.");
-            return new ADEUNISGasMeterHandler(thing, new FilteredKeyStorage(keyStorage, thing));
-        } else if (thingTypeUID.equals(WMBusBindingConstants.THING_TYPE_ENGELMANN_SENSOSTAR)) {
-            logger.debug("Creating (handler for) Engelmann Heat Meter device.");
-            return new EngelmannHeatMeterHandler(thing, new FilteredKeyStorage(keyStorage, thing));
         } else {
             logger.debug("Creating (handler for) Unknown device.");
             return new UnknownWMBusDeviceHandler(thing, new FilteredKeyStorage(keyStorage, thing));

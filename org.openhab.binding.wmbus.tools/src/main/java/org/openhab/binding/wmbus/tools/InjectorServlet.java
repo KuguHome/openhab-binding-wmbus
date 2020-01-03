@@ -104,6 +104,10 @@ public class InjectorServlet extends HttpServlet {
 
     private void inject(WMBusAdapter adapter, String frames, HttpServletRequest req, HttpServletResponse resp,
             String aesKey) throws IOException {
+
+        int rssiIndex = Optional.ofNullable(req.getParameter("rssiIndex")).map(Integer::parseInt).orElse(0);
+        int rssiValue = Optional.ofNullable(req.getParameter("rssiValue")).map(Integer::parseInt).orElse(100);
+
         int skipBytes = Optional.ofNullable(req.getParameter("skipBytes")).map(Integer::parseInt).orElse(0);
         boolean stripCRC = Optional.ofNullable(req.getParameter("stripCRC")).map(value -> Boolean.TRUE).orElse(false);
         boolean calculateLength = Optional.ofNullable(req.getParameter("calculateLength")).map(value -> Boolean.TRUE)
@@ -113,6 +117,17 @@ public class InjectorServlet extends HttpServlet {
         try {
             for (String frame : frameArray) {
                 frame = frame.trim().replace(" ", "");
+
+                int rssi = rssiValue;
+                if (rssiIndex != 0) {
+                    if (rssiIndex == 1) {
+                        rssi = Integer.parseUnsignedInt(frame.substring(0, 2), 16);
+                        frame = frame.substring(2);
+                    } else if (rssiIndex == -1) {
+                        rssi = Integer.parseUnsignedInt(frame.substring(frame.length() -2), 16);
+                        frame = frame.substring(0, frame.length() - 2);
+                    }
+                }
 
                 if (skipBytes > 0) {
                     // one byte is 2 characters in hex representation
@@ -147,10 +162,10 @@ public class InjectorServlet extends HttpServlet {
                 // logger.debug(frame);
 
                 byte[] bytes = HexUtils.hexToBytes(frame);
-                WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, 0, Collections.emptyMap());
+                WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, rssi, Collections.emptyMap());
                 if (aesKey != null && !aesKey.trim().isEmpty()) {
                     byte[] key = HexUtils.hexToBytes(aesKey);
-                    message = VirtualWMBusMessageHelper.decode(bytes, 0,
+                    message = VirtualWMBusMessageHelper.decode(bytes, rssi,
                             Collections.singletonMap(message.getSecondaryAddress(), key));
                 }
                 WMBusDevice device = new WMBusDevice(message, adapter);
