@@ -15,7 +15,7 @@ public class MapKeyStorageTest {
 
     private static final String ADDRESS_HEX = "2423870723421147";
     private static final byte[] ADDRESS_BYTE = HexUtils.hexToBytes(ADDRESS_HEX);
-    private static final SecondaryAddress ADDRESS_OBJECT = SecondaryAddress.newFromWMBusHeader(ADDRESS_BYTE, 0);
+    private static final SecondaryAddress ADDRESS_OBJECT = SecondaryAddress.newFromWMBusLlHeader(ADDRESS_BYTE, 0);
     private static final byte[] KEY = new byte[] { 0x01, 0x02 };
 
     private final MapKeyStorage storage = new MapKeyStorage();

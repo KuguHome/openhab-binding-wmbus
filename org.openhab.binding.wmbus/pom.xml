@@ -40,7 +40,7 @@
         <dependency>
             <groupId>org.openmuc</groupId>
             <artifactId>jmbus</artifactId>
-            <version>3.2.1</version>
+            <version>3.1.1</version>
         </dependency>
 -->
 
@@ -53,9 +53,9 @@
         <dependency>
             <groupId>org.openmuc</groupId>
             <artifactId>jmbus</artifactId>
-            <version>3.2.1</version>
+            <version>3.1.1.sp2</version>
             <scope>system</scope>
-            <systemPath>${basedir}/lib/jmbus-3.2.1.jar</systemPath>
+            <systemPath>${basedir}/lib/jmbus-3.1.1.sp2.jar</systemPath>
         </dependency>
 
         <dependency>

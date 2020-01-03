@@ -42,7 +42,7 @@ public class MapKeyStorage implements KeyStorage {
     }
 
     private SecondaryAddress createKey(byte[] address) {
-        return SecondaryAddress.newFromWMBusHeader(address, 0);
+        return SecondaryAddress.newFromWMBusLlHeader(address, 0);
     }
 
 }
