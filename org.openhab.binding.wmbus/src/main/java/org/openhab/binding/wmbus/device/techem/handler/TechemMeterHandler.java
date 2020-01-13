@@ -80,7 +80,7 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
 
                     if (recordType.isDate()) {
                         String acceptedType = "";
-                        Channel channel = getThing().getChannel(channelUID);
+                        Channel channel = getThing().getChannel(channelUID.getId());
                         if (channel != null) {
                             acceptedType = channel.getAcceptedItemType();
                         }
