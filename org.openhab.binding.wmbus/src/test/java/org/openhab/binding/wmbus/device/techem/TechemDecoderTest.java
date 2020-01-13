@@ -1,5 +1,7 @@
 package org.openhab.binding.wmbus.device.techem;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.function.Consumer;
 import java.util.function.Predicate;
 
@@ -144,15 +146,18 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
     @Test
     public void testSD76F0() throws Exception {
-        TechemDevice device = reader.decode(message(MESSAGE_118_SD_1));
+        TechemDevice device = reader.decode(message(MESSAGE_118_SD_3));
 
         Assertions.assertThat(device).isNotNull().isInstanceOfSatisfying(TechemSmokeDetector.class,
                 expectedDevice(DeviceType.SMOKE_DETECTOR));
         Assertions.assertThat(device.getDeviceType())
                 .isEqualTo(TechemBindingConstants._68TCH118255_161_A0.getTechemType());
 
-        // FIXME add parsing of frame
-        Assertions.assertThat(device.getMeasurements()).isEmpty();
+        Assertions.assertThat(device.getMeasurements()).hasSize(4)
+                .areAtLeastOne(record(Type.STATUS, 0))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(2020, 3, 23)))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE_SMOKE, LocalDate.of(2019, 11, 27)))
+                .areAtLeastOne(rssi());
     }
 
     @Test
@@ -165,12 +170,27 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         Assertions.assertThat(device.getDeviceType())
                 .isEqualTo(TechemBindingConstants._68TCH118255_161_A0.getTechemType());
 
-        // FIXME add parsing of frame
-        Assertions.assertThat(device.getMeasurements()).isEmpty();
+        Assertions.assertThat(device.getMeasurements()).hasSize(4)
+                .areAtLeastOne(record(Type.STATUS, 0))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(2020, 2, 22)))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE_SMOKE, LocalDate.of(2018, 11, 15)))
+                .areAtLeastOne(rssi());
+    }
+
+    private Condition<Record<?>> record(Type type, LocalDate expectedValue) {
+        LocalDatePredicate predicate = new LocalDatePredicate(type, expectedValue);
+
+        return new Condition<>(predicate, predicate.description(), predicate.arguments());
+    }
+
+    private Condition<Record<?>> record(Type type, int expectedValue) {
+        IntegerPredicate predicate = new IntegerPredicate(type, expectedValue);
+
+        return new Condition<>(predicate, predicate.description(), predicate.arguments());
     }
 
     private Condition<Record<?>> record(Type type, double expectedValue) {
-        ValuePredicate predicate = new ValuePredicate(type, expectedValue);
+        FloatPredicate predicate = new FloatPredicate(type, expectedValue);
 
         return new Condition<>(predicate, predicate.description(), predicate.arguments());
     }
@@ -193,12 +213,87 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         };
     }
 
-    static class ValuePredicate implements Predicate<Record<?>> {
+    static class LocalDatePredicate implements Predicate<Record<?>> {
+
+        protected final Type type;
+        protected final LocalDate expectedValue;
+
+        LocalDatePredicate(Type type, LocalDate expectedValue) {
+            this.type = type;
+            this.expectedValue = expectedValue;
+        }
+
+        @Override
+        public boolean test(Record<?> record) {
+            try {
+                Assertions.assertThat(record.getType()).isEqualTo(type);
+
+                testValue(record.getValue());
+            } catch (AssertionError e) {
+                return false;
+            }
+            return true;
+        }
+
+        protected void testValue(Object value) {
+            Assertions.assertThat(value).isInstanceOf(LocalDateTime.class);
+            LocalDate date = ((LocalDateTime) value).toLocalDate();
+
+            Assertions.assertThat(date).isEqualTo(expectedValue);
+        }
+
+        String description() {
+            return "record of type %s, with value %s";
+        }
+
+        Object[] arguments() {
+            return new Object[] { type, expectedValue };
+        }
+    }
+
+    static class IntegerPredicate implements Predicate<Record<?>> {
+
+        protected final Type type;
+        protected final int expectedValue;
+
+        IntegerPredicate(Type type, int expectedValue) {
+            this.type = type;
+            this.expectedValue = expectedValue;
+        }
+
+        @Override
+        public boolean test(Record<?> record) {
+            try {
+                Assertions.assertThat(record.getType()).isEqualTo(type);
+
+                testValue(record.getValue());
+            } catch (AssertionError e) {
+                return false;
+            }
+            return true;
+        }
+
+        protected void testValue(Object value) {
+            Assertions.assertThat(value).isInstanceOf(Integer.class);
+
+            Assertions.assertThat(((Integer) value)).isEqualTo(expectedValue);
+        }
+
+        String description() {
+            return "record of type %s, with value %d";
+        }
+
+        Object[] arguments() {
+            return new Object[] { type, expectedValue };
+        }
+    }
+
+    static class FloatPredicate implements Predicate<Record<?>> {
 
         protected final Type type;
         protected final float expectedValue;
 
-        ValuePredicate(Type type, Double expectedValue) {
+        FloatPredicate(Type type, Double expectedValue) {
             this.type = type;
             this.expectedValue = expectedValue.floatValue();
         }
@@ -230,7 +325,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         }
     }
 
-    static class QuantityPredicate extends ValuePredicate {
+    static class QuantityPredicate extends FloatPredicate {
 
         private final Unit<?> unit;
 

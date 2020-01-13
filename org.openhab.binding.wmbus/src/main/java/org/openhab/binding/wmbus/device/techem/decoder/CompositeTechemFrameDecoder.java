@@ -54,11 +54,16 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
         // TODO failing test: wrong water meter returned?
         for (TechemFrameDecoder<?> decoder : decoders) {
             if (decoder.supports(device.getRawDeviceType())) {
-                // same variant might be supported by multiple decoders
-                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder);
+                // same variant might be supported by multiple decoders, but first one which gives decoded result wins
+                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder.getClass().getName());
                 result = decoder.decode(device);
-                logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
+                if (result != null) {
+                    logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
                         result.getTechemDeviceType());
+                    break;
+                } else {
+                    logger.debug("Decoding of frame failed, unsupported device variant");
+                }
             }
         }
         if (result != null) {

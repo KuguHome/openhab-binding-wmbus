@@ -13,12 +13,14 @@ public class Record<T> {
     public enum Type {
         CURRENT_VOLUME,
         CURRENT_READING_DATE(true),
+        CURRENT_READING_DATE_SMOKE(true),
         PAST_VOLUME,
         PAST_READING_DATE(true),
         ROOM_TEMPERATURE,
         RADIATOR_TEMPERATURE,
         RSSI,
-        ALMANAC;
+        ALMANAC,
+        STATUS;
 
         private final boolean dateField;
 

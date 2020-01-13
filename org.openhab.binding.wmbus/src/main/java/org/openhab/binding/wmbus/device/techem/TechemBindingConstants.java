@@ -8,9 +8,6 @@
  */
 package org.openhab.binding.wmbus.device.techem;
 
-import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
-
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -31,6 +28,27 @@ import com.google.common.collect.ImmutableSet;
 public interface TechemBindingConstants {
 
     String MANUFACTURER_ID = "TCH";
+
+    String CHANNEL_STATUS = "status";
+    String CHANNEL_ALMANAC = "almanac";
+    // temperatures
+    String CHANNEL_ROOMTEMPERATURE = "room_temperature";
+    String CHANNEL_RADIATORTEMPERATURE = "radiator_temperature";
+    // values
+    String CHANNEL_CURRENTREADING = "current_reading";
+    String CHANNEL_LASTREADING = "last_reading";
+
+    // dates
+    String CHANNEL_LASTDATE_NUMBER = "last_date_number";
+    String CHANNEL_LASTDATE_STRING = "last_date_string";
+    String CHANNEL_LASTDATE = "last_date";
+    String CHANNEL_CURRENTDATE_NUMBER = "current_date_number";
+    String CHANNEL_CURRENTDATE_STRING = "current_date_string";
+    String CHANNEL_CURRENTDATE = "current_date";
+    String CHANNEL_RECEPTION = "reception";
+    String CHANNEL_CURRENTDATE_SMOKE_NUMBER = "current_date_smoke_number";
+    String CHANNEL_CURRENTDATE_SMOKE_STRING = "current_date_smoke_string";
+    String CHANNEL_CURRENTDATE_SMOKE = "current_date_smoke";
 
     // warm water version 0x70 -> 112, type 0x62
     Variant _68TCH11298_6 = new Variant(0x70, 0x62, 0xA0, DeviceType.WARM_WATER_METER);
@@ -67,8 +85,6 @@ public interface TechemBindingConstants {
     // smoke detector version 0x76 -> 118, type 0xf0
     Variant _68TCH118255_161_A0 = new Variant(0x76, 0xf0, 0xA0, DeviceType.SMOKE_DETECTOR);
     Variant _68TCH118255_161_A1 = new Variant(0x76, 0xf0, 0xA1, DeviceType.SMOKE_DETECTOR);
-
-    // 68TCH113255
 
     // water meters
     String THING_TYPE_NAME_TECHEM_WARM_WATER_METER = "techem_wz62";
@@ -139,6 +155,8 @@ public interface TechemBindingConstants {
 
     Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet.copyOf(SUPPORTED_DEVICE_VARIANTS.values());
 
+    // List all channels
+    // general channels
     Map<String, Type> TECHEM_METER_MAPPING = ImmutableMap.<String, Record.Type> builder()
             .put(CHANNEL_CURRENTREADING, Type.CURRENT_VOLUME) // current value
             .put(CHANNEL_CURRENTDATE, Type.CURRENT_READING_DATE) // present date
@@ -158,6 +176,17 @@ public interface TechemBindingConstants {
             .put(CHANNEL_RADIATORTEMPERATURE, Type.RADIATOR_TEMPERATURE) // radiator
             .build();
 
+    // measurement readings
+    Map<String, Type> SMOKE_DETECTOR_MAPPING = ImmutableMap.<String, Record.Type> builder()
+            .put(CHANNEL_STATUS, Type.STATUS) // present date
+            .put(CHANNEL_CURRENTDATE, Type.CURRENT_READING_DATE) // present date
+            .put(CHANNEL_CURRENTDATE_STRING, Type.CURRENT_READING_DATE) // present date
+            .put(CHANNEL_CURRENTDATE_NUMBER, Type.CURRENT_READING_DATE) // present date
+            .put(CHANNEL_CURRENTDATE_SMOKE, Type.CURRENT_READING_DATE_SMOKE) // smoke detector 2nd date
+            .put(CHANNEL_CURRENTDATE_SMOKE_STRING, Type.CURRENT_READING_DATE_SMOKE) // smoke detector 2nd date
+            .put(CHANNEL_CURRENTDATE_SMOKE_NUMBER, Type.CURRENT_READING_DATE_SMOKE) // smoke detector 2nd date
+            .build();
+
     // channel mapping for thing types
     Map<ThingTypeUID, Map<String, Type>> RECORD_MAP = ImmutableMap.<ThingTypeUID, Map<String, Type>> builder()
             .put(THING_TYPE_TECHEM_WARM_WATER_METER, TECHEM_METER_MAPPING) // warm
@@ -170,8 +199,6 @@ public interface TechemBindingConstants {
             .put(THING_TYPE_TECHEM_HKV64, TECHEM_METER_MAPPING) // again basic HKV mapping
             .put(THING_TYPE_TECHEM_HKV69, HEAT_ALLOCATOR_MAPPING_69) // here we have two temperature channels
             .put(THING_TYPE_TECHEM_HKV94, HEAT_ALLOCATOR_MAPPING_69) // try to decode 0x94 variant in same way as 0x69
-
-            .put(THING_TYPE_TECHEM_SD76, Collections.emptyMap()) // v118 is smoke detector, not sure what to do about it
-                                                                 // channels
+            .put(THING_TYPE_TECHEM_SD76, SMOKE_DETECTOR_MAPPING) // v118 is smoke detector, experimental channels apply
             .build();
 }
