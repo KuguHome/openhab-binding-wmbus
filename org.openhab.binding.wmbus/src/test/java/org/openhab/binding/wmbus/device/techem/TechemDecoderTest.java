@@ -31,7 +31,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.WARM_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11298_6.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+                .areAtLeastOne(record(Record.Type.STATUS, 0))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 6.5, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 59.7, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -44,7 +45,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.COLD_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH112114_16.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+                .areAtLeastOne(record(Record.Type.STATUS, 0))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 36.3, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 190.2, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -57,7 +59,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.WARM_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11698_6.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+                .areAtLeastOne(record(Record.Type.STATUS, 6))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 2.1, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 7.5, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -70,7 +73,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.COLD_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH116114_16.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(5)
+        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+                .areAtLeastOne(record(Record.Type.STATUS, 6))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 18.1, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 43.5, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -96,7 +100,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH6967_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+        Assertions.assertThat(device.getMeasurements()).hasSize(7)
+                .areAtLeastOne(record(Record.Type.STATUS, 0))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 5240.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 18727.0)).areAtLeastOne(rssi());
     }
@@ -109,7 +114,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH100128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+        Assertions.assertThat(device.getMeasurements()).hasSize(7)
+                .areAtLeastOne(record(Record.Type.STATUS, 17))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 65.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 104.0)).areAtLeastOne(rssi());
     }
@@ -122,7 +128,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH105128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(8)
+        Assertions.assertThat(device.getMeasurements()).hasSize(9)
+                .areAtLeastOne(record(Record.Type.STATUS, 17))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 410.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 1999.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 21.52, SIUnits.CELSIUS))
@@ -137,7 +144,8 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(8)
+        Assertions.assertThat(device.getMeasurements()).hasSize(9)
+                .areAtLeastOne(record(Record.Type.STATUS, 15))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 657.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 412.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.48, SIUnits.CELSIUS))

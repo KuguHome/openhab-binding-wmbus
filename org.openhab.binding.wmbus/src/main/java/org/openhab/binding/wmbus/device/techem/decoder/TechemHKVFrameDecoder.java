@@ -8,7 +8,6 @@
  */
 package org.openhab.binding.wmbus.device.techem.decoder;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,26 +44,24 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
 
     @Override
     protected TechemHeatCostAllocator decode(WMBusDevice device, SecondaryAddress address, byte[] buffer) {
-        int offset = address.asByteArray().length + 2;
-        int coding = buffer[offset] & 0xFF;
+        Buffer buff = new Buffer(device.getOriginalMessage(), address);
 
+        int coding = buff.skip(2).readByte() & 0xFF;
         if (variant.getCoding() == coding) {
-            LocalDateTime lastReading = parseLastDate(buffer, offset + 2);
-            float lastValue = parseBigEndianInt(buffer, offset + 4);
-            LocalDateTime currentDate = parseCurrentDate(buffer, offset + 6);
-            float currentValue = parseBigEndianInt(buffer, offset + 8);
 
             List<Record<?>> records = new ArrayList<>();
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, currentValue));
-            records.add(new Record<>(Record.Type.CURRENT_READING_DATE, currentDate));
-            records.add(new Record<>(Record.Type.PAST_VOLUME, lastValue));
-            records.add(new Record<>(Record.Type.PAST_READING_DATE, lastReading));
+            records.add(new Record<>(Record.Type.STATUS, ((Byte) buff.readByte()).intValue()));
+            records.add(new Record<>(Record.Type.PAST_READING_DATE, buff.readPastDate()));
+            records.add(new Record<>(Record.Type.PAST_VOLUME, (float) buff.readShort()));
+            records.add(new Record<>(Record.Type.CURRENT_READING_DATE, buff.readCurrentDate()));
+            records.add(new Record<>(Record.Type.CURRENT_VOLUME, (float) buff.readShort()));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
             records.add(new Record<>(Record.Type.ALMANAC, ""));
 
             if (reportsTemperature) {
-                float temp1 = parseTemperature(buffer, offset + 10 + complexShift);
-                float temp2 = parseTemperature(buffer, offset + 12 + complexShift);
+                buff.skip(complexShift);
+                float temp1 = buff.readFloat(Buffer._SCALE_FACTOR_1_100th);
+                float temp2 = buff.readFloat(Buffer._SCALE_FACTOR_1_100th);
                 records.add(new Record<>(Record.Type.ROOM_TEMPERATURE, Quantities.getQuantity(temp1, SIUnits.CELSIUS)));
                 records.add(
                         new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));
