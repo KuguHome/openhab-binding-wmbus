@@ -209,6 +209,13 @@
         <state readOnly="true">
         </state>
     </channel-type>
+    <channel-type id="counter">
+        <item-type>Number</item-type>
+        <label>Bi-weakly medium consumption</label>
+        <description>Consumption of water/heat accumulated in periods between 1-16.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
 
     <channel-type id="current_date_smoke">
         <item-type>DateTime</item-type>

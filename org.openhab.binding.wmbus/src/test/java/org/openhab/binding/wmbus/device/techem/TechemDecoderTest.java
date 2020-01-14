@@ -1,11 +1,8 @@
 package org.openhab.binding.wmbus.device.techem;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.function.Consumer;
-import java.util.function.Predicate;
 
-import javax.measure.Quantity;
 import javax.measure.Unit;
 
 import org.assertj.core.api.Assertions;
@@ -15,6 +12,12 @@ import org.junit.Test;
 import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.Record.Type;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
+import org.openhab.binding.wmbus.device.techem.predicate.FloatPredicate;
+import org.openhab.binding.wmbus.device.techem.predicate.IntegerPredicate;
+import org.openhab.binding.wmbus.device.techem.predicate.LocalDatePredicate;
+import org.openhab.binding.wmbus.device.techem.predicate.QuantityPredicate;
+import org.openhab.binding.wmbus.device.techem.predicate.RssiPredicate;
+import org.openhab.binding.wmbus.device.techem.predicate.StringPredicate;
 import org.openmuc.jmbus.DeviceType;
 
 import tec.uom.se.unit.Units;
@@ -31,8 +34,10 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.WARM_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11298_6.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+        Assertions.assertThat(device.getMeasurements()).hasSize(8)
                 .areAtLeastOne(record(Record.Type.STATUS, 0))
+                .areAtLeastOne(record(Record.Type.COUNTER, 3))
+                .areAtLeastOne(record(Record.Type.ALMANAC, "4;4;3;3;3;3;3;3;2;3;3;3;3;3;3;3;4;2;4"))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 6.5, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 59.7, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -59,8 +64,10 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.WARM_WATER_METER));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH11698_6.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(6)
+        Assertions.assertThat(device.getMeasurements()).hasSize(8)
                 .areAtLeastOne(record(Record.Type.STATUS, 6))
+                .areAtLeastOne(record(Record.Type.COUNTER, 0))
+                .areAtLeastOne(record(Record.Type.ALMANAC, "1;1;1;1;0;1;1;0;0;1;0;0;1;1;2;2;1;2;2;1;2;1;1;2;2;1;230;0"))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 2.1, Units.CUBIC_METRE))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 7.5, Units.CUBIC_METRE)).areAtLeastOne(rssi());
     }
@@ -128,8 +135,10 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH105128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(9)
+        Assertions.assertThat(device.getMeasurements()).hasSize(10)
                 .areAtLeastOne(record(Record.Type.STATUS, 17))
+                .areAtLeastOne(record(Record.Type.COUNTER, 16))
+                .areAtLeastOne(record(Record.Type.ALMANAC, "1;0;0;2;0;0;0;0;0;0;0;0;0;0;17;11;0;32;54;29;34;31;110;146;135;73;0"))
                 .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 410.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 1999.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 21.52, SIUnits.CELSIUS))
@@ -144,9 +153,11 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 expectedDevice(DeviceType.HEAT_COST_ALLOCATOR));
         Assertions.assertThat(device.getDeviceType()).isEqualTo(TechemBindingConstants._68TCH148128_8.getTechemType());
 
-        Assertions.assertThat(device.getMeasurements()).hasSize(9)
+        Assertions.assertThat(device.getMeasurements()).hasSize(10)
                 .areAtLeastOne(record(Record.Type.STATUS, 15))
-                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 657.0))
+                .areAtLeastOne(record(Record.Type.COUNTER, 0))
+                .areAtLeastOne(record(Record.Type.ALMANAC, "0;0;0;0;0;0;7;31;36;30;69;78;66;88;132;120;119;94;79;46;20;0;0;0;0;219;0"))
+                .areAtLeastOne(record(Record.Type.CURRENT_VOLUME, 258.0))
                 .areAtLeastOne(record(Record.Type.PAST_VOLUME, 412.0))
                 .areAtLeastOne(record(Record.Type.ROOM_TEMPERATURE, 26.48, SIUnits.CELSIUS))
                 .areAtLeastOne(record(Record.Type.RADIATOR_TEMPERATURE, 26.31, SIUnits.CELSIUS)).areAtLeastOne(rssi());
@@ -185,6 +196,12 @@ public class TechemDecoderTest extends AbstractWMBusTest {
                 .areAtLeastOne(rssi());
     }
 
+    private Condition<Record<?>> record(Type type, String expectedValue) {
+        StringPredicate predicate = new StringPredicate(type, expectedValue);
+
+        return new Condition<>(predicate, predicate.description(), predicate.arguments());
+    }
+
     private Condition<Record<?>> record(Type type, LocalDate expectedValue) {
         LocalDatePredicate predicate = new LocalDatePredicate(type, expectedValue);
 
@@ -221,175 +238,4 @@ public class TechemDecoderTest extends AbstractWMBusTest {
         };
     }
 
-    static class LocalDatePredicate implements Predicate<Record<?>> {
-
-        protected final Type type;
-        protected final LocalDate expectedValue;
-
-        LocalDatePredicate(Type type, LocalDate expectedValue) {
-            this.type = type;
-            this.expectedValue = expectedValue;
-        }
-
-        @Override
-        public boolean test(Record<?> record) {
-            try {
-                Assertions.assertThat(record.getType()).isEqualTo(type);
-
-                testValue(record.getValue());
-            } catch (AssertionError e) {
-                return false;
-            }
-            return true;
-        }
-
-        protected void testValue(Object value) {
-            Assertions.assertThat(value).isInstanceOf(LocalDateTime.class);
-            LocalDate date = ((LocalDateTime) value).toLocalDate();
-
-            Assertions.assertThat(date).isEqualTo(expectedValue);
-        }
-
-        String description() {
-            return "record of type %s, with value %s";
-        }
-
-        Object[] arguments() {
-            return new Object[] { type, expectedValue };
-        }
-    }
-
-    static class IntegerPredicate implements Predicate<Record<?>> {
-
-        protected final Type type;
-        protected final int expectedValue;
-
-        IntegerPredicate(Type type, int expectedValue) {
-            this.type = type;
-            this.expectedValue = expectedValue;
-        }
-
-        @Override
-        public boolean test(Record<?> record) {
-            try {
-                Assertions.assertThat(record.getType()).isEqualTo(type);
-
-                testValue(record.getValue());
-            } catch (AssertionError e) {
-                return false;
-            }
-            return true;
-        }
-
-        protected void testValue(Object value) {
-            Assertions.assertThat(value).isInstanceOf(Integer.class);
-
-            Assertions.assertThat(((Integer) value)).isEqualTo(expectedValue);
-        }
-
-        String description() {
-            return "record of type %s, with value %d";
-        }
-
-        Object[] arguments() {
-            return new Object[] { type, expectedValue };
-        }
-    }
-
-    static class FloatPredicate implements Predicate<Record<?>> {
-
-        protected final Type type;
-        protected final float expectedValue;
-
-        FloatPredicate(Type type, Double expectedValue) {
-            this.type = type;
-            this.expectedValue = expectedValue.floatValue();
-        }
-
-        @Override
-        public boolean test(Record<?> record) {
-            try {
-                Assertions.assertThat(record.getType()).isEqualTo(type);
-
-                testValue(record.getValue());
-            } catch (AssertionError e) {
-                return false;
-            }
-            return true;
-        }
-
-        protected void testValue(Object value) {
-            Assertions.assertThat(value).isInstanceOf(Float.class);
-
-            Assertions.assertThat(((Float) value)).isEqualTo(expectedValue);
-        }
-
-        String description() {
-            return "record of type %s, with value %f";
-        }
-
-        Object[] arguments() {
-            return new Object[] { type, expectedValue };
-        }
-    }
-
-    static class QuantityPredicate extends FloatPredicate {
-
-        private final Unit<?> unit;
-
-        QuantityPredicate(Type type, double expectedValue, Unit<?> unit) {
-            super(type, expectedValue);
-            this.unit = unit;
-        }
-
-        @Override
-        protected void testValue(Object value) {
-            Assertions.assertThat(value).isInstanceOf(Quantity.class);
-
-            Quantity<?> quantity = (Quantity<?>) value;
-            Assertions.assertThat(quantity.getValue().floatValue())
-                    .isEqualTo(Double.valueOf(expectedValue).floatValue());
-            Assertions.assertThat(quantity.getUnit()).isEqualTo(unit);
-        }
-
-        @Override
-        String description() {
-            return "record of type %s, with value %f in %s";
-        }
-
-        @Override
-        Object[] arguments() {
-            return new Object[] { type, expectedValue, unit };
-        }
-    }
-
-    static class RssiPredicate implements Predicate<Record<?>> {
-
-        private final int expectedValue;
-
-        RssiPredicate(int expectedValue) {
-            this.expectedValue = expectedValue;
-        }
-
-        @Override
-        public boolean test(Record<?> record) {
-            try {
-                Assertions.assertThat(record.getType()).isEqualTo(Type.RSSI);
-
-                Object value = record.getValue();
-                Assertions.assertThat(value).isEqualTo(expectedValue);
-            } catch (AssertionError e) {
-                return false;
-            }
-            return true;
-        }
-
-        String description() {
-            return "Missing RSSI record, with expected value %d";
-        }
-
-        Object[] arguments() {
-            return new Object[] { expectedValue };
-        }
-    }
 }

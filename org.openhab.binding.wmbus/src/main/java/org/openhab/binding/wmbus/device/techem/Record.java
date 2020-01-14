@@ -20,7 +20,8 @@ public class Record<T> {
         RADIATOR_TEMPERATURE,
         RSSI,
         ALMANAC,
-        STATUS;
+        STATUS,
+        COUNTER;
 
         private final boolean dateField;
 

@@ -23,13 +23,19 @@ import tec.uom.se.unit.Units;
 
 class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWaterMeter> {
 
-    TechemWaterMeterFrameDecoder(Variant variant) {
+    /**
+     * Offset of counter byte, if set to -1 means that there is no counter and history to be read.
+     */
+    private final int counterByteOffset;
+
+    TechemWaterMeterFrameDecoder(Variant variant, int counterByteOffset) {
         super(variant);
+        this.counterByteOffset = counterByteOffset;
     }
 
     @Override
     protected TechemWaterMeter decode(WMBusDevice device, SecondaryAddress address, byte[] buffer) {
-        Buffer buff = new Buffer(device.getOriginalMessage(), address);
+        Buffer buff = new DebugBuffer(device.getOriginalMessage(), address);
 
         int coding = buff.skip(2).readByte() & 0xFF;
 
@@ -45,6 +51,12 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWate
             float number = buff.readFloat(Buffer._SCALE_FACTOR_1_10th);
             records.add(new Record<>(Record.Type.CURRENT_VOLUME, Quantities.getQuantity(number, unit)));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
+
+            if (counterByteOffset >= 0) {
+                int counter = buff.skip(counterByteOffset).readByte() & 0xFF;
+                records.add(new Record<>(Record.Type.COUNTER, counter));
+                records.add(new Record<>(Record.Type.ALMANAC, buff.readHistory()));
+            }
 
             return new TechemWaterMeter(device.getOriginalMessage(), device.getAdapter(), variant, records);
         }

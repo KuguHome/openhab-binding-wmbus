@@ -28,14 +28,16 @@ class TechemSmokeDetectorFrameDecoder extends AbstractTechemFrameDecoder<TechemS
     @Override
     protected TechemSmokeDetector decode(WMBusDevice device, SecondaryAddress address, byte[] buffer) {
         int offset = address.asByteArray().length + 2; // 2 first bytes of data is CRC
-        int coding = buffer[offset] & 0xFF;
+        Buffer buff = new Buffer(device.getOriginalMessage(), address);
+        int coding = buff.skip(2).readByte() & 0xFF;
 
         for (Variant variant : variants) {
             if (variant.getCoding() == coding) {
                 List<Record<?>> records = new ArrayList<>();
-                records.add(new Record<>(Record.Type.STATUS, ((Byte) buffer[offset + 1]).intValue()));
-                records.add(new Record<>(Record.Type.CURRENT_READING_DATE, parseCurrentDate(buffer, offset + 4)));
-                records.add(new Record<>(Record.Type.CURRENT_READING_DATE_SMOKE, parseLastDate(buffer, offset + 8)));
+                records.add(new Record<>(Record.Type.STATUS, ((Byte) buff.readByte()).intValue()));
+                records.add(new Record<>(Record.Type.CURRENT_READING_DATE, buff.skip(2).readCurrentDate()));
+                buff.skip(2);
+                records.add(new Record<>(Record.Type.CURRENT_READING_DATE_SMOKE, buff.readPastDate()));
                 records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
                 return new TechemSmokeDetector(device.getOriginalMessage(), device.getAdapter(), variant, records);

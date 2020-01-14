@@ -29,8 +29,8 @@ import org.slf4j.LoggerFactory;
  */
 public class Buffer {
 
-    private final Logger logger = LoggerFactory.getLogger(Buffer.class);
-    private final ByteBuffer buffer;
+    protected final Logger logger = LoggerFactory.getLogger(Buffer.class);
+    protected final ByteBuffer buffer;
 
     public final static Function<Float, Float> _SCALE_FACTOR_1_10th = value -> value / 10;
     public final static Function<Float, Float> _SCALE_FACTOR_1_100th = value -> value / 100;
@@ -76,13 +76,11 @@ public class Buffer {
     }
 
     public short readShort() {
-        short number = orderedRead(ByteOrder.LITTLE_ENDIAN, ByteBuffer::getShort);
-        return number;
+        return orderedRead(ByteOrder.LITTLE_ENDIAN, ByteBuffer::getShort);
     }
 
     public float readFloat() {
-        float number = readShort();
-        return number;
+        return readShort();
     }
 
     public LocalDateTime readPastDate() {
@@ -104,12 +102,12 @@ public class Buffer {
 
         if (day <= 0) {
             logger.trace("Detected invalid day number {} in byte representation: {}, changing to 1st day of month", day,
-                    HexUtils.bytesToHex(new byte[] {buffer.get(position)}));
+                    String.format("%02X", buffer.get(position)));
             day = 1;
         }
         if (month <= 0) {
             logger.trace("Detected invalid month number {} in byte representation: {}, changing to last month of year",
-                    month, HexUtils.bytesToHex(new byte[] {buffer.get(position)}));
+                    month, String.format("%02X", buffer.get(position)));
             month = 12;
         }
 
@@ -117,13 +115,25 @@ public class Buffer {
         return dateTime.truncatedTo(ChronoUnit.SECONDS);
     }
 
+    public String readHistory() {
+        StringBuilder history = new StringBuilder();
+        while (buffer.position() + 1 < buffer.limit()) {
+            history.append((readByte() & 0xFF)).append(";");
+        }
+
+        return history.substring(0, history.length() -1);
+    }
+
     public float readFloat(Function<Float, Float> scale) {
-        Float apply = scale.apply(readFloat());
-        return apply;
+        return scale.apply(readFloat());
     }
 
     public int position() {
         return buffer.position();
+    }
+
+    public int limit() {
+        return buffer.limit();
     }
 
     private final <T> T orderedRead(ByteOrder readOrder, Function<ByteBuffer, T> callback) {
