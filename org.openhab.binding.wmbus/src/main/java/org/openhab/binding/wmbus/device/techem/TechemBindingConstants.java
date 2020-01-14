@@ -72,13 +72,13 @@ public interface TechemBindingConstants {
     Variant _68TCH11367_4_A2 = new Variant(0x71, 0x43, 0xA2, DeviceType.HEAT_METER);
 
     // hkv version 0x45 -> 69, type 0x43 -> 67
-    Variant _68TCH6967_8 = new Variant(0x45, 0x43, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH6967_8 = new Variant(0x45, 0x43, 0xA1, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x61 -> 97, type ?
     Variant _68TCH97255_8 = new Variant(0x61, DeviceType.RESERVED.getId(), 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x64 -> 100, type 0x80 -> 128
-    Variant _68TCH100128_8 = new Variant(0x64, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH100128_8 = new Variant(0x64, 0x80, 0xA0, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x69 -> 105, type 0x80 -> 128
-    Variant _68TCH105128_8 = new Variant(0x69, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
+    Variant _68TCH105128_8 = new Variant(0x69, 0x80, 0xA0, DeviceType.HEAT_COST_ALLOCATOR);
     // hkv version 0x94 -> 148, type 0x80 -> 128
     Variant _68TCH148128_8 = new Variant(0x94, 0x80, 0xA2, DeviceType.HEAT_COST_ALLOCATOR);
 
