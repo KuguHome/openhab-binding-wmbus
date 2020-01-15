@@ -38,7 +38,7 @@ class TechemHKVRoomTempFrameDecoder extends AbstractTechemFrameDecoder<TechemHea
 
     @Override
     protected TechemHeatCostAllocator decode(WMBusDevice device, SecondaryAddress address, byte[] buffer) {
-        Buffer buff = new DebugBuffer(device.getOriginalMessage(), address);
+        Buffer buff = new Buffer(device.getOriginalMessage(), address);
 
         int coding = buff.skip(2).readByte() & 0xFF;
         if (variant.getCoding() == coding) {
