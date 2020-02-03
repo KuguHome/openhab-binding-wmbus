@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.wmbus.device.techem.decoder;
 
-import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
+import static org.openhab.binding.wmbus.device.techem.TechemBindingConstants.*;
 
 import com.google.common.collect.ImmutableMap;
 
@@ -16,17 +16,16 @@ class TechemVersionFrameDecoderSelector extends TechemVariantFrameDecoderSelecto
 
     private static final ImmutableMap<Byte, TechemFrameDecoder<?>> CODEC_MAP = ImmutableMap
             .<Byte, TechemFrameDecoder<?>> builder()
-            .put(Byte.valueOf((byte) 0x45), new TechemHKVFrameDecoder(TechemBindingConstants._68TCH6967_8))
-            .put(Byte.valueOf((byte) 0x61), new TechemHKVFrameDecoder(TechemBindingConstants._68TCH97255_8))
-            .put(Byte.valueOf((byte) 0x64), new TechemHKVFrameDecoder(TechemBindingConstants._68TCH100128_8))
-            .put(Byte.valueOf((byte) 0x69), new TechemHKVFrameDecoder(TechemBindingConstants._68TCH105128_8, true))
-            .put(Byte.valueOf((byte) 0x94),
-                    new TechemHKVFrameDecoder(TechemBindingConstants._68TCH148128_8, true, COMPLEX_SHIFT_HKV94))
-            .put(Byte.valueOf((byte) 0x76), new TechemSmokeDetectorFrameDecoder())
+            .put(Byte.valueOf((byte) 0x45), new TechemHKVFrameDecoder(_68TCH6967_8))
+            .put(Byte.valueOf((byte) 0x61), new TechemHKVFrameDecoder(_68TCH97255_8))
+            .put(Byte.valueOf((byte) 0x64), new TechemHKVFrameDecoder(_68TCH100128_8))
+            .put(Byte.valueOf((byte) 0x69), new TechemHKVRoomTempFrameDecoder(_68TCH105128_8, 0, 1))
+            .put(Byte.valueOf((byte) 0x94), new TechemHKVRoomTempFrameDecoder(_68TCH148128_8, 1, 1))
+            .put(Byte.valueOf((byte) 0x76), new TechemSmokeDetectorFrameDecoder(_68TCH118255_161_A0, _68TCH118255_161_A1))
 
-            .put(Byte.valueOf((byte) 0x22), new TechemHeatMeterFrameDecoder(TechemBindingConstants._68TCH3467_4))
-            .put(Byte.valueOf((byte) 0x39), new TechemHeatMeterFrameDecoder(TechemBindingConstants._68TCH5767_4))
-            .put(Byte.valueOf((byte) 0x71), new TechemHeatMeterFrameDecoder(TechemBindingConstants._68TCH11367_4))
+            .put(Byte.valueOf((byte) 0x22), new TechemHeatMeterFrameDecoder(_68TCH3467_4))
+            .put(Byte.valueOf((byte) 0x39), new TechemHeatMeterFrameDecoder(_68TCH5767_4))
+            .put(Byte.valueOf((byte) 0x71), new TechemHeatMeterFrameDecoder(_68TCH11367_4_A0, _68TCH11367_4_A2))
 
             .build();
 

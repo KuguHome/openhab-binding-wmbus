@@ -10,7 +10,7 @@ package org.openhab.binding.wmbus.device.techem.decoder;
 
 import java.util.ArrayList;
 import java.util.List;
-
+import org.eclipse.smarthome.core.library.unit.SIUnits;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
@@ -19,17 +19,21 @@ import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 
-class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
+import tec.uom.se.quantity.Quantities;
 
-    protected final boolean reportsTemperature;
+class TechemHKVRoomTempFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 
-    TechemHKVFrameDecoder(Variant variant) {
-        this(variant, false);
+    private final int currentReadingOffset;
+    private final int historyOffset;
+
+    TechemHKVRoomTempFrameDecoder(Variant variant) {
+        this(variant, 0, 0);
     }
 
-    TechemHKVFrameDecoder(Variant variant, boolean temperature) {
+    TechemHKVRoomTempFrameDecoder(Variant variant, int currentReadingOffset, int historyOffset) {
         super(variant);
-        this.reportsTemperature = temperature;
+        this.currentReadingOffset = currentReadingOffset;
+        this.historyOffset = historyOffset;
     }
 
     @Override
@@ -44,9 +48,18 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
             records.add(new Record<>(Record.Type.PAST_READING_DATE, buff.readPastDate()));
             records.add(new Record<>(Record.Type.PAST_VOLUME, (float) buff.readShort()));
             records.add(new Record<>(Record.Type.CURRENT_READING_DATE, buff.readCurrentDate()));
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, (float) buff.readShort()));
+            records.add(new Record<>(Record.Type.CURRENT_VOLUME, (float) buff.skip(currentReadingOffset).readShort()));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
-            records.add(new Record<>(Record.Type.ALMANAC, ""));
+
+            float temp1 = buff.readFloat(Buffer._SCALE_FACTOR_1_100th);
+            float temp2 = buff.readFloat(Buffer._SCALE_FACTOR_1_100th);
+            records.add(new Record<>(Record.Type.ROOM_TEMPERATURE, Quantities.getQuantity(temp1, SIUnits.CELSIUS)));
+            records.add(new Record<>(Record.Type.RADIATOR_TEMPERATURE, Quantities.getQuantity(temp2, SIUnits.CELSIUS)));
+
+            records.add(new Record<>(Record.Type.COUNTER, buff.readByte() & 0xF0));
+
+            buff.skip(historyOffset);
+            records.add(new Record<>(Record.Type.ALMANAC, buff.readHistory()));
 
             return new TechemHeatCostAllocator(device.getOriginalMessage(), device.getAdapter(), variant, records);
         }

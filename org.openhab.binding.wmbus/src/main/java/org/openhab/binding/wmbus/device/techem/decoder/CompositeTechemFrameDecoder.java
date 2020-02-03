@@ -26,18 +26,18 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
 
     private final List<TechemFrameDecoder<?>> decoders = ImmutableList.of(new TechemVersionFrameDecoderSelector(),
             // warm water
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11298_6),
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11698_6),
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH14998_6),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11298_6, 1),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH11698_6, 1),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH14998_6, -1),
             // cold water
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH112114_16),
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116114_16),
-            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH149114_16));
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH112114_16, -1),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH116114_16, -1),
+            new TechemWaterMeterFrameDecoder(TechemBindingConstants._68TCH149114_16, -1));
 
     @Override
-    public boolean suports(String deviceVariant) {
+    public boolean supports(String deviceVariant) {
         for (TechemFrameDecoder<?> decoder : decoders) {
-            if (decoder.suports(deviceVariant)) {
+            if (decoder.supports(deviceVariant)) {
                 return true;
             }
         }
@@ -53,12 +53,17 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
         TechemDevice result = null;
         // TODO failing test: wrong water meter returned?
         for (TechemFrameDecoder<?> decoder : decoders) {
-            if (decoder.suports(device.getRawDeviceType())) {
-                // same variant might be supported by multiple decoders
-                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder);
+            if (decoder.supports(device.getRawDeviceType())) {
+                // same variant might be supported by multiple decoders, but first one which gives decoded result wins
+                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder.getClass().getName());
                 result = decoder.decode(device);
-                logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
+                if (result != null) {
+                    logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
                         result.getTechemDeviceType());
+                    break;
+                } else {
+                    logger.debug("Decoding of frame failed, unsupported device variant");
+                }
             }
         }
         if (result != null) {

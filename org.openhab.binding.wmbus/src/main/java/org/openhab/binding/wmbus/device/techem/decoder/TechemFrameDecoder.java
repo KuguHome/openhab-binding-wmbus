@@ -13,9 +13,7 @@ import org.openhab.binding.wmbus.device.techem.TechemDevice;
 
 public interface TechemFrameDecoder<T extends TechemDevice> {
 
-    int COMPLEX_SHIFT_HKV94 = 1;
-
-    boolean suports(String deviceVariant);
+    boolean supports(String deviceVariant);
 
     T decode(WMBusDevice device);
 

@@ -1,26 +1,25 @@
 package org.openhab.binding.wmbus.device.techem;
 
+import java.util.Objects;
 import org.openmuc.jmbus.DeviceType;
 
 public class Variant {
 
     public final int version;
     public final int reportedType;
-    public final int desiredType;
+    public final int coding;
+    public final DeviceType desiredType;
     public final int matchingType; // since all unknown device types are converted to RESERVED/255 by jMBus
 
-    public Variant(int version, DeviceType reportedType, DeviceType desiredType) {
-        this(version, reportedType.getId(), desiredType);
+    public Variant(int version, int reportedType, int coding, DeviceType desiredType) {
+        this(version, reportedType, coding, desiredType, DeviceType.getInstance(reportedType));
     }
 
-    public Variant(int version, int reportedType, DeviceType desiredType) {
-        this(version, reportedType, desiredType, DeviceType.getInstance(reportedType));
-    }
-
-    public Variant(int version, int reportedType, DeviceType desiredType, DeviceType matchingType) {
+    public Variant(int version, int reportedType, int coding, DeviceType desiredType, DeviceType matchingType) {
         this.version = version;
         this.reportedType = reportedType;
-        this.desiredType = desiredType.getId();
+        this.coding = coding;
+        this.desiredType = desiredType;
         this.matchingType = matchingType.getId();
     }
 
@@ -28,42 +27,38 @@ public class Variant {
         return "68" + TechemBindingConstants.MANUFACTURER_ID + version + "" + reportedType;
     }
 
+    public int getDesiredType() {
+        return desiredType.getId();
+    }
+
+    public DeviceType getDesiredWMBusType() {
+        return desiredType;
+    }
+
+    public int getCoding() {
+        return coding;
+    }
+
     public String getTechemType() {
         return getRawType() + desiredType;
     }
 
     @Override
-    public int hashCode() {
-        final int prime = 31;
-        int result = 1;
-        result = prime * result + desiredType;
-        result = prime * result + reportedType;
-        result = prime * result + version;
-        return result;
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Variant)) {
+            return false;
+        }
+        Variant variant = (Variant) o;
+        return version == variant.version && reportedType == variant.reportedType && coding == variant
+            .coding && desiredType == variant.desiredType && matchingType == variant.matchingType;
     }
 
     @Override
-    public boolean equals(Object obj) {
-        if (this == obj) {
-            return true;
-        }
-        if (obj == null) {
-            return false;
-        }
-        if (getClass() != obj.getClass()) {
-            return false;
-        }
-        Variant other = (Variant) obj;
-        if (desiredType != other.desiredType) {
-            return false;
-        }
-        if (reportedType != other.reportedType) {
-            return false;
-        }
-        if (version != other.version) {
-            return false;
-        }
-        return true;
+    public int hashCode() {
+        return Objects.hash(version, reportedType, coding, desiredType, matchingType);
     }
 
     @Override

@@ -139,6 +139,16 @@
         <label>Techem Smoke Detector variant 76</label>
         <description>A smoke detector of Techem</description>
 
+        <channels>
+            <channel id="status" typeId="status" />
+            <channel id="current_date" typeId="current_date" />
+            <channel id="current_date_string" typeId="current_date_string" />
+            <channel id="current_date_number" typeId="current_date_number" />
+            <channel id="current_date_smoke" typeId="current_date_smoke" />
+            <channel id="current_date_smoke_string" typeId="current_date_smoke_string" />
+            <channel id="current_date_smoke_number" typeId="current_date_smoke_number" />
+        </channels>
+
         <config-description-ref uri="wmbus:meter"/>
     </thing-type>
 
@@ -152,6 +162,7 @@
         <description>A warm water meter of Techem</description>
 
         <channels>
+            <channel id="status" typeId="status" />
             <channel id="current_reading" typeId="current_reading" />
             <channel id="last_reading" typeId="last_reading" />
             <channel id="last_date" typeId="last_date" />
@@ -161,6 +172,8 @@
             <channel id="current_date_string" typeId="current_date_string" />
             <channel id="current_date_number" typeId="current_date_number" />
             <channel id="reception" typeId="reception" />
+            <channel id="counter" typeId="counter" />
+            <channel id="almanac" typeId="almanac" />
         </channels>
 
         <config-description-ref uri="wmbus:meter"/>

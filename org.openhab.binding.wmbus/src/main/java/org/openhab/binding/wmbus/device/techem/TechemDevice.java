@@ -26,23 +26,18 @@ import org.openmuc.jmbus.wireless.WMBusMessage;
  */
 public class TechemDevice extends WMBusDevice {
 
-    private final DeviceType deviceType;
     private final List<Record<?>> measurements;
     private final Variant variant;
 
-    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, DeviceType deviceType,
+    protected TechemDevice(WMBusMessage originalMessage, WMBusAdapter adapter, Variant variant,
             List<Record<?>> measurements) {
         super(originalMessage, adapter);
-
-        SecondaryAddress address = getOriginalMessage().getSecondaryAddress();
-        this.variant = new Variant(address.getVersion(), getOriginalDeviceTypeField(), deviceType,
-                address.getDeviceType());
-        this.deviceType = deviceType;
+        this.variant = variant;
         this.measurements = measurements;
     }
 
     public final DeviceType getTechemDeviceType() {
-        return deviceType;
+        return variant.getDesiredWMBusType();
     }
 
     public Variant getDeviceVariant() {
