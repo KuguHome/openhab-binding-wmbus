@@ -205,7 +205,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                 return Optional.of(CoreItemFactory.STRING);
         }
 
-        return Optional.empty();
+        return Optional.of(CoreItemFactory.STRING);
     }
 
     @Reference
