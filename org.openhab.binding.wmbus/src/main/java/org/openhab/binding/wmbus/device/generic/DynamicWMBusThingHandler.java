@@ -22,6 +22,7 @@ import org.eclipse.smarthome.core.thing.binding.builder.ChannelBuilder;
 import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
 import org.eclipse.smarthome.core.thing.type.ChannelType;
 import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
+import org.eclipse.smarthome.core.thing.util.ThingHelper;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.RefreshType;
 import org.eclipse.smarthome.core.types.State;
@@ -74,7 +75,14 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
                 Optional<Channel> channel = typeId.map(type -> thing.getChannel(type.getId()));
 
                 if (typeId.isPresent() && !channel.isPresent()) {
-                    channels.add(createChannel(typeId.get(), record));
+                    Channel newChannel = createChannel(typeId.get(), record);
+                    try {
+                        ThingHelper.ensureUniqueChannels(channels, newChannel);
+                        channels.add(newChannel);
+                    } catch (IllegalArgumentException ex) {
+                        logger.debug("Cannot create channel: {}", ex.getMessage());
+                        // TODO instead of dropping, rename the duplicate with a suffix like _1,_2 etc
+                    }
                 }
             }
 
