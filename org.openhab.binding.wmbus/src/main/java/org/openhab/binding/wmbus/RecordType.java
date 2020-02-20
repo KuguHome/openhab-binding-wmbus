@@ -23,6 +23,14 @@ import org.openmuc.jmbus.DataRecord;
 
 public class RecordType {
 
+    /**
+     * Constant for manufacturer data.
+     *
+     * Below combination of dib/vib is intentionally invalid. It is a mark for manufacturer specific data which can be
+     * appended as part of standard payload in the frame.
+     */
+    public final static RecordType MANUFACTURER_DATA  = new RecordType(new byte[] {0x0, 0x0, 0x0, 0x0}, new byte[] {0x0, 0x0, 0x0, 0x0});
+
     private final byte[] dib;
     private final byte[] vib;
 
@@ -51,7 +59,7 @@ public class RecordType {
         return vib;
     }
 
-    boolean matches(DataRecord record) {
+    public boolean matches(DataRecord record) {
         return Arrays.equals(record.getDib(), getDib()) && Arrays.equals(record.getVib(), getVib());
     }
 

@@ -49,6 +49,10 @@ public class WMBusDevice {
     }
 
     public DataRecord findRecord(RecordType recordType) {
+        if (RecordType.MANUFACTURER_DATA == recordType) {
+            return new ManufacturerData(originalMessage.getVariableDataResponse().getManufacturerData());
+        }
+
         for (DataRecord record : originalMessage.getVariableDataResponse().getDataRecords()) {
             if (recordType.matches(record)) {
                 return record;
@@ -88,5 +92,24 @@ public class WMBusDevice {
     @Override
     public String toString() {
         return originalMessage.getSecondaryAddress().toString();
+    }
+}
+
+class ManufacturerData extends DataRecord {
+
+    private final byte[] rawData;
+
+    ManufacturerData(byte[] rawData) {
+        this.rawData = rawData;
+    }
+
+    @Override
+    public byte[] getDataValue() {
+        return getRawData();
+    }
+
+    @Override
+    public byte[] getRawData() {
+        return rawData;
     }
 }
