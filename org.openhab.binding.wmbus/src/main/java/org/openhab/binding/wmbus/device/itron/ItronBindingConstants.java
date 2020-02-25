@@ -19,6 +19,19 @@ public interface ItronBindingConstants {
     String CHANNEL_CURRENT_DATE_STRING = "current_date_string";
     String CHANNEL_CURRENT_DATE_NUMBER = "current_date_number";
 
+    String CHANNEL_STATUS_BILLING_DATE = "status_billing_date";
+    String CHANNEL_STATUS_REMOVAL_OCCURRED = "status_removal_occurred";
+    String CHANNEL_STATUS_PRODUCT_INSTALLED = "status_product_installed";
+    String CHANNEL_STATUS_OPERATION_MODE = "status_operation_mode";
+    String CHANNEL_STATUS_PERIMETER_INTRUSION_OCCURRED = "status_perimeter_intrusion_occurred";
+    String CHANNEL_STATUS_SMOKE_INLET_BLOCKED_OCCURRED = "status_smoke_inlet_blocked_occurred";
+    String CHANNEL_STATUS_OUT_OF_TEMP_RANGE_OCCURRED = "status_out_of_temp_range_occurred";
+    String CHANNEL_STATUS_PRODUCT_CODE = "status_product_code";
+    String CHANNEL_STATUS_BATTERY_LIFETIME = "status_battery_lifetime";
+    //String CHANNEL_STATUS_PERIMETER_INTRUSION = "status_perimeter_intrusion";
+    //String CHANNEL_STATUS_REMOVAL_ERROR = "status_removal_error";
+    //String CHANNEL_STATUS_DATA_ENCRYPTED = "status_data_encrypted";
+
     String CHANNEL_LAST_SMOKE_ALERT_START_DATE = "last_smoke_alert_start_date";
     String CHANNEL_LAST_SMOKE_ALERT_START_DATE_STRING = "last_smoke_alert_start_date_string";
     String CHANNEL_LAST_SMOKE_ALERT_START_DATE_NUMBER = "last_smoke_alert_start_date_number";

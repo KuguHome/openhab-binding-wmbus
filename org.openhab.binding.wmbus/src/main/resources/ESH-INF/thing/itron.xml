@@ -20,6 +20,19 @@
             <channel id="current_date_string" typeId="itron_current_date_time_string" />
             <channel id="current_date_number" typeId="itron_current_date_time_number" />
 
+            <channel id="status_removal_occurred" typeId="status_removal_occurred" />
+            <channel id="status_billing_date" typeId="status_billing_date" />
+            <channel id="status_product_installed" typeId="status_product_installed" />
+            <channel id="status_operation_mode" typeId="status_operation_mode" />
+            <channel id="status_perimeter_intrusion_occurred" typeId="status_perimeter_intrusion_occurred" />
+            <channel id="status_smoke_inlet_blocked_occurred" typeId="status_smoke_inlet_blocked_occurred" />
+            <channel id="status_out_of_temp_range_occurred" typeId="status_out_of_temp_range_occurred" />
+            <channel id="status_product_code" typeId="status_product_code" />
+            <channel id="status_battery_lifetime" typeId="status_battery_lifetime" />
+            <channel id="status_perimeter_intrusion" typeId="status_perimeter_intrusion" />
+            <channel id="status_removal_error" typeId="status_removal_error" />
+            <channel id="status_data_encrypted" typeId="status_data_encrypted" />
+
             <channel id="last_smoke_alert_start_date" typeId="last_smoke_alert_start_date" />
             <channel id="last_smoke_alert_start_date_string" typeId="last_smoke_alert_start_date_string" />
             <channel id="last_smoke_alert_start_date_number" typeId="last_smoke_alert_start_date_number" />
@@ -68,6 +81,125 @@
 
         <config-description-ref uri="wmbus:meter:encrypted" />
     </thing-type>
+
+
+    <channel-type id="itron_current_date_time">
+        <item-type>DateTime</item-type>
+        <label>Current date time</label>
+        <description>Date and time with resolution up to a second.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+    <channel-type id="itron_current_date_time_string">
+        <item-type>DateTime</item-type>
+        <label>Current date time (as a string)</label>
+        <description>Date and time with resolution up to a second, formatted as a string.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+    <channel-type id="itron_current_date_time_number">
+        <item-type>DateTime</item-type>
+        <label>Current date time (as unix timestamp)</label>
+        <description>Date and time with resolution up to a second, formatted as a unix timestamp.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+
+    <channel-type id="status_removal_occurred">
+        <item-type>Switch</item-type>
+        <label>Removal occurred</label>
+        <description>Removal occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_billing_date">
+        <item-type>Switch</item-type>
+        <label>Billing month</label>
+        <description>Billing month</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_product_installed">
+        <item-type>Switch</item-type>
+        <label>Product installed</label>
+        <description>Product is installed.</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_operation_mode">
+        <item-type>Number</item-type>
+        <label>Operation mode</label>
+        <description>Operation mode.</description>
+        <state readOnly="true">
+            <options>
+                <option value="0">Standalone</option>
+                <option value="1">Walk-by</option>
+                <option value="2">Fixed network</option>
+            </options>
+        </state>
+    </channel-type>
+
+    <channel-type id="status_perimeter_intrusion_occurred">
+        <item-type>Switch</item-type>
+        <label>Perimeter intrusion occurred</label>
+        <description>Perimeter intrusion occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_smoke_inlet_blocked_occurred">
+        <item-type>Switch</item-type>
+        <label>Smoke inlet blocked occurred</label>
+        <description>Smoke inlet blocked occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_out_of_temp_range_occurred">
+        <item-type>Switch</item-type>
+        <label>Temperature out of range occurred</label>
+        <description>Temperature out of range occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_product_code">
+        <item-type>String</item-type>
+        <label>Product code</label>
+        <description></description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_battery_lifetime">
+        <item-type>Number</item-type>
+        <label>Battery lifetime</label>
+        <description>Battery lifetime</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <!--
+    <channel-type id="status_perimeter_intrusion">
+        <item-type>Contact</item-type>
+        <label>Perimeter intrusion</label>
+        <description>Perimeter intrusion</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_removal_error">
+        <item-type>Contact</item-type>
+        <label>Removal error</label>
+        <description>Removal error</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="status_data_encrypted">
+        <item-type>Contact</item-type>
+        <label>Data encrypted</label>
+        <description>Data encrypted</description>
+        <state readOnly="true" />
+    </channel-type>
+    -->
+
 
     <channel-type id="last_smoke_alert_start_date">
         <item-type>DateTime</item-type>
@@ -278,30 +410,6 @@
         <item-type>Number</item-type>
         <label>Smoke inlet day counter cumulated</label>
         <description>Smoke inlet day counter cumulated</description>
-        <state readOnly="true">
-        </state>
-    </channel-type>
-
-    <channel-type id="itron_current_date_time">
-        <item-type>DateTime</item-type>
-        <label>Current date time</label>
-        <description>Date and time with resolution up to a second.</description>
-        <state readOnly="true">
-        </state>
-    </channel-type>
-
-    <channel-type id="itron_current_date_time_string">
-        <item-type>DateTime</item-type>
-        <label>Current date time (as a string)</label>
-        <description>Date and time with resolution up to a second, formatted as a string.</description>
-        <state readOnly="true">
-        </state>
-    </channel-type>
-
-    <channel-type id="itron_current_date_time_number">
-        <item-type>DateTime</item-type>
-        <label>Current date time (as unix timestamp)</label>
-        <description>Date and time with resolution up to a second, formatted as a unix timestamp.</description>
         <state readOnly="true">
         </state>
     </channel-type>

@@ -1,43 +1,77 @@
 package org.openhab.binding.wmbus.device.itron;
 
 import java.time.LocalDateTime;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.library.types.DecimalType;
+import org.eclipse.smarthome.core.library.types.OnOffType;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.types.Command;
 import org.eclipse.smarthome.core.types.UnDefType;
+import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.generic.GenericWMBusThingHandler;
 import org.openhab.binding.wmbus.device.techem.decoder.Buffer;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
+import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import com.google.common.collect.ImmutableMap;
+import com.google.common.primitives.Longs;
 
 public class ItronSmokeDetectorHandler extends GenericWMBusThingHandler<WMBusDevice> {
 
-    private static final Map<String, RecordType> CHANNEL_MAPPING = ImmutableMap.of(
-        ItronBindingConstants.CHANNEL_CURRENT_DATE, new RecordType(0x6, 0x6D),
-        ItronBindingConstants.CHANNEL_CURRENT_DATE_NUMBER, new RecordType(0x06, 0x6D),
-        ItronBindingConstants.CHANNEL_CURRENT_DATE_STRING, new RecordType(0x06, 0x6D)
-    );
+    public static final RecordType CURRENT_DATE_06_6D = new RecordType(0x06, 0x6D);
+    public static final RecordType CONFIG_STATUS_07_7F = new RecordType(0x07, 0x7F);
 
     private final Logger logger = LoggerFactory.getLogger(ItronSmokeDetectorHandler.class);
     private Map<String, Object> parsedFrame = new HashMap<>();
 
     public ItronSmokeDetectorHandler(Thing thing, KeyStorage keyStorage, UnitRegistry unitRegistry) {
-        super(thing, keyStorage, unitRegistry, CHANNEL_MAPPING);
+        super(thing, keyStorage, unitRegistry, Collections.emptyMap());
     }
 
     @Override
     protected WMBusDevice parseDevice(WMBusDevice device) throws DecodingException {
         WMBusDevice parsedDevice = super.parseDevice(device);
+
+        DataRecord record = device.findRecord(CONFIG_STATUS_07_7F);
+        if (record != null && record.getDataValueType() == DataRecord.DataValueType.LONG && record.getDescription() == DataRecord.Description.MANUFACTURER_SPECIFIC) {
+            Long dataValue = (Long) record.getDataValue();
+            ItronConfigStatusDataParser configStatus = new ItronConfigStatusDataParser(Longs.toByteArray(dataValue));
+
+            // first (MSB) byte with billing date
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_BILLING_DATE, configStatus.getBillingDate());
+
+            // second byte with status codes
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_REMOVAL_OCCURRED, configStatus.isRemovalOccurred());
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_PRODUCT_INSTALLED, configStatus.isProductInstalled());
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_OPERATION_MODE, configStatus.getOperationMode());
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_PERIMETER_INTRUSION_OCCURRED, configStatus.isPerimeterIntrusionOccurred());
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_SMOKE_INLET_BLOCKED_OCCURRED, configStatus.isSmokeInletBlockedOccurred());
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_OUT_OF_TEMP_RANGE_OCCURRED, configStatus.isOutOfRangeTemperatureOccurred());
+
+            // third byte with error codes
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_PRODUCT_CODE, HexUtils.byteToHex(configStatus.getProductCode()));
+
+            // fourth byte with battery lifetime
+            parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_BATTERY_LIFETIME, configStatus.getBatteryLifetime());
+        }
+
+        // fifth and sixth byte SD errors
+        //parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_PERIMETER_INTRUSION, configStatus.readBytes(2));
+
+        // 7tn byte is modem error codes
+        //parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_REMOVAL_ERROR, configStatus.readByte());
+
+        // 8tn byte is config byte
+        //parsedFrame.put(ItronBindingConstants.CHANNEL_STATUS_DATA_ENCRYPTED, configStatus.readByte());
+
 
         byte[] manufacturerData = parsedDevice.getOriginalMessage().getVariableDataResponse().getManufacturerData();
 
@@ -109,6 +143,8 @@ public class ItronSmokeDetectorHandler extends GenericWMBusThingHandler<WMBusDev
                 updateState(channelUID, convertDate(value));
             } else if (value instanceof Number) {
                 updateState(channelUID, new DecimalType(((Number) value).floatValue()));
+            } else if (value instanceof Boolean) {
+                updateState(channelUID, ((boolean) value) ? OnOffType.ON : OnOffType.OFF);
             } else {
                 logger.warn("Unsupported value type {}", value);
             }
