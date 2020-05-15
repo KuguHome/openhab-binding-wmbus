@@ -21,11 +21,13 @@ class TechemVersionFrameDecoderSelector extends TechemVariantFrameDecoderSelecto
             .put(Byte.valueOf((byte) 0x64), new TechemHKVFrameDecoder(_68TCH100128_8))
             .put(Byte.valueOf((byte) 0x69), new TechemHKVRoomTempFrameDecoder(_68TCH105128_8, 0, 1))
             .put(Byte.valueOf((byte) 0x94), new TechemHKVRoomTempFrameDecoder(_68TCH148128_8, 1, 1))
-            .put(Byte.valueOf((byte) 0x76), new TechemSmokeDetectorFrameDecoder(_68TCH118255_161_A0, _68TCH118255_161_A1))
+            .put(Byte.valueOf((byte) 0x76),
+                    new TechemSmokeDetectorFrameDecoder(_68TCH118255_161_A0, _68TCH118255_161_A1))
 
             .put(Byte.valueOf((byte) 0x22), new TechemHeatMeterFrameDecoder(_68TCH3467_4))
             .put(Byte.valueOf((byte) 0x39), new TechemHeatMeterFrameDecoder(_68TCH5767_4))
             .put(Byte.valueOf((byte) 0x71), new TechemHeatMeterFrameDecoder(_68TCH11367_4_A0, _68TCH11367_4_A2))
+            .put(Byte.valueOf((byte) 0x57), new TechemHeatMeterFrameDecoder(_68TCH8768_4))
 
             .build();
 
