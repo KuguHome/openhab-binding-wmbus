@@ -31,7 +31,7 @@ public interface WMBusDiscoveryParticipant {
      *
      * @return a set of thing type UIDs for which results can be created
      */
-    public Set<ThingTypeUID> getSupportedThingTypeUIDs();
+    Set<ThingTypeUID> getSupportedThingTypeUIDs();
 
     /**
      * Creates a discovery result for a WMBus device
@@ -41,7 +41,7 @@ public interface WMBusDiscoveryParticipant {
      *         supported by this participant
      */
     @Nullable
-    public DiscoveryResult createResult(WMBusDevice device);
+    DiscoveryResult createResult(WMBusDevice device);
 
     /**
      * Returns the thing UID for a WMBus device

@@ -70,6 +70,14 @@ public class Buffer {
         return buffer.get();
     }
 
+    public byte[] readBytes(int len) {
+        byte[] bytes = new byte[len];
+        for (int index = 0; index < len; index++) {
+            bytes[index] = readByte();
+        }
+        return bytes;
+    }
+
     public int readInt() {
         int number = orderedRead(ByteOrder.LITTLE_ENDIAN, ByteBuffer::getInt);
         return number >> 8;
@@ -134,6 +142,10 @@ public class Buffer {
 
     public int limit() {
         return buffer.limit();
+    }
+
+    public int available() {
+        return limit() - position();
     }
 
     private final <T> T orderedRead(ByteOrder readOrder, Function<ByteBuffer, T> callback) {
