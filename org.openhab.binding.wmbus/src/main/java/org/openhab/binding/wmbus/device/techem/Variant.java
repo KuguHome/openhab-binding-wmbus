@@ -1,6 +1,7 @@
 package org.openhab.binding.wmbus.device.techem;
 
 import java.util.Objects;
+
 import org.openmuc.jmbus.DeviceType;
 
 public class Variant {
@@ -21,6 +22,10 @@ public class Variant {
         this.coding = coding;
         this.desiredType = desiredType;
         this.matchingType = matchingType.getId();
+    }
+
+    public int getVersion() {
+        return version;
     }
 
     public String getRawType() {
@@ -52,8 +57,8 @@ public class Variant {
             return false;
         }
         Variant variant = (Variant) o;
-        return version == variant.version && reportedType == variant.reportedType && coding == variant
-            .coding && desiredType == variant.desiredType && matchingType == variant.matchingType;
+        return version == variant.version && reportedType == variant.reportedType && coding == variant.coding
+                && desiredType == variant.desiredType && matchingType == variant.matchingType;
     }
 
     @Override

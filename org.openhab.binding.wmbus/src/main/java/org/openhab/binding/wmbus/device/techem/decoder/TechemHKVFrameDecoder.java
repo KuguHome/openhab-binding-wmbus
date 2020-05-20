@@ -42,9 +42,9 @@ class TechemHKVFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAll
             List<Record<?>> records = new ArrayList<>();
             records.add(new Record<>(Record.Type.STATUS, ((Byte) buff.readByte()).intValue()));
             records.add(new Record<>(Record.Type.PAST_READING_DATE, buff.readPastDate()));
-            records.add(new Record<>(Record.Type.PAST_VOLUME, (float) buff.readShort()));
+            records.add(new Record<>(Record.Type.PAST_READING, (float) buff.readShort()));
             records.add(new Record<>(Record.Type.CURRENT_READING_DATE, buff.readCurrentDate()));
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, (float) buff.readShort()));
+            records.add(new Record<>(Record.Type.CURRENT_READING, (float) buff.readShort()));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
             records.add(new Record<>(Record.Type.ALMANAC, ""));
 

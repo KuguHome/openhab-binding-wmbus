@@ -46,10 +46,10 @@ class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWate
             records.add(new Record<>(Record.Type.STATUS, ((Byte) buff.readByte()).intValue()));
             records.add(new Record<>(Record.Type.PAST_READING_DATE, buff.readPastDate()));
             float pastVolume = buff.readFloat(Buffer._SCALE_FACTOR_1_10th);
-            records.add(new Record<>(Record.Type.PAST_VOLUME, Quantities.getQuantity(pastVolume, unit)));
+            records.add(new Record<>(Record.Type.PAST_READING, Quantities.getQuantity(pastVolume, unit)));
             records.add(new Record<>(Record.Type.CURRENT_READING_DATE, buff.readCurrentDate()));
             float number = buff.readFloat(Buffer._SCALE_FACTOR_1_10th);
-            records.add(new Record<>(Record.Type.CURRENT_VOLUME, Quantities.getQuantity(number, unit)));
+            records.add(new Record<>(Record.Type.CURRENT_READING, Quantities.getQuantity(number, unit)));
             records.add(new Record<>(Record.Type.RSSI, device.getOriginalMessage().getRssi()));
 
             if (counterByteOffset >= 0) {
