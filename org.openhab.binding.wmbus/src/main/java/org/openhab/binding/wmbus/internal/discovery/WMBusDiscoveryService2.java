@@ -6,7 +6,10 @@
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  */
+
 package org.openhab.binding.wmbus.internal.discovery;
+
+import static org.openhab.binding.wmbus.WMBusBindingConstants.PROPERTY_METER_ADDRESS;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -148,14 +151,19 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
             return;
         }
 
-        // We did not find a thing type for this device, so let's treat it as a generic one
-        String label = "WMBus device: " + secondaryAddress.getDeviceType().name().toLowerCase().replace("_", " ") + " #"
-                + device.getDeviceId() + " (" + device.getDeviceType() + ")";
-
+        String labelAddition = "";
         Map<String, Object> properties = new HashMap<>();
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
+        if (device.hasMeterId()) {
+            properties.put(PROPERTY_METER_ADDRESS, device.getMeterId());
+            labelAddition = " + #" + device.getMeterId();
+        }
         properties.put(Thing.PROPERTY_SERIAL_NUMBER, device.getDeviceId());
         properties.put(Thing.PROPERTY_MODEL_ID, secondaryAddress.getVersion());
+
+        // We did not find a thing type for this device, so let's treat it as a generic one
+        String label = "WMBus device: " + secondaryAddress.getDeviceType().name().toLowerCase().replace("_", " ") + " #"
+                + device.getDeviceId() + labelAddition + " (" + device.getDeviceType() + ")";
 
         String manufacturer = WMBusCompanyIdentifiers.get(secondaryAddress.getManufacturerId());
         if (manufacturer != null) {
