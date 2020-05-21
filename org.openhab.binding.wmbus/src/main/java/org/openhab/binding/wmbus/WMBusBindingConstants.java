@@ -42,7 +42,7 @@ public class WMBusBindingConstants {
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
     public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
-        THING_TYPE_NAME_VIRTUAL_BRIDGE);
+            THING_TYPE_NAME_VIRTUAL_BRIDGE);
 
     public final static ThingTypeUID THING_TYPE_METER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_METER);
     public final static ThingTypeUID THING_TYPE_ENCRYPTED_METER = new ThingTypeUID(BINDING_ID,
@@ -79,6 +79,7 @@ public class WMBusBindingConstants {
 
     // device config properties
     public static final String PROPERTY_DEVICE_ADDRESS = "deviceAddress";
+    public static final String PROPERTY_METER_ADDRESS = "meterAddress";
     public static final String PROPERTY_DEVICE_FREQUENCY_OF_UPDATES = "frequencyOfUpdates";
     public static final String PROPERTY_DEVICE_ENCRYPTION_KEY = "encryptionKey";
     // device property which says if we expected secure communication
