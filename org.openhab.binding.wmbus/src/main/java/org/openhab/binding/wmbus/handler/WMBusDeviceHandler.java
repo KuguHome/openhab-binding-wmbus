@@ -224,12 +224,13 @@ public abstract class WMBusDeviceHandler<T extends WMBusDevice> extends BaseThin
                         "Please provide encryption key to read device communication.");
             }
 
+            logger.debug("Storing key {} for device address {}", encryptionKey, deviceAddress);
+            encryptionKey.ifPresent(key -> keyStorage.registerKey(HexUtils.hexToBytes(deviceAddress), key));
             // if set, store encryption key for meter (e.g. water meter), not device (e.g. radio module)
             String meterAddress = (String) config.getProperties().get(PROPERTY_METER_ADDRESS);
             if (meterAddress != null && meterAddress.trim().isEmpty()) {
+                logger.debug("Storing key {} for meter address {}", encryptionKey, meterAddress);
                 encryptionKey.ifPresent(key -> keyStorage.registerKey(HexUtils.hexToBytes(meterAddress), key));
-            } else {
-                encryptionKey.ifPresent(key -> keyStorage.registerKey(HexUtils.hexToBytes(deviceAddress), key));
             }
         }
     }

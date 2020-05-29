@@ -155,7 +155,7 @@ public class WMBusDiscoveryService2 extends AbstractDiscoveryService implements 
         Map<String, Object> properties = new HashMap<>();
         properties.put(WMBusBindingConstants.PROPERTY_DEVICE_ADDRESS, device.getDeviceAddress());
         if (device.hasMeterId()) {
-            properties.put(PROPERTY_METER_ADDRESS, device.getMeterId());
+            properties.put(PROPERTY_METER_ADDRESS, device.getMeterAddress());
             labelAddition = " + #" + device.getMeterId();
         }
         properties.put(Thing.PROPERTY_SERIAL_NUMBER, device.getDeviceId());

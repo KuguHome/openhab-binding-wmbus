@@ -82,6 +82,10 @@ public class WMBusDevice {
         return HexUtils.bytesToHex(originalMessage.getSecondaryAddress().asByteArray());
     }
 
+    public String getMeterAddress() {
+        return HexUtils.bytesToHex(originalMessage.getVariableDataResponse().getSecondaryAddress().asByteArray());
+    }
+
     public String getDeviceType() {
         return originalMessage.getControlField() + "" + originalMessage.getSecondaryAddress().getManufacturerId() + ""
                 + originalMessage.getSecondaryAddress().getVersion() + ""

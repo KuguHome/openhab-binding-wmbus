@@ -8,7 +8,7 @@
  */
 package org.openhab.binding.wmbus.handler;
 
-import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
+import static org.openhab.binding.wmbus.WMBusBindingConstants.CHANNEL_LAST_FRAME;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,6 +24,7 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.common.ThreadPoolManager;
 import org.eclipse.smarthome.core.library.types.StringType;
@@ -119,7 +120,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         // below we append thing handlers which are configured for given device address
         ArrayList<WMBusMessageListener> listeners = new ArrayList<>(this.wmBusMessageListeners);
         handlers.stream().filter(h -> device.getDeviceAddress().equals(h.getDeviceAddress()))
-            .collect(Collectors.toCollection(() -> listeners));
+                .collect(Collectors.toCollection(() -> listeners));
 
         for (WMBusMessageListener wmBusMessageListener : listeners) {
             try {
@@ -160,9 +161,9 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         } catch (DecodingException parseException) {
             if (parseException.getMessage().startsWith("Unable to decode encrypted payload")) {
                 try {
-                    WMBusMessage message = VirtualWMBusMessageHelper
-                            .decode(device.getOriginalMessage().asBlob(), device.getOriginalMessage().getRssi(),
-                                    keyStorage.toMap());
+                    WMBusMessage message = VirtualWMBusMessageHelper.decode(device.getOriginalMessage().asBlob(),
+                            device.getOriginalMessage().getRssi(), keyStorage.toMap());
+                    logger.info("Using keyStorage {} ", keyStorage.toMap());
                     message.getVariableDataResponse().decode();
                     logger.info("Message from {} successfully decrypted, forwarding it to receivers",
                             device.getDeviceAddress());
@@ -172,8 +173,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
                             "Could not decode frame, probably we still miss encryption key, forwarding frame in original form. {}",
                             decodingException.getMessage());
                 }
-            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:") || parseException
-                    .getMessage().startsWith("Unable to decode message with this CI Field")) {
+            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:")
+                    || parseException.getMessage().startsWith("Unable to decode message with this CI Field")) {
                 logger.debug("Found frame with manufacturer specific encoding, forwarding for futher processing.");
             } else {
                 logger.debug("Unexpected error while parsing frame, forwarding frame in original form", parseException);
@@ -230,7 +231,6 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         }
     }
 
-
     @Override
     public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
         if (childHandler instanceof WMBusDeviceHandler) {
@@ -245,6 +245,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         }
     }
 
+    @Override
     public void reset() {
         wmbusReceiver = null;
         initialize();
@@ -252,9 +253,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
 
     @Override
     public DateFieldMode getDateFieldMode() {
-        return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class))
-            .map(cfg -> cfg.dateFieldMode)
-            .orElse(DateFieldMode.DATE_TIME);
+        return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class)).map(cfg -> cfg.dateFieldMode)
+                .orElse(DateFieldMode.DATE_TIME);
     }
 
     static class StatusRunnable implements Runnable {
@@ -265,7 +265,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
             this.handlers = handlers;
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             handlers.stream().forEach(WMBusDeviceHandler::checkStatus);
         }
 
