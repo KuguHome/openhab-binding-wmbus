@@ -9,7 +9,7 @@
 package org.openhab.io.transport.mbus.wireless;
 
 import java.util.Arrays;
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 
@@ -56,12 +56,9 @@ public class FilteredKeyStorage implements KeyStorage {
 
     @Override
     public Map<SecondaryAddress, byte[]> toMap() {
-        Map<SecondaryAddress, byte[]> addressKeys = lookupKey(address)
-                .map(key -> Collections.singletonMap(createKey(address), key)).orElse(Collections.emptyMap());
-        Map<SecondaryAddress, byte[]> meterAddressKey = lookupKey(meterAddress)
-                .map(key -> Collections.singletonMap(createKey(meterAddress), key)).orElse(Collections.emptyMap());
-
-        addressKeys.putAll(meterAddressKey);
+        Map<SecondaryAddress, byte[]> addressKeys = new HashMap<SecondaryAddress, byte[]>();
+        lookupKey(address).ifPresent(key -> addressKeys.put(createKey(address), key));
+        lookupKey(meterAddress).ifPresent(key -> addressKeys.put(createKey(meterAddress), key));
         return addressKeys;
     }
 
