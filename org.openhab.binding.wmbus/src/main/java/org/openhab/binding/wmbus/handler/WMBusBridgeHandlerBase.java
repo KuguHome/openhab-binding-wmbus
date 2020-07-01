@@ -163,7 +163,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
                 try {
                     WMBusMessage message = VirtualWMBusMessageHelper.decode(device.getOriginalMessage().asBlob(),
                             device.getOriginalMessage().getRssi(), keyStorage.toMap());
-                    logger.info("Using keyStorage {} ", keyStorage.toMap());
+                    logger.trace("Using keyStorage {} ", keyStorage.toMap());
                     message.getVariableDataResponse().decode();
                     logger.info("Message from {} successfully decrypted, forwarding it to receivers",
                             device.getDeviceAddress());
