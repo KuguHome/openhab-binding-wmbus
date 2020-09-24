@@ -204,6 +204,9 @@ public class DataRecord {
     dataLength = dataField;
     storageNumber = (buffer[i] & 0x40) >> 6;
 
+    rawData = new byte[dataLength];
+    System.arraycopy(buffer, offset, rawData, 0, dataLength);
+
     subunit = 0;
     tariff = 0;
 
