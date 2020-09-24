@@ -8,11 +8,11 @@
  */
 package org.openhab.binding.wmbus;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.eclipse.jdt.annotation.NonNullByDefault;
 import org.eclipse.jdt.annotation.Nullable;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Basic lookup table from 3 letter identifier code to full name of manufacturer.
@@ -33,6 +33,7 @@ public class WMBusCompanyIdentifiers {
         CIC.put("KAM", "KAMSTRUP");
         CIC.put("ARF", "ADEUNIS");
         CIC.put("EFE", "ENGELMANN");
+        CIC.put("EIE", "EIELECTRONICS");
     }
 
     /**

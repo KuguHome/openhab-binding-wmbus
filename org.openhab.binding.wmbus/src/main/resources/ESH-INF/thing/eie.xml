@@ -1,0 +1,335 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="wmbus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="http://eclipse.org/smarthome/schemas/thing-description/v1.0.0 http://eclipse.org/smarthome/schemas/thing-description-1.0.0.xsd">
+
+    <!-- add new devices here -->
+
+    <!-- thing definition for universal meter -->
+    <thing-type id="eie_smoke_detector">
+        <supported-bridge-type-refs>
+            <bridge-type-ref id="wmbusbridge" />
+            <bridge-type-ref id="wmbusvirtualbridge" />
+        </supported-bridge-type-refs>
+
+        <label>Eie Smoke Detector</label>
+        <description>Smoke detectors implemented on top of WM-Bus specification, manufactured by EiElectronics.</description>
+
+        <channels>
+            <channel id="software_version" typeId="software_version" />
+
+            <channel id="current_date" typeId="eie_current_date_time" />
+            <channel id="current_date_string" typeId="eie_current_date_time_string" />
+            <channel id="current_date_number" typeId="eie_current_date_time_number" />
+
+            <channel id="head_status_dust_level" typeId="head_status_dust_level" />
+            <channel id="head_status_sounder_fault_flag" typeId="head_status_sounder_fault_flag" />
+            <channel id="head_status_head_tamper_flag" typeId="head_status_head_tamper_flag" />
+            <channel id="head_status_eof_reached_flag" typeId="head_status_eof_reached_flag" />
+            <channel id="head_status_battery_voltage" typeId="head_status_battery_voltage" />
+            <channel id="head_status_low_battery_fault" typeId="head_status_low_battery_fault" />
+            <channel id="head_status_alarm_sensor_fault" typeId="head_status_alarm_sensor_fault" />
+            <channel id="head_status_obstacle_detection_fault" typeId="head_status_obstacle_detection_fault" />
+            <channel id="head_status_eof_within_12_months_flag" typeId="head_status_eof_within_12_months_flag" />
+            <channel id="head_status_seods_installation_complete" typeId="head_status_seods_installation_complete" />
+            <channel id="head_status_environment_changed_since_last_installation_flag" typeId="head_status_environment_changed_since_last_installation_flag" />
+            <channel id="head_status_communication_to_head_fault_flag" typeId="head_status_communication_to_head_fault_flag" />
+            <channel id="head_status_obstacle_detection_not_possible_due_to_interference_flag" typeId="head_status_obstacle_detection_not_possible_due_to_interference_flag" />
+            <channel id="head_status_distance_to_fixed_obstacle_at_last_installation" typeId="head_status_distance_to_fixed_obstacle_at_last_installation" />
+            <channel id="head_status_obstacle_detected" typeId="head_status_obstacle_detected" />
+            <channel id="head_status_smoke_alarm_covering_detected" typeId="head_status_smoke_alarm_covering_detected" />
+
+            <channel id="error_flags" typeId="error_flags" />
+            <channel id="commissioning_date" typeId="commissioning_date" />
+            <channel id="commissioning_date_string" typeId="commissioning_date_string" />
+            <channel id="commissioning_date_number" typeId="commissioning_date_number" />
+            <channel id="last_sound_test_date" typeId="last_sound_test_date" />
+            <channel id="last_sound_test_date_string" typeId="last_sound_test_date_string" />
+            <channel id="last_sound_test_date_number" typeId="last_sound_test_date_number" />
+            <channel id="alarm_counter" typeId="alarm_counter" />
+            <channel id="alarm_last_date" typeId="alarm_last_date" />
+            <channel id="alarm_last_date_string" typeId="alarm_last_date_string" />
+            <channel id="alarm_last_date_number" typeId="alarm_last_date_number" />
+            <channel id="remove_counter" typeId="remove_counter" />
+            <channel id="remove_duration" typeId="remove_duration" />
+            <channel id="remove_last_date" typeId="remove_last_date" />
+            <channel id="remove_last_date_string" typeId="remove_last_date_string" />
+            <channel id="remove_last_date_number" typeId="remove_last_date_number" />
+            <channel id="test_button_counter" typeId="test_button_counter" />
+            <channel id="test_button_last_date" typeId="test_button_last_date" />
+            <channel id="test_button_last_date_string" typeId="test_button_last_date_string" />
+            <channel id="test_button_last_date_number" typeId="test_button_last_date_number" />
+        </channels>
+
+        <config-description-ref uri="wmbus:meter:encrypted" />
+    </thing-type>
+
+    <channel-type id="software_version">
+        <item-type>Number</item-type>
+        <label>Firmware version</label>
+        <description>Radio firmware version.</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="eie_current_date_time">
+        <item-type>DateTime</item-type>
+        <label>Current date time</label>
+        <description>Date and time with resolution up to a second.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+    <channel-type id="eie_current_date_time_string">
+        <item-type>DateTime</item-type>
+        <label>Current date time (as a string)</label>
+        <description>Date and time with resolution up to a second, formatted as a string.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+    <channel-type id="eie_current_date_time_number">
+        <item-type>DateTime</item-type>
+        <label>Current date time (as unix timestamp)</label>
+        <description>Date and time with resolution up to a second, formatted as a unix timestamp.</description>
+        <state readOnly="true">
+        </state>
+    </channel-type>
+
+
+    <channel-type id="head_status_dust_level">
+        <item-type>Number</item-type>
+        <label>Dust level</label>
+        <description>Dust level</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_sounder_fault_flag">
+        <item-type>Switch</item-type>
+        <label>Sounder fault occurred</label>
+        <description>Sounder fault occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_head_tamper_flag">
+        <item-type>Switch</item-type>
+        <label>Alarm removed from mounting plate</label>
+        <description>Alarm removed from mounting plate</description>
+        <state readOnly="true" />
+    </channel-type>
+
+
+    <channel-type id="head_status_eof_reached_flag">
+        <item-type>Switch</item-type>
+        <label>End of Life reached</label>
+        <description>End of Life reached</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_eof_reached_flag">
+        <item-type>Switch</item-type>
+        <label>End of Life reached</label>
+        <description>End of Life reached</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_battery_voltage">
+        <item-type>Number</item-type>
+        <label>Battery voltage level</label>
+        <description>Battery voltage level</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_low_battery_fault">
+        <item-type>Switch</item-type>
+        <label>Low battery condition occurred</label>
+        <description>Low battery condition occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_alarm_sensor_fault">
+        <item-type>Switch</item-type>
+        <label>Sensor fault occurred, replace unit</label>
+        <description>Sensor fault occurred, replace unit</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_obstacle_detection_fault">
+        <item-type>Switch</item-type>
+        <label>SEODS system fault occurred</label>
+        <description>SEODS system fault occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_eof_within_12_months_flag">
+        <item-type>Switch</item-type>
+        <label>Less than 12 months before Alarm reaches end of life</label>
+        <description>Less than 12 months before Alarm reaches end of life</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_seods_installation_complete">
+        <item-type>Switch</item-type>
+        <label>Installation process for the Smoke Entry and Obstacle detection system has completed</label>
+        <description>Installation process for the Smoke Entry and Obstacle detection system has completed</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_environment_changed_since_last_installation_flag">
+        <item-type>Switch</item-type>
+        <label>Installation environment change occurred after the last mounting of the alarm</label>
+        <description>Installation environment change occurred after the last mounting of the alarm</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_communication_to_head_fault_flag">
+        <item-type>Switch</item-type>
+        <label>RF module has been unable to communicate with the Alarm</label>
+        <description>IRF module has been unable to communicate with the Alarm</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_obstacle_detection_not_possible_due_to_interference_flag">
+        <item-type>Switch</item-type>
+        <label>Unable to complete last obstacle detect scan due to the presence of interference</label>
+        <description>Unable to complete last obstacle detect scan due to the presence of interference</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_distance_to_fixed_obstacle_at_last_installation">
+        <item-type>Switch</item-type>
+        <label>Distance to fixed obstacle at last installation</label>
+        <description>Distance to fixed obstacle at last installation</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_obstacle_detected">
+        <item-type>Switch</item-type>
+        <label>Obstacle occurred</label>
+        <description>Obstacle occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="head_status_smoke_alarm_covering_detected">
+        <item-type>Switch</item-type>
+        <label>Smoke Alarm Covering occurred</label>
+        <description>Smoke Alarm Covering occurred</description>
+        <state readOnly="true" />
+    </channel-type>
+
+    <channel-type id="error_flags">
+        <item-type>Number</item-type>
+        <label>error_flags</label>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="commissioning_date">
+        <item-type>DateTime</item-type>
+        <label>Commissioning date</label>
+        <description>Commissioning date.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="commissioning_date_string">
+        <item-type>DateTime</item-type>
+        <label>Commissioning date (as string)</label>
+        <description>Commissioning date, formatted as a string.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="commissioning_date_number">
+        <item-type>DateTime</item-type>
+        <label>Commissioning date (as unix timestamp)</label>
+        <description>Commissioning date, formatted as a unix timestamp.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="last_sound_test_date">
+        <item-type>DateTime</item-type>
+        <label>Last sound test date</label>
+        <description>Last sound test date.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="last_sound_test_date_string">
+        <item-type>DateTime</item-type>
+        <label>Last sound test date (as string)</label>
+        <description>Last sound test date, formatted as a string.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="last_sound_test_date_number">
+        <item-type>DateTime</item-type>
+        <label>Last sound test date (as unix timestamp)</label>
+        <description>Last sound test date, formatted as a unix timestamp.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="alarm_counter">
+        <item-type>Number</item-type>
+        <label>Alarm counter</label>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="alarm_last_date">
+        <item-type>DateTime</item-type>
+        <label>Alarm last date</label>
+        <description>Alarm last date</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="alarm_last_date_string">
+        <item-type>DateTime</item-type>
+        <label>Alarm last date (as string)</label>
+        <description>Alarm last date, formatted as a string.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="alarm_last_date_number">
+        <item-type>DateTime</item-type>
+        <label>Alarm date (as unix timestamp)</label>
+        <description>Alarm last date, formatted as a unix timestamp.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="remove_counter">
+        <item-type>Number</item-type>
+        <label>Remove counter</label>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="remove_duration">
+        <item-type>Number</item-type>
+        <label>Remove duration</label>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="remove_last_date">
+        <item-type>DateTime</item-type>
+        <label>Removal date</label>
+        <description>Removal date</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="remove_last_date_string">
+        <item-type>DateTime</item-type>
+        <label>Removal date (as string)</label>
+        <description>Removal date, formatted as a string.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="remove_last_date_number">
+        <item-type>DateTime</item-type>
+        <label>Removal date (as unix timestamp)</label>
+        <description>Removal date, formatted as a unix timestamp.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="test_button_counter">
+        <item-type>Number</item-type>
+        <label>Test button counter</label>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="test_button_last_date">
+        <item-type>DateTime</item-type>
+        <label>Last test date</label>
+        <description>Last test date</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="test_button_last_date_string">
+        <item-type>DateTime</item-type>
+        <label>Last test date (as string)</label>
+        <description>Last test date, formatted as a string.</description>
+        <state readOnly="true" />
+    </channel-type>
+    <channel-type id="test_button_last_date_number">
+        <item-type>DateTime</item-type>
+        <label>Last test date (as unix timestamp)</label>
+        <description>Last test date, formatted as a unix timestamp.</description>
+        <state readOnly="true" />
+    </channel-type>
+
+</thing:thing-descriptions>
