@@ -8,20 +8,6 @@
  */
 package org.openhab.binding.wmbus.tools;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.Hashtable;
-import java.util.Optional;
-import java.util.stream.Collectors;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-
 import org.apache.commons.io.IOUtils;
 import org.eclipse.smarthome.core.thing.Thing;
 import org.eclipse.smarthome.core.thing.ThingRegistry;
@@ -29,6 +15,7 @@ import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openhab.binding.wmbus.tools.processor.*;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -40,6 +27,16 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
 
 /**
  * Very basic servlet which allows to send a test frame to deployed binding.
@@ -112,54 +109,32 @@ public class InjectorServlet extends HttpServlet {
         boolean stripCRC = Optional.ofNullable(req.getParameter("stripCRC")).map(value -> Boolean.TRUE).orElse(false);
         boolean calculateLength = Optional.ofNullable(req.getParameter("calculateLength")).map(value -> Boolean.TRUE)
                 .orElse(false);
+        boolean recalculateLength = Optional.ofNullable(req.getParameter("recalculateLength")).map(value -> Boolean.TRUE)
+                .orElse(false);
+
+        List<Processor<String>> processors = new ArrayList<>();
+        processors.add(new RssiProcessor(rssiIndex, rssiValue));
+        if (skipBytes > 0) {
+            processors.add(new SkipProcessor(skipBytes));
+        }
+        if (stripCRC) {
+            processors.add(new SkipCrcProcessor());
+        }
+        if (calculateLength) {
+            processors.add(new CalculateLength());
+        }
+        if (recalculateLength) {
+            processors.add(new RecalculateLength());
+        }
 
         String[] frameArray = frames.split("\n");
         try {
             for (String frame : frameArray) {
                 frame = frame.trim().replace(" ", "");
 
-                int rssi = rssiValue;
-                if (rssiIndex != 0) {
-                    if (rssiIndex == 1) {
-                        rssi = Integer.parseUnsignedInt(frame.substring(0, 2), 16);
-                        frame = frame.substring(2);
-                    } else if (rssiIndex == -1) {
-                        rssi = Integer.parseUnsignedInt(frame.substring(frame.length() -2), 16);
-                        frame = frame.substring(0, frame.length() - 2);
-                    }
-                }
-
-                if (skipBytes > 0) {
-                    // one byte is 2 characters in hex representation
-                    frame = frame.substring(skipBytes * 2);
-                }
-
-                if (stripCRC) {
-                    String strippedframe = "";
-                    strippedframe += frame.substring(Math.min(0, frame.length()), Math.min(18, frame.length()));
-                    strippedframe += frame.substring(Math.min(22, frame.length()), Math.min(54, frame.length()));
-                    strippedframe += frame.substring(Math.min(58, frame.length()), Math.min(90, frame.length()));
-                    // String strippedframe = frame.substring(0, 18) + frame.substring(22, frame.length());
-                    /*
-                     * TODO: general implementation
-                     *
-                     *
-                     * Integer position = 2;
-                     * while (position < frame.length()) {
-                     * strippedframe += frame.substring(position, position+16);
-                     * position += 16 ;
-                     * }
-                     */
-                    frame = strippedframe;
-                }
-
-                if (calculateLength) {
-                    // remember of hex notation which doubles length
-                    Integer len = frame.length() / 2;
-                    frame = Integer.toHexString(len) + frame;
-                }
-                // logger.debug("Seen frame:");
-                // logger.debug(frame);
+                Map<String, Object> context = new HashMap<>();
+                frame = Processors.process(frame, context, processors);
+                int rssi = (int) context.getOrDefault(Processor.RSSI, rssiValue);
 
                 byte[] bytes = HexUtils.hexToBytes(frame);
                 WMBusMessage message = VirtualWMBusMessageHelper.decode(bytes, rssi, Collections.emptyMap());

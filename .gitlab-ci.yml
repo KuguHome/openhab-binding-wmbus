@@ -32,4 +32,4 @@ build:
     paths:
     - org.openhab.binding.wmbus/target/*.jar
     - org.openhab.binding.wmbus.tools/target/*.jar
-  image: maven:3.5-jdk-8
+  image: maven:3.6-jdk-8
