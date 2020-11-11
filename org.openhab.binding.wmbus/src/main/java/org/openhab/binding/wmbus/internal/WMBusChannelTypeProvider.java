@@ -15,7 +15,9 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.measure.Unit;
+
 import org.eclipse.jdt.annotation.Nullable;
 import org.eclipse.smarthome.core.library.CoreItemFactory;
 import org.eclipse.smarthome.core.thing.type.ChannelKind;
@@ -24,6 +26,7 @@ import org.eclipse.smarthome.core.thing.type.ChannelTypeProvider;
 import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
 import org.eclipse.smarthome.core.types.EventDescription;
 import org.eclipse.smarthome.core.types.StateDescription;
+import org.eclipse.smarthome.core.types.StateDescriptionFragmentBuilder;
 import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
@@ -70,7 +73,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     @Override
     public @Nullable ChannelType getChannelType(ChannelTypeUID channelTypeUID, @Nullable Locale locale) {
         return wmbusChannelMap.values().stream().filter(channelType -> channelType.getUID().equals(channelTypeUID))
-            .findFirst().orElse(null);
+                .findFirst().orElse(null);
     }
 
     @Override
@@ -113,7 +116,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                             unit, dateFieldMode);
                     EventDescription event = null;
                     ChannelType channelType = new ChannelType(typeUID, false, itemType.get(), kind, label, description,
-                            category, tags, state, event, null);
+                            category, tags, state, event, null, null);
                     wmbusChannelMap.put(typeUID.getId(), channelType);
                 }
             }
@@ -134,8 +137,10 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
         boolean date = type == DataValueType.DATE;
 
         String pattern = mappedUnit.map(unit -> formatUnit(false, number, date, dateFieldMode))
-            .orElseGet(() -> formatUnit(true, number, date, dateFieldMode));
-        return new StateDescription(null, null, null, pattern, true, null);
+                .orElseGet(() -> formatUnit(true, number, date, dateFieldMode));
+
+        return StateDescriptionFragmentBuilder.create().withReadOnly(true).withPattern(pattern).build()
+                .toStateDescription();
     }
 
     private String formatUnit(boolean unitless, boolean number, boolean date, DateFieldMode dateFieldMode) {
@@ -231,6 +236,16 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
 
     public final static Optional<ChannelTypeUID> getChannelType(DataRecord record) {
         return getChannelId(record).map(id -> new ChannelTypeUID(WMBusBindingConstants.BINDING_ID, id));
+    }
+
+    public final static ChannelType getRSSIChannelType() {
+        StateDescription stateDescription = StateDescriptionFragmentBuilder.create().withReadOnly(true)
+                .withPattern("%d").build().toStateDescription();
+        ChannelType channelType = new ChannelType(new ChannelTypeUID(WMBusBindingConstants.BINDING_ID, "reception"),
+                false, "Number", ChannelKind.STATE, "Reception Signal Strength",
+                "The Received Signal Strength Indication, power of the radio signal in dBm (decibel milliwatt)",
+                "QualityOfService", null, stateDescription, null, null, null);
+        return channelType;
     }
 
 }

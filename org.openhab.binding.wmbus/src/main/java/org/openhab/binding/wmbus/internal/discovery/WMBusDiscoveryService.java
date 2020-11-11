@@ -29,7 +29,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * The {@link WMBusDiscoveryService2} class defines WMBusDiscoveryService2
+ * The {@link WMBusDiscoveryService} class defines WMBusDiscoveryService
  *
  * FIXME: Left for backward compatibility verification.
  *
@@ -90,7 +90,11 @@ public class WMBusDiscoveryService extends AbstractDiscoveryService implements W
             // device known -> create discovery result
             ThingUID bridgeUID = bridgeHandler.getThing().getUID();
             Map<String, Object> properties = new HashMap<>(1);
-            properties.put(PROPERTY_DEVICE_ADDRESS, wmBusDevice.getDeviceId().toString());
+            properties.put(PROPERTY_DEVICE_ADDRESS, wmBusDevice.getDeviceId());
+
+            if (wmBusDevice.hasMeterId()) {
+                properties.put(PROPERTY_METER_ADDRESS, wmBusDevice.getMeterId());
+            }
 
             DiscoveryResult discoveryResult = DiscoveryResultBuilder.create(thingUID).withProperties(properties)
                     .withRepresentationProperty(wmBusDevice.getDeviceId().toString()).withBridge(bridgeUID)

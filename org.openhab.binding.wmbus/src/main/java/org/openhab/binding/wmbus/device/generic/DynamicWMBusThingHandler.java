@@ -15,6 +15,7 @@ import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
 import org.eclipse.smarthome.core.library.types.QuantityType;
+import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.eclipse.smarthome.core.thing.Channel;
 import org.eclipse.smarthome.core.thing.ChannelUID;
 import org.eclipse.smarthome.core.thing.Thing;
@@ -70,6 +71,9 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
             VariableDataStructure response = receivedDevice.getOriginalMessage().getVariableDataResponse();
 
             List<Channel> channels = new ArrayList<>();
+
+            channels.add(createRSSIChannel());
+
             for (DataRecord record : response.getDataRecords()) {
                 Optional<ChannelTypeUID> typeId = WMBusChannelTypeProvider.getChannelType(record);
                 Optional<Channel> channel = typeId.map(type -> thing.getChannel(type.getId()));
@@ -95,6 +99,17 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
         super.onChangedWMBusDevice(adapter, receivedDevice);
     }
 
+    private Channel createRSSIChannel() {
+        ChannelType type = WMBusChannelTypeProvider.getRSSIChannelType();
+
+        ChannelBuilder channelBuilder = ChannelBuilder.create(new ChannelUID(thing.getUID(), type.getUID().getId()),
+                type.getItemType());
+
+        channelBuilder.withType(type.getUID()).withLabel("RSSI");
+
+        return channelBuilder.build();
+    }
+
     private Channel createChannel(ChannelTypeUID typeId, DataRecord record) {
         ChannelType type = channelTypeProvider.getChannelType(typeId, null);
 
@@ -118,6 +133,11 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
     public void handleCommand(@NonNull ChannelUID channelUID, @NonNull Command command) {
         logger.trace("Received command {} for channel {}", command, channelUID);
         if (wmbusDevice != null && command == RefreshType.REFRESH) {
+            State rssiState = new QuantityType<>(wmbusDevice.getOriginalMessage().getRssi(),
+                    SmartHomeUnits.DECIBEL_MILLIWATTS);
+
+            updateState(WMBusChannelTypeProvider.getRSSIChannelType().getUID().getId(), rssiState);
+
             Optional<Map<String, String>> properties = Optional.ofNullable(thing.getChannel(channelUID.getId()))
                     .map(ch -> ch.getProperties());
 

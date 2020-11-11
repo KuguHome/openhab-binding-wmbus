@@ -48,6 +48,15 @@ public class WMBusDevice {
         return originalMessage.getSecondaryAddress().getDeviceId().toString();
     }
 
+    public boolean hasMeterId() {
+        return originalMessage.getVariableDataResponse() != null
+                && originalMessage.getVariableDataResponse().getSecondaryAddress() != null;
+    }
+
+    public String getMeterId() {
+        return originalMessage.getVariableDataResponse().getSecondaryAddress().getDeviceId().toString();
+    }
+
     public DataRecord findRecord(RecordType recordType) {
         if (RecordType.MANUFACTURER_DATA == recordType) {
             return new ManufacturerData(originalMessage.getVariableDataResponse().getManufacturerData());
@@ -71,6 +80,10 @@ public class WMBusDevice {
 
     public String getDeviceAddress() {
         return HexUtils.bytesToHex(originalMessage.getSecondaryAddress().asByteArray());
+    }
+
+    public String getMeterAddress() {
+        return HexUtils.bytesToHex(originalMessage.getVariableDataResponse().getSecondaryAddress().asByteArray());
     }
 
     public String getDeviceType() {
