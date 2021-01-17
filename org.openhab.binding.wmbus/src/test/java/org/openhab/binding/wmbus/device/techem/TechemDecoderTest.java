@@ -174,7 +174,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
         Assertions.assertThat(device.getMeasurements()).hasSize(4)
                 .areAtLeastOne(record(Type.STATUS, 0))
-                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(2020, 3, 23)))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(LocalDate.now().getYear(), 3, 23)))
                 .areAtLeastOne(record(Type.CURRENT_READING_DATE_SMOKE, LocalDate.of(2019, 11, 27)))
                 .areAtLeastOne(rssi());
     }
@@ -191,7 +191,7 @@ public class TechemDecoderTest extends AbstractWMBusTest {
 
         Assertions.assertThat(device.getMeasurements()).hasSize(4)
                 .areAtLeastOne(record(Type.STATUS, 0))
-                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(2020, 2, 22)))
+                .areAtLeastOne(record(Type.CURRENT_READING_DATE, LocalDate.of(LocalDate.now().getYear(), 2, 22)))
                 .areAtLeastOne(record(Type.CURRENT_READING_DATE_SMOKE, LocalDate.of(2018, 11, 15)))
                 .areAtLeastOne(rssi());
     }
