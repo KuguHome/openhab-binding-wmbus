@@ -9,15 +9,13 @@
 package org.openhab.binding.wmbus.internal.units;
 
 /**
- * Test of {@link CompositeUnitRegistry} with {@link UnitsRegistry}.
- *
- * They should behave in same way together.
+ * Test of standard framework unit lookup.
  *
  * @author Łukasz Dywicki - Initial contribution.
  */
-public class CompositeUnitRegistryTest extends BaseUnitRegistryTest {
+public class UnitsRegistryTest extends BaseUnitRegistryTest {
 
-    public CompositeUnitRegistryTest() {
-        super(new CompositeUnitRegistry(new UnitsRegistry()));
+    public UnitsRegistryTest() {
+        super(new UnitsRegistry());
     }
 }

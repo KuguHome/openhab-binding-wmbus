@@ -27,8 +27,7 @@ public class StringPredicate implements RecordPredicate {
     }
 
     protected void testValue(Object value) {
-        Assertions.assertThat(value).isInstanceOf(String.class)
-            .isEqualTo(expectedValue);
+        Assertions.assertThat(value).isInstanceOf(String.class).isEqualTo(expectedValue);
     }
 
     public String description() {
@@ -38,5 +37,4 @@ public class StringPredicate implements RecordPredicate {
     public Object[] arguments() {
         return new Object[] { type, expectedValue };
     }
-
 }

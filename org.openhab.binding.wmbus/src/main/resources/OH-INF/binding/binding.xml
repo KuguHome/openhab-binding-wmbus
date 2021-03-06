@@ -18,7 +18,7 @@
 		</parameter>
 		<parameter name="includeBridgeUID" type="boolean">
 			<description>Whether to include the BridgeUID (stick/adapter name) into the ThingUID of the metering device. May be
-				helpful when receiving data from different sites or in different modes. By default set to false.</description>
+				helpful when receiving data from different sites or in different modes. By default set to true.</description>
 		</parameter>
 	</config-description>
 

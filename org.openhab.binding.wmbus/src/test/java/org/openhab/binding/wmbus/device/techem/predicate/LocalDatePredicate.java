@@ -2,6 +2,7 @@ package org.openhab.binding.wmbus.device.techem.predicate;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+
 import org.assertj.core.api.Assertions;
 import org.openhab.binding.wmbus.device.RecordPredicate;
 import org.openhab.binding.wmbus.device.techem.Record;

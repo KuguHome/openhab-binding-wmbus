@@ -1,6 +1,7 @@
 package org.openhab.binding.wmbus.device.techem.predicate;
 
 import java.util.function.Predicate;
+
 import org.assertj.core.api.Assertions;
 import org.openhab.binding.wmbus.device.techem.Record;
 
@@ -27,8 +28,7 @@ public class IntegerPredicate implements Predicate<Record<?>> {
     }
 
     protected void testValue(Object value) {
-        Assertions.assertThat(value).isInstanceOf(Integer.class)
-            .isEqualTo(expectedValue);
+        Assertions.assertThat(value).isInstanceOf(Integer.class).isEqualTo(expectedValue);
     }
 
     public String description() {

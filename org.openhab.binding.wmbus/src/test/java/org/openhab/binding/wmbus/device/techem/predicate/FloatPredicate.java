@@ -27,8 +27,7 @@ public class FloatPredicate implements RecordPredicate {
     }
 
     protected void testValue(Object value) {
-        Assertions.assertThat(value).isInstanceOf(Float.class)
-            .isEqualTo(expectedValue);
+        Assertions.assertThat(value).isInstanceOf(Float.class).isEqualTo(expectedValue);
     }
 
     public String description() {

@@ -15,12 +15,12 @@ import javax.measure.Unit;
 
 import org.assertj.core.api.Assertions;
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.openhab.binding.wmbus.UnitRegistry;
+import org.openhab.core.library.unit.Units;
 import org.openmuc.jmbus.DlmsUnit;
 
 /**
- * Test of {@link CompositeUnitRegistry} with {@link SmartHomeUnitsRegistry} and specific extension which provides
+ * Test of {@link CompositeUnitRegistry} with {@link UnitsRegistry} and specific extension which provides
  * support for {@link DlmsUnit#COUNT} unit.
  *
  * @author Łukasz Dywicki - Initial contribution.
@@ -28,7 +28,7 @@ import org.openmuc.jmbus.DlmsUnit;
 public class ExtendedCompositeUnitRegistryTest extends BaseUnitRegistryTest {
 
     public ExtendedCompositeUnitRegistryTest() {
-        super(new CompositeUnitRegistry(new SmartHomeUnitsRegistry(), new CountUnitRegistry()));
+        super(new CompositeUnitRegistry(new UnitsRegistry(), new CountUnitRegistry()));
     }
 
     @Override
@@ -36,7 +36,7 @@ public class ExtendedCompositeUnitRegistryTest extends BaseUnitRegistryTest {
         try {
             super.testConversionOf_count();
         } catch (AssertionError e) {
-            Assertions.assertThat(registry.lookup(DlmsUnit.COUNT)).contains(SmartHomeUnits.ONE);
+            Assertions.assertThat(registry.lookup(DlmsUnit.COUNT)).contains(Units.ONE);
         }
     }
 
@@ -45,7 +45,7 @@ public class ExtendedCompositeUnitRegistryTest extends BaseUnitRegistryTest {
         @Override
         public Optional<Unit<?>> lookup(DlmsUnit wmbusType) {
             if (DlmsUnit.COUNT.equals(wmbusType)) {
-                return Optional.of(SmartHomeUnits.ONE);
+                return Optional.of(Units.ONE);
             }
 
             return Optional.empty();

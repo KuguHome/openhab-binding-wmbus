@@ -3,20 +3,6 @@ package org.openhab.binding.wmbus.device.generic;
 import java.util.Map;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.config.core.Configuration;
-import org.eclipse.smarthome.core.library.types.QuantityType;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
-import org.eclipse.smarthome.core.thing.Bridge;
-import org.eclipse.smarthome.core.thing.Channel;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingUID;
-import org.eclipse.smarthome.core.thing.binding.ThingHandler;
-import org.eclipse.smarthome.core.thing.binding.ThingHandlerCallback;
-import org.eclipse.smarthome.core.thing.binding.builder.BridgeBuilder;
-import org.eclipse.smarthome.core.thing.binding.builder.ChannelBuilder;
-import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
-import org.eclipse.smarthome.core.types.State;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -31,6 +17,20 @@ import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusBridgeHandler;
 import org.openhab.binding.wmbus.internal.units.CompositeUnitRegistry;
+import org.openhab.core.config.core.Configuration;
+import org.openhab.core.library.types.QuantityType;
+import org.openhab.core.library.unit.SIUnits;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingUID;
+import org.openhab.core.thing.binding.ThingHandler;
+import org.openhab.core.thing.binding.ThingHandlerCallback;
+import org.openhab.core.thing.binding.builder.BridgeBuilder;
+import org.openhab.core.thing.binding.builder.ChannelBuilder;
+import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.types.State;
 import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DlmsUnit;
@@ -72,11 +72,10 @@ public class GenericWMBusThingHandlerTest {
         handler = new GenericWMBusThingHandler<WMBusDevice>(createTestThing(), new MapKeyStorage(),
                 new CompositeUnitRegistry(), CHANNEL_MAPPING) {
             @Override
-            protected org.eclipse.smarthome.core.thing.Bridge getBridge() {
+            protected org.openhab.core.thing.Bridge getBridge() {
                 return createTestBridge(adapter);
             };
         };
-
     }
 
     @Before
@@ -125,5 +124,4 @@ public class GenericWMBusThingHandlerTest {
         bridge.setHandler(handler);
         return bridge;
     }
-
 }

@@ -34,7 +34,7 @@ public class DynamicBindingConfiguration implements BindingConfiguration {
 
     private final Logger logger = LoggerFactory.getLogger(DynamicBindingConfiguration.class);
     private Long timeToLive = WMBusBindingConstants.DEFAULT_TIME_TO_LIVE;
-    private Boolean includeBridgeUID = false;
+    private Boolean includeBridgeUID = true;
 
     @Activate
     public void activate(ComponentContext context) {
@@ -67,7 +67,7 @@ public class DynamicBindingConfiguration implements BindingConfiguration {
     private void setIncludeBridgeUID(Object value) {
         if (value == null) {
             logger.debug("Setting up includeBridgeUID to default value");
-            this.includeBridgeUID = false;
+            this.includeBridgeUID = true;
             return;
         }
 

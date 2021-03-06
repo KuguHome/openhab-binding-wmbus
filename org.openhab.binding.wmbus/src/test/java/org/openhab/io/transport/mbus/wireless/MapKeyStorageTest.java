@@ -1,9 +1,8 @@
 package org.openhab.io.transport.mbus.wireless;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.junit.Test;
-import org.openhab.io.transport.mbus.wireless.MapKeyStorage;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.SecondaryAddress;
 
 /**

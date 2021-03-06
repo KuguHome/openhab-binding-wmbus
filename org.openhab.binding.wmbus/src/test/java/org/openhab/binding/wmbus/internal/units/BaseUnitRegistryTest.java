@@ -13,11 +13,11 @@ import java.util.Optional;
 import javax.measure.Unit;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.core.library.unit.ImperialUnits;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
-import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.junit.Test;
 import org.openhab.binding.wmbus.UnitRegistry;
+import org.openhab.core.library.unit.ImperialUnits;
+import org.openhab.core.library.unit.SIUnits;
+import org.openhab.core.library.unit.Units;
 import org.openmuc.jmbus.DlmsUnit;
 
 /**
@@ -35,7 +35,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_ampere() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.AMPERE)).hasValue(SmartHomeUnits.AMPERE);
+        Assertions.assertThat(lookup(DlmsUnit.AMPERE)).hasValue(Units.AMPERE);
     }
 
     @Test
@@ -75,7 +75,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_coulomb() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.COULOMB)).contains(SmartHomeUnits.COULOMB);
+        Assertions.assertThat(lookup(DlmsUnit.COULOMB)).contains(Units.COULOMB);
     }
 
     @Test
@@ -123,7 +123,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_day() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.DAY)).contains(SmartHomeUnits.DAY);
+        Assertions.assertThat(lookup(DlmsUnit.DAY)).contains(Units.DAY);
     }
 
     @Test
@@ -148,27 +148,27 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_farad() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.FARAD)).contains(SmartHomeUnits.FARAD);
+        Assertions.assertThat(lookup(DlmsUnit.FARAD)).contains(Units.FARAD);
     }
 
     @Test
     public void testConversionOf_henry() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.HENRY)).contains(SmartHomeUnits.HENRY);
+        Assertions.assertThat(lookup(DlmsUnit.HENRY)).contains(Units.HENRY);
     }
 
     @Test
     public void testConversionOf_hertz() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.HERTZ)).contains(SmartHomeUnits.HERTZ);
+        Assertions.assertThat(lookup(DlmsUnit.HERTZ)).contains(Units.HERTZ);
     }
 
     @Test
     public void testConversionOf_hour() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.HOUR)).contains(SmartHomeUnits.HOUR);
+        Assertions.assertThat(lookup(DlmsUnit.HOUR)).contains(Units.HOUR);
     }
 
     @Test
     public void testConversionOf_joule() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.JOULE)).contains(SmartHomeUnits.JOULE);
+        Assertions.assertThat(lookup(DlmsUnit.JOULE)).contains(Units.JOULE);
     }
 
     @Test
@@ -178,7 +178,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_kelvin() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.KELVIN)).contains(SmartHomeUnits.KELVIN);
+        Assertions.assertThat(lookup(DlmsUnit.KELVIN)).contains(Units.KELVIN);
     }
 
     @Test
@@ -198,7 +198,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_litre() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.LITRE)).contains(SmartHomeUnits.LITRE);
+        Assertions.assertThat(lookup(DlmsUnit.LITRE)).contains(Units.LITRE);
     }
 
     @Test
@@ -218,12 +218,12 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_metre_per_second() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.METRE_PER_SECOND)).contains(SmartHomeUnits.METRE_PER_SECOND);
+        Assertions.assertThat(lookup(DlmsUnit.METRE_PER_SECOND)).contains(Units.METRE_PER_SECOND);
     }
 
     @Test
     public void testConversionOf_min() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.MIN)).contains(SmartHomeUnits.MINUTE);
+        Assertions.assertThat(lookup(DlmsUnit.MIN)).contains(Units.MINUTE);
     }
 
     @Test
@@ -233,12 +233,12 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_month() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.MONTH)).contains(SmartHomeUnits.FARAD);
+        Assertions.assertThat(lookup(DlmsUnit.MONTH)).contains(Units.FARAD);
     }
 
     @Test
     public void testConversionOf_newton() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.NEWTON)).contains(SmartHomeUnits.NEWTON);
+        Assertions.assertThat(lookup(DlmsUnit.NEWTON)).contains(Units.NEWTON);
     }
 
     @Test
@@ -248,7 +248,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_ohm() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.OHM)).contains(SmartHomeUnits.OHM);
+        Assertions.assertThat(lookup(DlmsUnit.OHM)).contains(Units.OHM);
     }
 
     @Test
@@ -288,7 +288,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_second() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.SECOND)).contains(SmartHomeUnits.SECOND);
+        Assertions.assertThat(lookup(DlmsUnit.SECOND)).contains(Units.SECOND);
     }
 
     @Test
@@ -303,7 +303,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_tesla() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.TESLA)).contains(SmartHomeUnits.TESLA);
+        Assertions.assertThat(lookup(DlmsUnit.TESLA)).contains(Units.TESLA);
     }
 
     @Test
@@ -333,7 +333,7 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_volt() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.VOLT)).contains(SmartHomeUnits.VOLT);
+        Assertions.assertThat(lookup(DlmsUnit.VOLT)).contains(Units.VOLT);
     }
 
     @Test
@@ -363,31 +363,30 @@ public abstract class BaseUnitRegistryTest {
 
     @Test
     public void testConversionOf_watt() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.WATT)).contains(SmartHomeUnits.WATT);
+        Assertions.assertThat(lookup(DlmsUnit.WATT)).contains(Units.WATT);
     }
 
     @Test
     public void testConversionOf_watt_hour() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.WATT_HOUR)).contains(SmartHomeUnits.WATT_HOUR);
+        Assertions.assertThat(lookup(DlmsUnit.WATT_HOUR)).contains(Units.WATT_HOUR);
     }
 
     @Test
     public void testConversionOf_weber() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.WEBER)).contains(SmartHomeUnits.WEBER);
+        Assertions.assertThat(lookup(DlmsUnit.WEBER)).contains(Units.WEBER);
     }
 
     @Test
     public void testConversionOf_week() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.WEEK)).contains(SmartHomeUnits.WEEK);
+        Assertions.assertThat(lookup(DlmsUnit.WEEK)).contains(Units.WEEK);
     }
 
     @Test
     public void testConversionOf_year() throws Exception {
-        Assertions.assertThat(lookup(DlmsUnit.YEAR)).contains(SmartHomeUnits.YEAR);
+        Assertions.assertThat(lookup(DlmsUnit.YEAR)).contains(Units.YEAR);
     }
 
     protected Optional<Unit<?>> lookup(DlmsUnit wmbusType) {
         return registry.lookup(wmbusType);
     }
-
 }
