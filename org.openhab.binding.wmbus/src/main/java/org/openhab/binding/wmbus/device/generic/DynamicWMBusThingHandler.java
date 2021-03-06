@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.device.generic;
 
@@ -14,25 +18,25 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.smarthome.core.library.types.QuantityType;
-import org.eclipse.smarthome.core.thing.Channel;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.binding.builder.ChannelBuilder;
-import org.eclipse.smarthome.core.thing.binding.builder.ThingBuilder;
-import org.eclipse.smarthome.core.thing.type.ChannelType;
-import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
-import org.eclipse.smarthome.core.thing.util.ThingHelper;
-import org.eclipse.smarthome.core.types.Command;
-import org.eclipse.smarthome.core.types.RefreshType;
-import org.eclipse.smarthome.core.types.State;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.RecordType;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
 import org.openhab.binding.wmbus.internal.WMBusChannelTypeProvider;
+import org.openhab.core.library.types.QuantityType;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.binding.builder.ChannelBuilder;
+import org.openhab.core.thing.binding.builder.ThingBuilder;
+import org.openhab.core.thing.type.ChannelType;
+import org.openhab.core.thing.type.ChannelTypeUID;
+import org.openhab.core.thing.util.ThingHelper;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.RefreshType;
+import org.openhab.core.types.State;
+import org.openhab.core.util.HexUtils;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.VariableDataStructure;
@@ -143,5 +147,4 @@ public class DynamicWMBusThingHandler<T extends WMBusDevice> extends WMBusDevice
             }
         }
     }
-
 }

@@ -1,21 +1,26 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.device.techem.decoder;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
+
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.device.techem.Record;
 import org.openhab.binding.wmbus.device.techem.TechemHeatCostAllocator;
 import org.openhab.binding.wmbus.device.techem.TechemUnknownDevice;
 import org.openhab.binding.wmbus.device.techem.Variant;
+import org.openhab.core.library.unit.SIUnits;
 import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 
@@ -65,10 +70,10 @@ class TechemHKVRoomTempFrameDecoder extends AbstractTechemFrameDecoder<TechemHea
         }
 
         if (coding == 0xA3) {
-            return new TechemUnknownDevice(device.getOriginalMessage(), device.getAdapter(), new Variant(variant.version, variant.reportedType, coding, DeviceType.UNKNOWN));
+            return new TechemUnknownDevice(device.getOriginalMessage(), device.getAdapter(),
+                    new Variant(variant.version, variant.reportedType, coding, DeviceType.UNKNOWN));
         }
 
         return null;
     }
-
 }

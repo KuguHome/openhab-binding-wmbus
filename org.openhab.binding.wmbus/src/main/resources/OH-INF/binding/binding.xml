@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<binding:binding id="wmbus" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:binding="https://openhab.org/schemas/binding/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/binding/v1.0.0 https://openhab.org/schemas/binding-1.0.0.xsd">
+
+	<name>WMBus Binding</name>
+	<description>The WMBus binding uses a WMBus radio USB stick to receive messages and decode the contents to show the
+		data of the devices in the UI. It uses the jMBus library, but currently, only the Techem heat cost allocators are
+		supported.</description>
+	<author>Hanno - Felix Wagner, Ernst Rohlicek, Roman Malyugin</author>
+
+
+	<config-description>
+		<parameter name="timeToLive" type="integer">
+			<description>Amount of time (in minutes) over which discovery results are retained in inbox. By default set to 720
+				minutes (24 hours)</description>
+			<unitLabel>minute</unitLabel>
+		</parameter>
+		<parameter name="includeBridgeUID" type="boolean">
+			<description>Whether to include the BridgeUID (stick/adapter name) into the ThingUID of the metering device. May be
+				helpful when receiving data from different sites or in different modes. By default set to false.</description>
+		</parameter>
+	</config-description>
+
+
+</binding:binding>

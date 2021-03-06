@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.internal.units;
 
@@ -28,7 +32,7 @@ import org.osgi.service.component.annotations.ReferenceCardinality;
 /**
  * An unit registry intended to aggregate several other registers to mask actual lookup operation.
  *
- * By default this registry is started up with {@link SmartHomeUnitsRegistry} which covers standard DLMS-SI/Imperial
+ * By default this registry is started up with {@link UnitsRegistry} which covers standard DLMS-SI/Imperial
  * units known to
  * framework. However some DLMS units are not supported and very specific to narrow fields which might not be added any
  * time soon. For this reason we leave an extensions for future cases if there is a device we desperately want, but its
@@ -42,7 +46,7 @@ public class CompositeUnitRegistry implements UnitRegistry {
     private final Set<UnitRegistry> registers = new LinkedHashSet<>();
 
     public CompositeUnitRegistry() {
-        this(new SmartHomeUnitsRegistry());
+        this(new UnitsRegistry());
     }
 
     CompositeUnitRegistry(UnitRegistry... registers) {
@@ -93,5 +97,4 @@ public class CompositeUnitRegistry implements UnitRegistry {
     protected void unsetUnitRegistry(UnitRegistry registry) {
         this.registers.remove(registry);
     }
-
 }

@@ -1,0 +1,429 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<thing:thing-descriptions bindingId="wmbus"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:thing="https://openhab.org/schemas/thing-description/v1.0.0"
+	xsi:schemaLocation="https://openhab.org/schemas/thing-description/v1.0.0 https://openhab.org/schemas/thing-description-1.0.0.xsd">
+
+	<!-- add new devices here -->
+
+	<!-- thing definition for universal meter -->
+	<thing-type id="itron_smoke_detector">
+		<supported-bridge-type-refs>
+			<bridge-type-ref id="wmbusbridge"/>
+			<bridge-type-ref id="wmbusvirtualbridge"/>
+		</supported-bridge-type-refs>
+
+		<label>Itron Smoke Detector</label>
+		<description>Smoke detectors implemented on top of WM-Bus specification, manufactured by Itron.</description>
+
+		<channels>
+			<channel id="current_date" typeId="itron_current_date_time"/>
+			<channel id="current_date_string" typeId="itron_current_date_time_string"/>
+			<channel id="current_date_number" typeId="itron_current_date_time_number"/>
+
+			<channel id="status_removal_occurred" typeId="status_removal_occurred"/>
+			<channel id="status_billing_date" typeId="status_billing_date"/>
+			<channel id="status_product_installed" typeId="status_product_installed"/>
+			<channel id="status_operation_mode" typeId="status_operation_mode"/>
+			<channel id="status_perimeter_intrusion_occurred" typeId="status_perimeter_intrusion_occurred"/>
+			<channel id="status_smoke_inlet_blocked_occurred" typeId="status_smoke_inlet_blocked_occurred"/>
+			<channel id="status_out_of_temp_range_occurred" typeId="status_out_of_temp_range_occurred"/>
+			<channel id="status_product_code" typeId="status_product_code"/>
+			<channel id="status_battery_lifetime" typeId="status_battery_lifetime"/>
+			<channel id="status_perimeter_intrusion" typeId="status_perimeter_intrusion"/>
+			<channel id="status_removal_error" typeId="status_removal_error"/>
+			<channel id="status_data_encrypted" typeId="status_data_encrypted"/>
+
+			<channel id="last_smoke_alert_start_date" typeId="last_smoke_alert_start_date"/>
+			<channel id="last_smoke_alert_start_date_string" typeId="last_smoke_alert_start_date_string"/>
+			<channel id="last_smoke_alert_start_date_number" typeId="last_smoke_alert_start_date_number"/>
+			<channel id="last_smoke_alert_end_date" typeId="last_smoke_alert_end_date"/>
+			<channel id="last_smoke_alert_end_date_string" typeId="last_smoke_alert_end_date_string"/>
+			<channel id="last_smoke_alert_end_date_number" typeId="last_smoke_alert_end_date_number"/>
+			<channel id="last_beeper_stopped_during_smoke_alert_date"
+				typeId="last_beeper_stopped_during_smoke_alert_date"/>
+			<channel id="last_beeper_stopped_during_smoke_alert_date_string"
+				typeId="last_beeper_stopped_during_smoke_alert_date_string"/>
+			<channel id="last_beeper_stopped_during_smoke_alert_date_number"
+				typeId="last_beeper_stopped_during_smoke_alert_date_number"/>
+
+			<channel id="last_perimeter_intrusion_obstacle_occurred_date"
+				typeId="last_perimeter_intrusion_obstacle_occurred_date"/>
+			<channel id="last_perimeter_intrusion_obstacle_occurred_date_string"
+				typeId="last_perimeter_intrusion_obstacle_occurred_date_string"/>
+			<channel id="last_perimeter_intrusion_obstacle_occurred_date_number"
+				typeId="last_perimeter_intrusion_obstacle_occurred_date_number"/>
+			<channel id="last_perimeter_intrusion_obstacle_removed_date"
+				typeId="last_perimeter_intrusion_obstacle_removed_date"/>
+			<channel id="last_perimeter_intrusion_obstacle_removed_date_string"
+				typeId="last_perimeter_intrusion_obstacle_removed_date_string"/>
+			<channel id="last_perimeter_intrusion_obstacle_removed_date_number"
+				typeId="last_perimeter_intrusion_obstacle_removed_date_number"/>
+
+			<channel id="last_smoke_inlet_blocked_date" typeId="last_smoke_inlet_blocked_date"/>
+			<channel id="last_smoke_inlet_blocked_date_string" typeId="last_smoke_inlet_blocked_date_string"/>
+			<channel id="last_smoke_inlet_blocked_date_number" typeId="last_smoke_inlet_blocked_date_number"/>
+			<channel id="last_smoke_inlet_blocking_removed_date" typeId="last_smoke_inlet_blocking_removed_date"/>
+			<channel id="last_smoke_inlet_blocking_removed_date_string"
+				typeId="last_smoke_inlet_blocking_removed_date_string"/>
+			<channel id="last_smoke_inlet_blocking_removed_date_number"
+				typeId="last_smoke_inlet_blocking_removed_date_number"/>
+
+			<channel id="last_temperature_out_of_range_date" typeId="last_temperature_out_of_range_date"/>
+			<channel id="last_temperature_out_of_range_date_string" typeId="last_temperature_out_of_range_date_string"/>
+			<channel id="last_temperature_out_of_range_date_number" typeId="last_temperature_out_of_range_date_number"/>
+
+			<channel id="last_test_switch_date" typeId="last_test_switch_date"/>
+			<channel id="last_test_switch_date_string" typeId="last_test_switch_date_string"/>
+			<channel id="last_test_switch_date_number" typeId="last_test_switch_date_number"/>
+
+			<channel id="number_of_test_switches_operated" typeId="number_of_test_switches_operated"/>
+			<channel id="perimeter_intrusion_day_counter_cumulated" typeId="perimeter_intrusion_day_counter_cumulated"/>
+			<channel id="smoke_inlet_day_counter_cumulated" typeId="smoke_inlet_day_counter_cumulated"/>
+			<!--
+				<channel id="alarm" typeId="boolean" />
+				<channel id="alarmSince" typeId="current_date" />
+				<channel id="batteryLowLevel" typeId="boolean" />
+				<channel id="installationState" typeId="installationState" />
+
+				<channel id="temperatureAlarm" typeId="temperatureAlarm" />
+				<channel id="temperatureAlarmSince" typeId="temperatureAlarmSince" />
+			-->
+		</channels>
+
+		<config-description-ref uri="wmbus:meter:encrypted"/>
+	</thing-type>
+
+
+	<channel-type id="itron_current_date_time">
+		<item-type>DateTime</item-type>
+		<label>Current date time</label>
+		<description>Date and time with resolution up to a second.</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+	<channel-type id="itron_current_date_time_string">
+		<item-type>DateTime</item-type>
+		<label>Current date time (as a string)</label>
+		<description>Date and time with resolution up to a second, formatted as a string.</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+	<channel-type id="itron_current_date_time_number">
+		<item-type>DateTime</item-type>
+		<label>Current date time (as unix timestamp)</label>
+		<description>Date and time with resolution up to a second, formatted as a unix timestamp.</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+
+	<channel-type id="status_removal_occurred">
+		<item-type>Switch</item-type>
+		<label>Removal occurred</label>
+		<description>Removal occurred</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_billing_date">
+		<item-type>Switch</item-type>
+		<label>Billing month</label>
+		<description>Billing month</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_product_installed">
+		<item-type>Switch</item-type>
+		<label>Product installed</label>
+		<description>Product is installed.</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_operation_mode">
+		<item-type>Number</item-type>
+		<label>Operation mode</label>
+		<description>Operation mode.</description>
+		<state readOnly="true">
+			<options>
+				<option value="0">Standalone</option>
+				<option value="1">Walk-by</option>
+				<option value="2">Fixed network</option>
+			</options>
+		</state>
+	</channel-type>
+
+	<channel-type id="status_perimeter_intrusion_occurred">
+		<item-type>Switch</item-type>
+		<label>Perimeter intrusion occurred</label>
+		<description>Perimeter intrusion occurred</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_smoke_inlet_blocked_occurred">
+		<item-type>Switch</item-type>
+		<label>Smoke inlet blocked occurred</label>
+		<description>Smoke inlet blocked occurred</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_out_of_temp_range_occurred">
+		<item-type>Switch</item-type>
+		<label>Temperature out of range occurred</label>
+		<description>Temperature out of range occurred</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_product_code">
+		<item-type>String</item-type>
+		<label>Product code</label>
+		<description></description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="status_battery_lifetime">
+		<item-type>Number</item-type>
+		<label>Battery lifetime</label>
+		<description>Battery lifetime</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<!--
+		<channel-type id="status_perimeter_intrusion">
+		<item-type>Contact</item-type>
+		<label>Perimeter intrusion</label>
+		<description>Perimeter intrusion</description>
+		<state readOnly="true" />
+		</channel-type>
+
+		<channel-type id="status_removal_error">
+		<item-type>Contact</item-type>
+		<label>Removal error</label>
+		<description>Removal error</description>
+		<state readOnly="true" />
+		</channel-type>
+
+		<channel-type id="status_data_encrypted">
+		<item-type>Contact</item-type>
+		<label>Data encrypted</label>
+		<description>Data encrypted</description>
+		<state readOnly="true" />
+		</channel-type>
+	-->
+
+
+	<channel-type id="last_smoke_alert_start_date">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert Start dates</label>
+		<description>Last Smoke Alert Start dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_alert_start_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert Start dates (as string)</label>
+		<description>Last Smoke Alert Start dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_alert_start_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert Start dates (as unix timestamp)</label>
+		<description>Last Smoke Alert Start dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_alert_end_date">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert End dates</label>
+		<description>Last Smoke Alert End dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_alert_end_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert End dates (as string)</label>
+		<description>Last Smoke Alert End dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_alert_end_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke Alert End dates (as unix timestamp)</label>
+		<description>Last Smoke Alert End dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_beeper_stopped_during_smoke_alert_date">
+		<item-type>DateTime</item-type>
+		<label>Last Beeper stopped during smoke alert dates</label>
+		<description>Last Beeper stopped during smoke alert dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_beeper_stopped_during_smoke_alert_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Beeper stopped during smoke alert dates (as string)</label>
+		<description>Last Beeper stopped during smoke alert dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_beeper_stopped_during_smoke_alert_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Beeper stopped during smoke alert dates (as unix timestamp)</label>
+		<description>Last Beeper stopped during smoke alert dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_occurred_date">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle occured) dates</label>
+		<description>Last Perimeter Intrusion (Obstacle occured) dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_occurred_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle occured) dates (as string)</label>
+		<description>Last Perimeter Intrusion (Obstacle occured) dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_occurred_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle occured) dates (as unix timestamp)</label>
+		<description>Last Perimeter Intrusion (Obstacle occured) dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_removed_date">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle removed) dates</label>
+		<description>Last Perimeter Intrusion (Obstacle removed) dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_removed_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle removed) dates (as string)</label>
+		<description>Last Perimeter Intrusion (Obstacle removed) dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_perimeter_intrusion_obstacle_removed_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Perimeter Intrusion (Obstacle removed) dates (as unix timestamp)</label>
+		<description>Last Perimeter Intrusion (Obstacle removed) dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocked_date">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocked) dates</label>
+		<description>last Smoke inlet (Blocked) dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocked_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocked) dates (as string)</label>
+		<description>Last Smoke inlet (Blocked) dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocked_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocked) dates (as unix timestamp)</label>
+		<description>Last Smoke inlet (Blocked) dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocking_removed_date">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocking removed) dates</label>
+		<description>Last Smoke inlet (Blocking removed) dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocking_removed_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocking removed) dates (as string)</label>
+		<description>Last Smoke inlet (Blocking removed) dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_smoke_inlet_blocking_removed_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Smoke inlet (Blocking removed) dates (as unix timestamp)</label>
+		<description>Last Smoke inlet (Blocking removed) dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_temperature_out_of_range_date">
+		<item-type>DateTime</item-type>
+		<label>Last out of Temperate Range date</label>
+		<description>Last out of Temperate Range date</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_temperature_out_of_range_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last out of Temperate Range date (as string)</label>
+		<description>Last out of Temperate Range date (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_temperature_out_of_range_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last out of Temperate Range date (as unix timestamp)</label>
+		<description>Last out of Temperate Range date (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_test_switch_date">
+		<item-type>DateTime</item-type>
+		<label>Last Testswitch dates</label>
+		<description>Last Testswitch dates</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_test_switch_date_string">
+		<item-type>DateTime</item-type>
+		<label>Last Testswitch dates (as string)</label>
+		<description>Last Testswitch dates (formatted as string)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="last_test_switch_date_number">
+		<item-type>DateTime</item-type>
+		<label>Last Testswitch dates (as unix timestamp)</label>
+		<description>Last Testswitch dates (formatted as number)</description>
+		<state readOnly="true"/>
+	</channel-type>
+
+	<channel-type id="number_of_test_switches_operated">
+		<item-type>Number</item-type>
+		<label>Number of test switches operated</label>
+		<description>Number of test switches operated</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+	<channel-type id="perimeter_intrusion_day_counter_cumulated">
+		<item-type>Number</item-type>
+		<label>Perimeter Intrusion day counter cumulated</label>
+		<description>Perimeter Intrusion day counter cumulated</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+	<channel-type id="smoke_inlet_day_counter_cumulated">
+		<item-type>Number</item-type>
+		<label>Smoke inlet day counter cumulated</label>
+		<description>Smoke inlet day counter cumulated</description>
+		<state readOnly="true">
+		</state>
+	</channel-type>
+
+</thing:thing-descriptions>

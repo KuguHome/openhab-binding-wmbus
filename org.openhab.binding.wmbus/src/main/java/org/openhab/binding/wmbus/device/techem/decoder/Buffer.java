@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.device.techem.decoder;
 
@@ -15,7 +19,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.function.Function;
-import org.eclipse.smarthome.core.util.HexUtils;
+
 import org.openmuc.jmbus.SecondaryAddress;
 import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.slf4j.Logger;
@@ -129,7 +133,7 @@ public class Buffer {
             history.append((readByte() & 0xFF)).append(";");
         }
 
-        return history.substring(0, history.length() -1);
+        return history.substring(0, history.length() - 1);
     }
 
     public float readFloat(Function<Float, Float> scale) {
@@ -161,5 +165,4 @@ public class Buffer {
 
         return callback.apply(buffer);
     }
-
 }

@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openmuc.jmbus;
 
 import static javax.xml.bind.DatatypeConverter.printHexBinary;
@@ -6,10 +18,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 import java.util.Calendar;
-
-import org.openmuc.jmbus.Bcd;
-import org.openmuc.jmbus.DecodingException;
-import org.openmuc.jmbus.DlmsUnit;
 
 /**
  * Representation of a data record (sometimes called variable data block).
@@ -46,12 +54,12 @@ public class DataRecord {
      *
      */
     public enum DataValueType {
-    LONG,
-    DOUBLE,
-    DATE,
-    STRING,
-    BCD,
-    NONE;
+        LONG,
+        DOUBLE,
+        DATE,
+        STRING,
+        BCD,
+        NONE;
     }
 
     /**
@@ -571,7 +579,6 @@ public class DataRecord {
         userDefinedDescription = sb.toString();
 
         return length + 1;
-
     }
 
     private void decodeMainVif(int vif) {
@@ -583,7 +590,6 @@ public class DataRecord {
             decodeE1(vif);
 
         }
-
     }
 
     private void decodeE1(int vif) {
@@ -1304,7 +1310,6 @@ public class DataRecord {
             }
 
         }
-
     }
 
     @Override
@@ -1368,11 +1373,9 @@ public class DataRecord {
         }
 
         return builder.toString();
-
     }
 
     public int getDataLength() {
         return dataLength;
     }
-
 }

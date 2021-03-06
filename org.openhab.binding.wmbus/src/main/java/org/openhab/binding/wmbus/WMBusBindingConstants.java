@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus;
 
@@ -12,8 +16,8 @@ import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.function.Function;
 
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
+import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.thing.type.ChannelTypeUID;
 import org.openmuc.jmbus.DeviceType;
 
 import com.google.common.collect.ImmutableSet;
@@ -42,7 +46,7 @@ public class WMBusBindingConstants {
     // List all Thing Type UIDs, related to the WMBus Binding
     public final static ThingTypeUID THING_TYPE_BRIDGE = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_BRIDGE);
     public final static ThingTypeUID THING_TYPE_VIRTUAL_BRIDGE = new ThingTypeUID(BINDING_ID,
-        THING_TYPE_NAME_VIRTUAL_BRIDGE);
+            THING_TYPE_NAME_VIRTUAL_BRIDGE);
 
     public final static ThingTypeUID THING_TYPE_METER = new ThingTypeUID(BINDING_ID, THING_TYPE_NAME_METER);
     public final static ThingTypeUID THING_TYPE_ENCRYPTED_METER = new ThingTypeUID(BINDING_ID,
@@ -121,5 +125,4 @@ public class WMBusBindingConstants {
 
     public static final String CONFKEY_BINDING_TIME_TO_LIVE = "timeToLive";
     public static final String CONFKEY_BINDING_INCLUDE_BRIDGE_UID = "includeBridgeUID";
-
 }

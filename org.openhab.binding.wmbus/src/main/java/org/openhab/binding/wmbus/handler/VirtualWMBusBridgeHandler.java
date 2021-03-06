@@ -1,29 +1,31 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
- * <p>
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 
 package org.openhab.binding.wmbus.handler;
+
+import static org.openhab.binding.wmbus.WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE;
 
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Set;
 
-import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
-import org.eclipse.smarthome.core.thing.Bridge;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.config.WMBusBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
+import org.openhab.core.config.core.status.ConfigStatusMessage;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingTypeUID;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
-
-import static org.openhab.binding.wmbus.WMBusBindingConstants.THING_TYPE_VIRTUAL_BRIDGE;
 
 /**
  * The {@link VirtualWMBusBridgeHandler} class defines This class represents the WMBus bridge which
@@ -48,7 +50,7 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
     /**
      * Connects to the WMBus radio module and updates bridge status.
      *
-     * @see org.eclipse.smarthome.core.thing.binding.BaseThingHandler#initialize()
+     * @see org.openhab.core.thing.binding.BaseThingHandler#initialize()
      */
     @Override
     public void initialize() {
@@ -82,5 +84,4 @@ public class VirtualWMBusBridgeHandler extends WMBusBridgeHandlerBase {
         wmbusReceiver = null;
         initialize();
     }
-
 }

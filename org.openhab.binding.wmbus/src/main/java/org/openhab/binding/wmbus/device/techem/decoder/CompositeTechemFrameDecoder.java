@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.device.techem.decoder;
 
@@ -55,11 +59,12 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
         for (TechemFrameDecoder<?> decoder : decoders) {
             if (decoder.supports(device.getRawDeviceType())) {
                 // same variant might be supported by multiple decoders, but first one which gives decoded result wins
-                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(), decoder.getClass().getName());
+                logger.debug("Found decoder capable of handling device {}: {}", device.getRawDeviceType(),
+                        decoder.getClass().getName());
                 result = decoder.decode(device);
                 if (result != null) {
                     logger.debug("Decoding result: {}, {}, {}", result, result.getRawDeviceType(),
-                        result.getTechemDeviceType());
+                            result.getTechemDeviceType());
                     break;
                 } else {
                     logger.debug("Decoding of frame failed, unsupported device variant");
@@ -74,5 +79,4 @@ public class CompositeTechemFrameDecoder implements TechemFrameDecoder<TechemDev
 
         return null;
     }
-
 }
