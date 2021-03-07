@@ -8,10 +8,10 @@
  */
 package org.openhab.binding.wmbus.tools.processor;
 
-import org.openhab.binding.wmbus.tools.Processor;
-
 import java.util.List;
 import java.util.Map;
+
+import org.openhab.binding.wmbus.tools.Processor;
 
 /**
  * Helper type to orchestrate execution of several frame processors at once.
@@ -20,17 +20,16 @@ import java.util.Map;
  */
 public class Processors {
 
-  public static <T> T process(final T value, Map<String, Object> context, List<Processor<T>> processors) {
-    if (processors.isEmpty()) {
-      return value;
+    public static <T> T process(final T value, Map<String, Object> context, List<Processor<T>> processors) {
+        if (processors.isEmpty()) {
+            return value;
+        }
+
+        T result = value;
+        for (Processor<T> processor : processors) {
+            result = processor.process(result, context);
+        }
+
+        return result;
     }
-
-    T result = value;
-    for (Processor<T> processor : processors) {
-      result = processor.process(result, context);
-    }
-
-    return result;
-  }
-
 }

@@ -8,33 +8,33 @@
  */
 package org.openhab.binding.wmbus.tools.processor;
 
-import org.openhab.binding.wmbus.tools.Processor;
-
 import java.util.Map;
+
+import org.openhab.binding.wmbus.tools.Processor;
 
 public class RssiProcessor implements Processor<String> {
 
-  private final int rssiIndex;
-  private final int rssiValue;
+    private final int rssiIndex;
+    private final int rssiValue;
 
-  public RssiProcessor(int rssiIndex, int rssiValue) {
-    this.rssiIndex = rssiIndex;
-    this.rssiValue = rssiValue;
-  }
-
-  @Override
-  public String process(String frame, Map<String, Object> context) {
-    if (rssiIndex != 0) {
-      if (rssiIndex == 1) { // first byte starts from character at index 0.
-        context.put(RSSI, Integer.parseUnsignedInt(frame.substring(0, 2), 16));
-        return frame.substring(2);
-      } else if (rssiIndex == -1) {
-        context.put(RSSI, Integer.parseUnsignedInt(frame.substring(frame.length() -2), 16));
-        return frame.substring(0, frame.length() - 2);
-      }
+    public RssiProcessor(int rssiIndex, int rssiValue) {
+        this.rssiIndex = rssiIndex;
+        this.rssiValue = rssiValue;
     }
 
-    context.put(RSSI, rssiValue);
-    return frame;
-  }
+    @Override
+    public String process(String frame, Map<String, Object> context) {
+        if (rssiIndex != 0) {
+            if (rssiIndex == 1) { // first byte starts from character at index 0.
+                context.put(RSSI, Integer.parseUnsignedInt(frame.substring(0, 2), 16));
+                return frame.substring(2);
+            } else if (rssiIndex == -1) {
+                context.put(RSSI, Integer.parseUnsignedInt(frame.substring(frame.length() - 2), 16));
+                return frame.substring(0, frame.length() - 2);
+            }
+        }
+
+        context.put(RSSI, rssiValue);
+        return frame;
+    }
 }

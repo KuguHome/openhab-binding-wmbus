@@ -8,21 +8,21 @@
  */
 package org.openhab.binding.wmbus.tools.processor;
 
-import org.openhab.binding.wmbus.tools.Processor;
-
 import java.util.Map;
+
+import org.openhab.binding.wmbus.tools.Processor;
 
 public class SkipProcessor implements Processor<String> {
 
-  private final int amount;
+    private final int amount;
 
-  public SkipProcessor(int amount) {
-    this.amount = amount;
-  }
+    public SkipProcessor(int amount) {
+        this.amount = amount;
+    }
 
-  @Override
-  public String process(String frame, Map<String, Object> context) {
-    // one byte is 2 characters in hex representation
-    return frame.substring(amount * 2);
-  }
+    @Override
+    public String process(String frame, Map<String, Object> context) {
+        // one byte is 2 characters in hex representation
+        return frame.substring(amount * 2);
+    }
 }
