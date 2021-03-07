@@ -2,11 +2,11 @@
 
 This is a binding for the [openHAB](https://www.openhab.org/) / eclipse Smart Home home automation system. It aims to make data available to the user, which is already sent by lots of modern metering hardware (e.g. heat cost allocators, electricity/gas/water/heat meters) already widely deployed in houses and especially flats.
 
-The binding is based on the [jMBus](https://www.openmuc.org/m-bus/) library, which provides all basic receiving and decoding. It is currently using [a fork](https://github.com/kaikreuzer/jmbus) of version 3.1.1 to make it work within openHAB.
+The binding is based on the [jMBus](https://www.openmuc.org/m-bus/) library, which provides all basic receiving and decoding. It is currently using version 3.1.1 plus one extension for access to the RAW frame.
 Implementation of the Techem devices has been ported from [FHEM](https://forum.fhem.de/index.php/topic,42232.html).
 
-The binding is working stable. To use it, you need a device to receive the transmissions. The underlying library  supports transceivers of Amber, Radiocrafts (RC1180-MBUS) and IMST (iM871A-USB), the binding is mainly developed and tested with the [Amber Wireless AMB8465-M](https://www.amber-wireless.de/de/produkte/wireless-m-bus/alle-usb-sticks/wireless-m-bus-868-mhz-usb-stick-int-antenne-amb8465-m.html).
-However, development is still going on and there are some known issues. One is, that sometimes when changing settings etc. to the stick, the serial port native parts segfault and the whole openHAB is restarting. This seems to be caused by a bug in the serial library or the jMBus library.
+The binding is working stable. To use it, you need a device to receive the transmissions. The underlying library supports transceivers of Amber, Radiocrafts (RC1180-MBUS) and IMST (iM871A-USB), the binding is mainly developed and tested with the [Amber Wireless AMB8465-M](https://www.we-online.de/catalog/en/USB_RADIO_STICK_METERING).
+However, development is still going on and there are some known issues.
 
 ### Features:
 * Receive WMBus frames as inbox discovery results
@@ -55,7 +55,7 @@ There is some more information and discussion [in the forum](https://community.o
   * Room/radiator temperature etc. are always current (at the time of sending/receiving the message).
   * Some device's "Current Reading" will only update once each day.
 14. If a Persistence Add-on (e.g. InfluxDB) is installed, the readings will also be stored into the database.
-15. In HABmin or HABPanel, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
+15. In OH3 UI, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
 16. If any Exceptions or other messages turn up in the logs or console, please let us know and open an issue here.
 
 ### Encrypted messages
