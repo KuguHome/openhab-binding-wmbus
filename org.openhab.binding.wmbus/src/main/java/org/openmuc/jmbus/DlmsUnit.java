@@ -12,7 +12,7 @@ import java.util.Map;
  * The units as defined in IEC 62056-6-2. Some units not defined in IEC 62056-6-2 but needed by M-Bus were added.
  */
 public enum DlmsUnit {
-    // can be found in IEC 62056-6-2 2013 Capture 5.2.2
+    // can be found in IEC 62056-6-2 2017 Capture 5.2.2
     YEAR(1, "a"),
     MONTH(2, "mo"),
     WEEK(3, "wk"),
@@ -34,8 +34,8 @@ public enum DlmsUnit {
     LITRE(19, "l"),
     KILOGRAM(20, "kg"),
     NEWTON(21, "N"),
-    NEWTONMETER(22, "n"),
-    PASCAL(23, "Nm"),
+    NEWTONMETER(22, "Nm"),
+    PASCAL(23, "Pa"),
     BAR(24, "bar"),
     JOULE(25, "J"),
     JOULE_PER_HOUR(26, "J/h"),
@@ -63,10 +63,11 @@ public enum DlmsUnit {
     VOLT_SQUARED_HOURS(48, "V²h"),
     AMPERE_SQUARED_HOURS(49, "A²h"),
     KILOGRAM_PER_SECOND(50, "kg/s"),
-    KELVIN(52, "S"),
-    VOLT_SQUARED_HOUR_METER_CONSTANT_OR_PULSE_VALUE(53, "K"),
-    AMPERE_SQUARED_HOUR_METER_CONSTANT_OR_PULSE_VALUE(54, "1/(V²h)"),
-    METER_CONSTANT_OR_PULSE_VALUE(55, "1/(A²h)"),
+    SIEMENS(51, "S"),
+    KELVIN(52, "K"),
+    VOLT_SQUARED_HOUR_METER_CONSTANT_OR_PULSE_VALUE(53, "1/(V²h)"),
+    AMPERE_SQUARED_HOUR_METER_CONSTANT_OR_PULSE_VALUE(54, "1/(A²h)"),
+    METER_CONSTANT_OR_PULSE_VALUE(55, "1/m³"),
     PERCENTAGE(56, "%"),
     AMPERE_HOUR(57, "Ah"),
 
@@ -78,10 +79,13 @@ public enum DlmsUnit {
     SPECIFIC_ENERGY(65, "J/kg"),
 
     SIGNAL_STRENGTH(70, "dBm"),
+    SIGNAL_STRENGTH_MICROVOLT(71, "dBµv"),
+    LOGARITHMIC(72, "dB"),
 
     RESERVED(253, ""),
-    OTHER_UNIT(254, ""),
-    COUNT(255, ""),
+    OTHER_UNIT(254, "other"),
+    COUNT(255, "count"),
+
     // not mentioned in 62056, added for MBus:
     CUBIC_METRE_PER_SECOND(150, "m³/s"),
     CUBIC_METRE_PER_MINUTE(151, "m³/min"),

@@ -1,18 +1,9 @@
 /**
- * Copyright (c) 2010-2021 Contributors to the openHAB project
- *
- * See the NOTICE file(s) distributed with this work for additional
- * information.
- *
- * This program and the accompanying materials are made available under the
- * terms of the Eclipse Public License 2.0 which is available at
- * http://www.eclipse.org/legal/epl-2.0
- *
- * SPDX-License-Identifier: EPL-2.0
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at http://mozilla.org/MPL/2.0/.
  */
 package org.openmuc.jmbus;
-
-import static javax.xml.bind.DatatypeConverter.printHexBinary;
 
 import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
@@ -21,11 +12,11 @@ import java.util.Calendar;
 
 /**
  * Representation of a data record (sometimes called variable data block).
- *
+ * 
  * A data record is the basic data entity of the M-Bus application layer. A variable data structure contains a list of
  * data records. Each data record represents a single data point. A data record consists of three fields: The data
  * information block (DIB), the value information block (VIB) and the data field.
- *
+ * 
  * The DIB codes the following parameters:
  * <ul>
  * <li>Storage number - a meter can have several storages e.g. to store historical time series data. The storage number
@@ -37,7 +28,7 @@ import java.util.Calendar;
  * tariffs.</li>
  * <li>Subunit - can be used by a slave to distinguish several subunits of the metering device</li>
  * </ul>
- *
+ * 
  * The VIB codes the following parameters:
  * <ul>
  * <li>Description - the meaning of the data value (e.g. "Energy", "Volume" etc.)</li>
@@ -45,7 +36,7 @@ import java.util.Calendar;
  * <li>Multiplier - a factor by which the data value coded in the data field has to be multiplied with.
  * <code>getScaledDataValue()</code> returns the result of the data value multiplied with the multiplier.</li>
  * </ul>
- *
+ * 
  */
 public class DataRecord {
 
@@ -64,7 +55,7 @@ public class DataRecord {
 
     /**
      * Function coded in the DIB
-     *
+     * 
      */
     public enum FunctionField {
         /**
@@ -87,7 +78,7 @@ public class DataRecord {
 
     /**
      * Data description stored in the VIB
-     *
+     * 
      */
     public enum Description {
         ENERGY,
@@ -119,6 +110,7 @@ public class DataRecord {
         CUSTOMER,
         RESERVED,
         OPERATING_TIME_BATTERY,
+        RF_LEVEL,
         HCA,
         REACTIVE_ENERGY,
         TEMPERATURE_LIMIT,
@@ -204,7 +196,7 @@ public class DataRecord {
         return rawData;
     }
 
-    int decode(byte[] buffer, int offset, int length) throws DecodingException {
+    int decode(byte[] buffer, int offset) throws DecodingException {
         int i = offset;
 
         decodeDib(buffer, i);
@@ -280,10 +272,12 @@ public class DataRecord {
                 break;
             case 0x02: /* INT16 */
                 if (dateTypeG) {
-                    int day = (0x1f) & buffer[i];
-                    int year1 = ((0xe0) & buffer[i++]) >> 5;
-                    int month = (0x0f) & buffer[i];
-                    int year2 = ((0xf0) & buffer[i++]) >> 1;
+                    int day = (0x1f) & buffer[i]; // Byte 1; Bit 1-5
+                    int year1 = ((0xe0) & buffer[i++]) >> 5; // Byte 1: Bit 6-8
+
+                    int month = (0x0f) & buffer[i]; // Byte 2: Bit 9-12
+                    int year2 = ((0xf0) & buffer[i++]) >> 1; // Byte 2: Bit 13-16
+
                     int year = (2000 + year1 + year2);
 
                     Calendar calendar = Calendar.getInstance();
@@ -292,6 +286,10 @@ public class DataRecord {
 
                     dataValue = calendar.getTime();
                     dataValueType = DataValueType.DATE;
+                } else if ((buffer[i + 1] & 0x80) == 0x80) {
+                    // negative
+                    dataValue = Long.valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8) | 0xffff << 16);
+                    dataValueType = DataValueType.LONG;
                 } else {
                     dataValue = Long.valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8));
                     dataValueType = DataValueType.LONG;
@@ -310,13 +308,18 @@ public class DataRecord {
                 break;
             case 0x04: /* INT32 */
                 if (dateTypeF) {
-                    int min = (buffer[i++] & 0x3f);
-                    int hour = (buffer[i] & 0x1f);
-                    int yearh = (0x60 & buffer[i++]) >> 5;
-                    int day = (buffer[i] & 0x1f);
-                    int year1 = (0xe0 & buffer[i++]) >> 5;
-                    int mon = (buffer[i] & 0x0f);
-                    int year2 = (0xf0 & buffer[i++]) >> 1;
+                    Calendar calendar = Calendar.getInstance();
+                    int min = (buffer[i++] & 0x3f); // Byte 1: Bit 1-6
+
+                    int hour = (buffer[i] & 0x1f); // Byte 2: Bit 9-13
+                    int yearh = (0x60 & buffer[i]) >> 5; // Byte 2: Bit 14-15
+                    int dst = (0x80 & buffer[i++]) >> 7; // Byte 2: Bit 16
+
+                    int day = (buffer[i] & 0x1f); // Byte 3: Bit 17-21
+                    int year1 = (0xe0 & buffer[i++]) >> 5; // Byte 3: Bit 22-24
+
+                    int mon = (buffer[i] & 0x0f); // Byte 4: Bit 25-28
+                    int year2 = (0xf0 & buffer[i++]) >> 1; // Byte 4: Bit 29-32
 
                     if (yearh == 0) {
                         yearh = 1;
@@ -324,15 +327,17 @@ public class DataRecord {
 
                     int year = 1900 + 100 * yearh + year1 + year2;
 
-                    Calendar calendar = Calendar.getInstance();
-
                     calendar.set(year, mon - 1, day, hour, min, 0);
+
+                    if (dst == 1) {
+                        calendar.set(Calendar.DST_OFFSET, 60000);
+                    }
 
                     dataValue = calendar.getTime();
                     dataValueType = DataValueType.DATE;
                 } else {
-                    dataValue = Long.valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8)
-                            | ((buffer[i++] & 0xff) << 16) | ((buffer[i++] & 0xff) << 24));
+                    dataValue = (long) ByteBuffer.wrap(buffer, i, 4).order(ByteOrder.LITTLE_ENDIAN).getInt();
+                    i += 4;
                     dataValueType = DataValueType.LONG;
                 }
                 break;
@@ -345,22 +350,20 @@ public class DataRecord {
             case 0x06: /* INT48 */
                 if ((buffer[i + 5] & 0x80) == 0x80) {
                     // negative
-                    dataValue = Long
-                            .valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8) | ((buffer[i++] & 0xff) << 16)
-                                    | ((buffer[i++] & 0xff) << 24) | (((long) buffer[i++] & 0xff) << 32)
-                                    | (((long) buffer[i++] & 0xff) << 40) | (0xffl << 48) | (0xffl << 56));
+                    dataValue = Long.valueOf(
+                            (buffer[i++] & 0xffL) | ((buffer[i++] & 0xffL) << 8) | ((buffer[i++] & 0xffL) << 16)
+                                    | ((buffer[i++] & 0xffL) << 24) | ((buffer[i++] & 0xffL) << 32)
+                                    | ((buffer[i++] & 0xffL) << 40) | (0xffL << 48) | (0xffL << 56));
                 } else {
-                    dataValue = Long.valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8)
-                            | ((buffer[i++] & 0xff) << 16) | ((buffer[i++] & 0xff) << 24)
-                            | (((long) buffer[i++] & 0xff) << 32) | (((long) buffer[i++] & 0xff) << 40));
+                    dataValue = Long.valueOf((buffer[i++] & 0xffL) | ((buffer[i++] & 0xffL) << 8)
+                            | ((buffer[i++] & 0xffL) << 16) | ((buffer[i++] & 0xffL) << 24)
+                            | ((buffer[i++] & 0xffL) << 32) | ((buffer[i++] & 0xffL) << 40));
                 }
                 dataValueType = DataValueType.LONG;
                 break;
             case 0x07: /* INT64 */
-                dataValue = Long.valueOf((buffer[i++] & 0xff) | ((buffer[i++] & 0xff) << 8)
-                        | ((buffer[i++] & 0xff) << 16) | ((buffer[i++] & 0xff) << 24)
-                        | (((long) buffer[i++] & 0xff) << 32) | (((long) buffer[i++] & 0xff) << 40)
-                        | (((long) buffer[i++] & 0xff) << 48) | (((long) buffer[i++] & 0xff) << 56));
+                dataValue = ByteBuffer.wrap(buffer, i, 8).order(ByteOrder.LITTLE_ENDIAN).getLong();
+                i += 8;
                 dataValueType = DataValueType.LONG;
                 break;
             case 0x09:
@@ -396,11 +399,6 @@ public class DataRecord {
                 } else {
                     throw new DecodingException("Unsupported LVAR Field: " + variableLength);
                 }
-
-                // TODO check this:
-                // if (variableLength >= 0xc0) {
-                // throw new DecodingException("Variable length (LVAR) field >= 0xc0: " + variableLength);
-                // }
 
                 byte[] rawData = new byte[dataLength0x0d];
 
@@ -464,7 +462,7 @@ public class DataRecord {
 
     /**
      * Returns a byte array containing the DIB (i.e. the DIF and the DIFEs) contained in the data record.
-     *
+     * 
      * @return a byte array containing the DIB
      */
     public byte[] getDib() {
@@ -473,7 +471,7 @@ public class DataRecord {
 
     /**
      * Returns a byte array containing the VIB (i.e. the VIF and the VIFEs) contained in the data record.
-     *
+     * 
      * @return a byte array containing the VIB
      */
     public byte[] getVib() {
@@ -484,7 +482,7 @@ public class DataRecord {
      * Returns the decoded data field of the data record as an Object. The Object is of one of the four types Long,
      * Double, String or Date depending on information coded in the DIB/VIB. The DataType can be checked using
      * getDataValueType().
-     *
+     * 
      * @return the data value
      */
     public Object getDataValue() {
@@ -498,13 +496,17 @@ public class DataRecord {
     /**
      * Returns the data (value) multiplied by the multiplier as a Double. If the data is not a number than null is
      * returned.
-     *
+     * 
      * @return the data (value) multiplied by the multiplier as a Double
      */
     public Double getScaledDataValue() {
-        try {
-            return ((Number) dataValue).doubleValue() * Math.pow(10, multiplierExponent);
-        } catch (ClassCastException e) {
+        if (dataValue != null) {
+            try {
+                return ((Number) dataValue).doubleValue() * Math.pow(10, multiplierExponent);
+            } catch (ClassCastException e) {
+                return null;
+            }
+        } else {
             return null;
         }
     }
@@ -540,7 +542,7 @@ public class DataRecord {
     /**
      * The multiplier is coded in the VIF. Is always a power of 10. This function returns the exponent. The base is
      * always 10.
-     *
+     * 
      * @return the exponent of the multiplier.
      */
     public int getMultiplierExponent() {
@@ -567,7 +569,7 @@ public class DataRecord {
         }
     }
 
-    private int decodeUserDefinedVif(byte[] buffer, int offset) throws DecodingException {
+    private int decodeUserDefinedVif(byte[] buffer, int offset) {
 
         int length = buffer[offset];
         StringBuilder sb = new StringBuilder();
@@ -894,7 +896,7 @@ public class DataRecord {
             description = Description.RESERVED;
         } else if ((vif & 0x7c) == 0x24) { // E010 01nn
             description = Description.STORAGE_INTERVALL;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7f) == 0x28) { // E010 1000
             description = Description.STORAGE_INTERVALL;
             unit = DlmsUnit.MONTH;
@@ -908,19 +910,13 @@ public class DataRecord {
             unit = DlmsUnit.SECOND;
         } else if ((vif & 0x7c) == 0x2c) { // E010 11nn
             description = Description.DURATION_LAST_READOUT;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7c) == 0x30) { // E011 00nn
             description = Description.TARIF_DURATION;
-            switch (vif & 0x03) {
-                case 0: // E011 0000
-                    description = Description.NOT_SUPPORTED; // TODO: TARIF_START (Date/Time)
-                    break;
-                default:
-                    this.unit = unitFor(vif);
-            }
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7c) == 0x34) { // E011 01nn
             description = Description.TARIF_PERIOD;
-            this.unit = unitFor(vif);
+            this.unit = timeUnitFor(vif);
         } else if ((vif & 0x7f) == 0x38) { // E011 1000
             description = Description.TARIF_PERIOD;
             unit = DlmsUnit.MONTH;
@@ -960,7 +956,8 @@ public class DataRecord {
         } else if ((vif & 0x7f) == 0x70) { // E111 0000
             description = Description.NOT_SUPPORTED; // TODO: BATTERY_CHANGE_DATE_TIME
         } else if ((vif & 0x7f) == 0x71) { // E111 0001
-            description = Description.NOT_SUPPORTED; // TODO: RF_LEVEL dBm
+            description = Description.RF_LEVEL;
+            this.unit = DlmsUnit.SIGNAL_STRENGTH;
         } else if ((vif & 0x7f) == 0x72) { // E111 0010
             description = Description.NOT_SUPPORTED; // TODO: DAYLIGHT_SAVING (begin, ending, deviation)
         } else if ((vif & 0x7f) == 0x73) { // E111 0011
@@ -995,7 +992,7 @@ public class DataRecord {
         }
     }
 
-    private static DlmsUnit unitFor(byte vif) throws DecodingException {
+    private static DlmsUnit timeUnitFor(byte vif) throws DecodingException {
         int u = vif & 0x03;
         switch (u) {
             case 0: // E010 1100
@@ -1315,8 +1312,8 @@ public class DataRecord {
     @Override
     public String toString() {
 
-        StringBuilder builder = new StringBuilder().append("DIB:").append(printHexBinary(dib)).append(", VIB:")
-                .append(printHexBinary(vib)).append(" -> descr:").append(description);
+        StringBuilder builder = new StringBuilder().append("DIB:").append(HexUtils.bytesToHex(dib)).append(", VIB:")
+                .append(HexUtils.bytesToHex(vib)).append(" -> descr:").append(description);
 
         if (description == Description.USER_DEFINED) {
             builder.append(" :").append(getUserDefinedDescription());

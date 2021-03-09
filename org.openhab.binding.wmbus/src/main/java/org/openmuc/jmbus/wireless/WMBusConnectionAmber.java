@@ -67,7 +67,14 @@ class WMBusConnectionAmber extends AbstractWMBusConnection {
                     this.transportLayer.setTimeout(MESSAGE_FRAGEMENT_TIMEOUT);
                     b1 = is.read();
 
+                    if (b0 == 0xff && b1 == 0x03) {
+                        // it's optional if UART_CMD_Out_Enable is enabled on amber module
+                        // then you will get also CRC at the end of message frame
+                        continue;
+                    }
+
                     if ((b1 ^ MBUS_BL_CONTROL) == 0) {
+                        // we found beginning of mBUS frame, in the b0 will be the length of message
                         break;
                     }
 
@@ -82,13 +89,13 @@ class WMBusConnectionAmber extends AbstractWMBusConnection {
                 }
             }
 
-            int len = (b0 & 0xff) + 1;
-            byte[] data = new byte[2 + len];
+            int length = (b0 & 0xff) + 1; // +1 because length don't count the length byte itself
+            byte[] data = new byte[length];
 
             data[0] = (byte) b0;
             data[1] = (byte) b1;
 
-            int readLength = len - 2;
+            int readLength = length - 2; // we already have first two bytes
             int actualLength = is.read(data, 2, readLength);
 
             if (readLength != actualLength) {
@@ -96,7 +103,22 @@ class WMBusConnectionAmber extends AbstractWMBusConnection {
                 return;
             }
 
-            notifyListener(data);
+            if (is.available() > 0) {
+                // if there is one more bit it will be CRC, it's optional
+                byte crc = is.readByte();
+                byte countedCRC = (byte) (0xFF ^ 0x03);
+                for (byte element : data) {
+                    countedCRC = (byte) (countedCRC ^ element);
+                }
+                if (crc == countedCRC) {
+                    notifyListener(data);
+                } else {
+                    notifyDiscarded(data);
+                }
+            } else {
+                // parse data without CRC check
+                notifyListener(data);
+            }
 
             if (discardBuffer.position() > 0) {
                 discard(discardBuffer.array(), 0, discardBuffer.position());

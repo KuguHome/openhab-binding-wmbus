@@ -17,8 +17,7 @@ import java.util.Map;
  */
 public interface Processor<T> {
 
-  String RSSI = "rssi";
+    String RSSI = "rssi";
 
-  T process(T frame, Map<String, Object> context);
-
+    T process(T frame, Map<String, Object> context);
 }

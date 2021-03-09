@@ -56,6 +56,7 @@ class TcpLayer implements TransportLayer {
             close();
             throw new IOException("Error getting output or input stream from TCP connection.", e);
         }
+        flushInputStream();
     }
 
     @Override
@@ -94,5 +95,22 @@ class TcpLayer implements TransportLayer {
     @Override
     public int getTimeout() throws IOException {
         return client.getSoTimeout();
+    }
+
+    /**
+     * Flushes the input stream if it contains readable bytes
+     * 
+     * @throws IOException
+     *             if an error occurs while reading the input stream.
+     */
+    private void flushInputStream() throws IOException {
+        try {
+            while (is.available() > 0) {
+                is.readFully(new byte[is.available()]);
+            }
+        } catch (IOException e) {
+            close();
+            throw new IOException("Error flushing input stream from TCP connection.", e);
+        }
     }
 }

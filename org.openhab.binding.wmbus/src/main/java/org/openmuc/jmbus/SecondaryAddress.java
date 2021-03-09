@@ -11,8 +11,6 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.util.Arrays;
 
-import javax.xml.bind.DatatypeConverter;
-
 /**
  * This class represents a secondary address. Use the static initializer to initialize the
  */
@@ -52,7 +50,7 @@ public class SecondaryAddress implements Comparable<SecondaryAddress> {
      *            the offset.
      * @return a new secondary address.
      */
-    public static SecondaryAddress newFromWMBusLlHeader(byte[] buffer, int offset) {
+    public static SecondaryAddress newFromWMBusHeader(byte[] buffer, int offset) {
         return new SecondaryAddress(buffer, offset, false);
     }
 
@@ -71,15 +69,22 @@ public class SecondaryAddress implements Comparable<SecondaryAddress> {
      * @throws NumberFormatException
      *             if the idNumber is not long enough.
      */
-    public static SecondaryAddress newFromManufactureId(byte[] idNumber, String manufactureId, byte version, byte media)
-            throws NumberFormatException {
+    public static SecondaryAddress newFromManufactureId(byte[] idNumber, String manufactureId, byte version, byte media,
+            boolean longHeader) throws NumberFormatException {
         if (idNumber.length != ID_NUMBER_LENGTH) {
             throw new NumberFormatException("Wrong length of ID. Length must be " + ID_NUMBER_LENGTH + " byte.");
         }
 
         byte[] mfId = encodeManufacturerId(manufactureId);
-        byte[] buffer = ByteBuffer.allocate(idNumber.length + mfId.length + 1 + 1).put(idNumber).put(mfId).put(version)
-                .put(media).array();
+
+        ByteBuffer byteBuffer = ByteBuffer.allocate(idNumber.length + mfId.length + 1 + 1);
+        if (longHeader) {
+            byteBuffer.put(idNumber).put(mfId);
+        } else {
+            byteBuffer.put(mfId).put(idNumber);
+        }
+        byte[] buffer = byteBuffer.put(version).put(media).array();
+
         return new SecondaryAddress(buffer, 0, true);
     }
 
@@ -136,7 +141,7 @@ public class SecondaryAddress implements Comparable<SecondaryAddress> {
     public String toString() {
         return new StringBuilder().append("manufacturer ID: ").append(manufacturerId).append(", device ID: ")
                 .append(deviceId).append(", device version: ").append(version).append(", device type: ")
-                .append(deviceType).append(", as bytes: ").append(DatatypeConverter.printHexBinary(bytes)).toString();
+                .append(deviceType).append(", as bytes: ").append(HexUtils.bytesToHex(bytes)).toString();
     }
 
     @Override

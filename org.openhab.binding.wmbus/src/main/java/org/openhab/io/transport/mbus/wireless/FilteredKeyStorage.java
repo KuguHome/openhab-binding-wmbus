@@ -61,6 +61,6 @@ public class FilteredKeyStorage implements KeyStorage {
     }
 
     private SecondaryAddress createKey(byte[] address) {
-        return SecondaryAddress.newFromWMBusLlHeader(address, 0);
+        return SecondaryAddress.newFromWMBusHeader(address, 0);
     }
 }
