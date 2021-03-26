@@ -2,11 +2,11 @@
 
 This is a binding for the [openHAB](https://www.openhab.org/) / eclipse Smart Home home automation system. It aims to make data available to the user, which is already sent by lots of modern metering hardware (e.g. heat cost allocators, electricity/gas/water/heat meters) already widely deployed in houses and especially flats.
 
-The binding is based on the [jMBus](https://www.openmuc.org/m-bus/) library, which provides all basic receiving and decoding. It is currently using [a fork](https://github.com/kaikreuzer/jmbus) of version 3.1.1 to make it work within openHAB.
+The binding is based on the [jMBus](https://www.openmuc.org/m-bus/) library, which provides all basic receiving and decoding. It is currently using version 3.1.1 plus one extension for access to the RAW frame.
 Implementation of the Techem devices has been ported from [FHEM](https://forum.fhem.de/index.php/topic,42232.html).
 
-The binding is working stable. To use it, you need a device to receive the transmissions. The underlying library  supports transceivers of Amber, Radiocrafts (RC1180-MBUS) and IMST (iM871A-USB), the binding is mainly developed and tested with the [Amber Wireless AMB8465-M](https://www.amber-wireless.de/de/produkte/wireless-m-bus/alle-usb-sticks/wireless-m-bus-868-mhz-usb-stick-int-antenne-amb8465-m.html).
-However, development is still going on and there are some known issues. One is, that sometimes when changing settings etc. to the stick, the serial port native parts segfault and the whole openHAB is restarting. This seems to be caused by a bug in the serial library or the jMBus library.
+The binding is working stable. To use it, you need a device to receive the transmissions. The underlying library supports transceivers of Amber, Radiocrafts (RC1180-MBUS) and IMST (iM871A-USB), the binding is mainly developed and tested with the [Amber Wireless AMB8465-M](https://www.we-online.de/catalog/en/USB_RADIO_STICK_METERING).
+However, development is still going on and there are some known issues.
 
 ### Features:
 * Receive WMBus frames as inbox discovery results
@@ -39,23 +39,23 @@ There is some more information and discussion [in the forum](https://community.o
 ![Diagram in HABmin, fed by several HKVs ](doc/diagrams.png)
 
 ## Install
-1. Drop the .jar from https://github.com/KuguHome/openhab-binding-wmbus/releases (or your own build, see below) into your openHAB2 Karaf deploy directory, e.g. `openhab2/addons` or `/usr/share/openhab2/addons/`.
+1. Drop the .jar from https://github.com/KuguHome/openhab-binding-wmbus/releases (or your own build, see below) into your openHAB Karaf deploy directory, e.g. `openhab/addons` or `/usr/share/openhab/addons/`.
 2. It should get picked up automatically and started by Karaf.
 3. Run `bundle:list` in the [OSGi console](https://www.openhab.org/docs/administration/console.html), it should show a `wmbus` bundle in active state. If it is there but not active yet, try `feature:install openhab-transport-serial` or `bundle:start XXX` where `XXX` is the number of the wmbus bundle shown by the `list` command.
-4. Open PaperUI in the browser.
-5. Check that Configuration -> Bindings lists the WMBus Binding.
-6. Go to Configuration -> Things.
+4. Open OH3 UI in the browser.
+5. Check that `Settings` -> `Things` -> `(+)` lists the WMBus Binding.
+6. Configure WMBus Binding: Set `include the BridgeUID (stick/adapter name) into the ThingUID of the metering device` to `true`.
 7. Manually add new WMBus Binding Thing -> WMBus Stick (exactly one).
-8. Select/enter serial device (e.g. /dev/ttyUSB0, check via `dmesg` when plugging in the stick) as configuration parameter.
+8. Select/enter serial device (e.g. `/dev/ttyUSB0`, check via `dmesg` when plugging in the stick) as configuration parameter.
 9. Select receiving mode. T is most common, will also receive frames sent in mode C. S is transmitting only rarely.
-10. The Thing should show `ONLINE` as status. If not, edit the Thing, this screen should include some more error details, also check OSGi console and `userdata/logs/openhab.log` or `/var/log/oppenhab2/openhab.log`.
+10. The Thing should show `ONLINE` as status. If not, edit the Thing, this screen should include some more error details, also check OSGi console and `userdata/logs/openhab.log` or `/var/log/oppenhab/openhab.log`.
 11. If everything is working correctly, devices should be discovered automatically and turn up as new Things in the Inbox as soon as a message is received from them. Manually adding the devices is not necessary, also the active search function when adding a Thing does nothing. Everything goes throught the discovery.
 12. Search your devices in the Inbox by the ID that is printed outside or shown on the display (e.g. Techem HKVs display the last 4 digits) and add those devices via the checkmark button. Make sure "Item Linking Simple Mode" is activated or link the channels to items yourself.
 13. On the "Control" page, the Thing with it's different channels should display, readings should be updated regularly about every 4 minutes:
   * Room/radiator temperature etc. are always current (at the time of sending/receiving the message).
   * Some device's "Current Reading" will only update once each day.
 14. If a Persistence Add-on (e.g. InfluxDB) is installed, the readings will also be stored into the database.
-15. In HABmin or HABPanel, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
+15. In OH3 UI, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
 16. If any Exceptions or other messages turn up in the logs or console, please let us know and open an issue here.
 
 ### Encrypted messages
@@ -68,7 +68,7 @@ If your device is encrypted, you will need to get the AES key from the manufactu
 ## Build
 
 1. Run `mvn package` in the root directory..
-2. The compilation result will be at `org.openhab.binding.wmbus/target/org.openhab.binding.wmbus-2.3.0-SNAPSHOT.jar`.
+2. The compilation result will be at `org.openhab.binding.wmbus/target/org.openhab.binding.wmbus-3.1.0-SNAPSHOT.jar`.
 
 ## Development
 
@@ -76,7 +76,7 @@ If your device is encrypted, you will need to get the AES key from the manufactu
 2. Clone this repository.
 3. File - Import - Maven - Existing Maven Projects. Give path to this git repository, select all three projects, add project to working set "WMBus" or similar.
 
-For debugging and development, it is helpful to add the folloing to `/var/lib/openhab2/etc/org.ops4j.pax.logging.cfg` to log to a separate file `/var/log/openhab2/wmbus.log`
+For debugging and development, it is helpful to add the folloing to `/var/lib/openhab/etc/org.ops4j.pax.logging.cfg` to log to a separate file `/var/log/openhab/wmbus.log`
 
 ```
 # Define WMBus file appender
@@ -100,8 +100,8 @@ log4j2.logger.org_openhab_binding_wmbus.appenderRef.wmbus.ref = WMBUS
 ```
 
 ## Raw tool
-There is an additional tool, that compiles as a second .jar file `org.openhab.binding.wmbus.tools-2.3.0-SNAPSHOT.jar` (also available from the releases page). If you drop this bundle into your addons folder or install it otherwise to openHAB, you can access the tool at http://localhost:8080/wmbus. It gives you the ability to inject frames to the binding, as if they were received via a stick. There is also a collector, which lists you each received WMbus frame as raw hex, together with timestamp and basic grouping (ID, Manufacturer, device type).
-If you add the following lines to `/var/lib/openhab2/etc/org.ops4j.pax.logging.cfg`, you can also log all frames to a plaintext file `wmbustools.log`. The content of that file can later be fed to the injector.
+There is an additional tool, that compiles as a second .jar file `org.openhab.binding.wmbus.tools-3.1.0-SNAPSHOT.jar` (also available from the releases page). If you drop this bundle into your addons folder or install it otherwise to openHAB, you can access the tool at http://localhost:8080/wmbus. It gives you the ability to inject frames to the binding, as if they were received via a stick. There is also a collector, which lists you each received WMbus frame as raw hex, together with timestamp and basic grouping (ID, Manufacturer, device type).
+If you add the following lines to `/var/lib/openhab/etc/org.ops4j.pax.logging.cfg`, you can also log all frames to a plaintext file `wmbustools.log`. The content of that file can later be fed to the injector.
 
 ```
 # Define WMBus Tools file appender

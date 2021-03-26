@@ -1,11 +1,11 @@
 package org.openhab.binding.wmbus.device.techem;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.core.thing.binding.ThingHandler;
-import org.eclipse.smarthome.core.thing.internal.ThingImpl;
 import org.junit.Before;
 import org.junit.Test;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
+import org.openhab.core.thing.binding.ThingHandler;
+import org.openhab.core.thing.internal.ThingImpl;
 
 public class TechemHandlerFactoryTest implements TechemBindingConstants {
 
@@ -71,5 +71,4 @@ public class TechemHandlerFactoryTest implements TechemBindingConstants {
         ThingHandler handler = handlerFactory.createHandler(thing);
         Assertions.assertThat(handler).isNotNull();
     }
-
 }

@@ -3,8 +3,6 @@ package org.openhab.binding.wmbus.device.techem;
 import static org.mockito.Mockito.when;
 
 import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.config.discovery.DiscoveryResult;
-import org.eclipse.smarthome.core.thing.ThingUID;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,6 +13,8 @@ import org.openhab.binding.wmbus.device.AbstractWMBusTest;
 import org.openhab.binding.wmbus.device.techem.decoder.CompositeTechemFrameDecoder;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.internal.DynamicBindingConfiguration;
+import org.openhab.core.config.discovery.DiscoveryResult;
+import org.openhab.core.thing.ThingUID;
 import org.openmuc.jmbus.DecodingException;
 
 @RunWith(MockitoJUnitRunner.class)
@@ -106,5 +106,4 @@ public class TechemDiscoveryTest extends AbstractWMBusTest implements TechemBind
 
         return discoverer.createResult(message(message, adapter));
     }
-
 }

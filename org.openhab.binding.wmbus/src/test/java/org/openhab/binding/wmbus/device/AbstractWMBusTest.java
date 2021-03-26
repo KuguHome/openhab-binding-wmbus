@@ -2,9 +2,9 @@ package org.openhab.binding.wmbus.device;
 
 import java.util.Collections;
 
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -39,7 +39,6 @@ public class AbstractWMBusTest {
     public final static String MESSAGE_118_SD_2 = "294468508364866476F0A000DE246F2500586F25010019000013006BA1007CB2008DC3009ED4000FE500F40000";
     public final static String MESSAGE_118_SD_3 = "294468501857639176f0a000e3267b2700dc7b2700000e0001315678006ba1007cb2008dc3009ed4000fe5";
 
-
     public final static int RSSI = 10;
 
     protected final WMBusDevice message(String messageHex) throws DecodingException {
@@ -52,5 +51,4 @@ public class AbstractWMBusTest {
 
         return new WMBusDevice(message, adapter);
     }
-
 }

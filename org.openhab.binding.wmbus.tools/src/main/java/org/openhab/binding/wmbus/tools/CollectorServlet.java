@@ -26,10 +26,10 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.commons.io.IOUtils;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.SecondaryAddress;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;

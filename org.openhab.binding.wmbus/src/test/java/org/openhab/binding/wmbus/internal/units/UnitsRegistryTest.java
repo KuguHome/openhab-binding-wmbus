@@ -13,10 +13,9 @@ package org.openhab.binding.wmbus.internal.units;
  *
  * @author Łukasz Dywicki - Initial contribution.
  */
-public class SmartHomeUnitsRegistryTest extends BaseUnitRegistryTest {
+public class UnitsRegistryTest extends BaseUnitRegistryTest {
 
-    public SmartHomeUnitsRegistryTest() {
-        super(new SmartHomeUnitsRegistry());
+    public UnitsRegistryTest() {
+        super(new UnitsRegistry());
     }
-
 }

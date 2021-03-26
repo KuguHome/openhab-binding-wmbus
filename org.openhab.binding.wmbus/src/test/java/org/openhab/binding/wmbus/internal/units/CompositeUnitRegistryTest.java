@@ -9,7 +9,7 @@
 package org.openhab.binding.wmbus.internal.units;
 
 /**
- * Test of {@link CompositeUnitRegistry} with {@link SmartHomeUnitsRegistry}.
+ * Test of {@link CompositeUnitRegistry} with {@link UnitsRegistry}.
  *
  * They should behave in same way together.
  *
@@ -18,7 +18,6 @@ package org.openhab.binding.wmbus.internal.units;
 public class CompositeUnitRegistryTest extends BaseUnitRegistryTest {
 
     public CompositeUnitRegistryTest() {
-        super(new CompositeUnitRegistry(new SmartHomeUnitsRegistry()));
+        super(new CompositeUnitRegistry(new UnitsRegistry()));
     }
-
 }

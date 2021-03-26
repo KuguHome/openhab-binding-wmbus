@@ -3,11 +3,11 @@ package org.openhab.binding.wmbus.device.itron;
 import static org.assertj.core.api.Assertions.*;
 
 import java.time.LocalDateTime;
-import org.assertj.core.api.Assertions;
-import org.eclipse.smarthome.core.util.HexUtils;
+
 import org.junit.Ignore;
 import org.junit.Test;
 import org.openhab.binding.wmbus.device.techem.decoder.Buffer;
+import org.openhab.core.util.HexUtils;
 
 public class ItronManufacturerDataParserTest {
 
@@ -23,21 +23,19 @@ public class ItronManufacturerDataParserTest {
     @Test
     public void testShortDate() {
         assertThat(new ItronManufacturerDataParser(new Buffer(_2019_12_29_0313)).readShortDateTime())
-            .isEqualTo(LocalDateTime.of(2019, 12, 29, 3, 13));
+                .isEqualTo(LocalDateTime.of(2019, 12, 29, 3, 13));
 
         assertThat(new ItronManufacturerDataParser(new Buffer(_2020_01_09_1241)).readShortDateTime())
-            .isEqualTo(LocalDateTime.of(2020, 1, 9, 12, 41));
+                .isEqualTo(LocalDateTime.of(2020, 1, 9, 12, 41));
 
         assertThat(new ItronManufacturerDataParser(new Buffer(_2020_01_08_2121)).readShortDateTime())
-            .isEqualTo(LocalDateTime.of(2020, 1, 8, 21, 21));
+                .isEqualTo(LocalDateTime.of(2020, 1, 8, 21, 21));
     }
 
     @Test
     @Ignore // parsing logic is not yet done
     public void testLongDate() {
         assertThat(new ItronManufacturerDataParser(new Buffer(_2020_01_10_132057)).readLongDateTime())
-            .isEqualTo(LocalDateTime.of(2020, 1, 10, 13, 20, 57));
-
+                .isEqualTo(LocalDateTime.of(2020, 1, 10, 13, 20, 57));
     }
-
 }

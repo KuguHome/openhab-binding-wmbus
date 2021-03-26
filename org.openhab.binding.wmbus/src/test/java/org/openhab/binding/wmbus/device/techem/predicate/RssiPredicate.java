@@ -11,5 +11,4 @@ public class RssiPredicate extends IntegerPredicate {
     public String description() {
         return "Missing RSSI record, with expected value %d";
     }
-
 }

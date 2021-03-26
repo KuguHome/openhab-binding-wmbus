@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 
 package org.openhab.binding.wmbus.device.techem.handler;
@@ -18,18 +22,6 @@ import java.util.Optional;
 import javax.measure.Quantity;
 
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.library.CoreItemFactory;
-import org.eclipse.smarthome.core.library.types.DateTimeType;
-import org.eclipse.smarthome.core.library.types.DecimalType;
-import org.eclipse.smarthome.core.library.types.QuantityType;
-import org.eclipse.smarthome.core.thing.Channel;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
-import org.eclipse.smarthome.core.types.Command;
-import org.eclipse.smarthome.core.types.RefreshType;
-import org.eclipse.smarthome.core.types.State;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.device.techem.Record;
@@ -38,6 +30,17 @@ import org.openhab.binding.wmbus.device.techem.TechemBindingConstants;
 import org.openhab.binding.wmbus.device.techem.TechemDevice;
 import org.openhab.binding.wmbus.device.techem.decoder.TechemFrameDecoder;
 import org.openhab.binding.wmbus.handler.WMBusDeviceHandler;
+import org.openhab.core.library.CoreItemFactory;
+import org.openhab.core.library.types.DateTimeType;
+import org.openhab.core.library.types.DecimalType;
+import org.openhab.core.library.types.QuantityType;
+import org.openhab.core.thing.Channel;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingTypeUID;
+import org.openhab.core.types.Command;
+import org.openhab.core.types.RefreshType;
+import org.openhab.core.types.State;
 import org.openmuc.jmbus.DecodingException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -84,17 +87,22 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
                         if (channel != null) {
                             acceptedType = channel.getAcceptedItemType();
                         }
-                        if (CoreItemFactory.DATETIME.equals(acceptedType) && DateFieldMode.DATE_TIME == getDateFieldMode()) {
+                        if (CoreItemFactory.DATETIME.equals(acceptedType)
+                                && DateFieldMode.DATE_TIME == getDateFieldMode()) {
                             record.map(measurement -> map(measurement, measurement.getValue()))
                                     .ifPresent(state -> updateState(channelUID.getId(), state));
-                        } else if (CoreItemFactory.STRING.equals(acceptedType) && DateFieldMode.FORMATTED_STRING == getDateFieldMode()) {
+                        } else if (CoreItemFactory.STRING.equals(acceptedType)
+                                && DateFieldMode.FORMATTED_STRING == getDateFieldMode()) {
                             record.map(measurement -> map(measurement, measurement.getValue()))
                                     .ifPresent(state -> updateState(channelUID.getId(), state));
-                        } else if (CoreItemFactory.NUMBER.equals(acceptedType) && DateFieldMode.UNIX_TIMESTAMP == getDateFieldMode()) {
+                        } else if (CoreItemFactory.NUMBER.equals(acceptedType)
+                                && DateFieldMode.UNIX_TIMESTAMP == getDateFieldMode()) {
                             record.map(measurement -> map(measurement, measurement.getValue()))
                                     .ifPresent(state -> updateState(channelUID.getId(), state));
                         } else {
-                            logger.info("Ignoring update of channel {}, it is date field with no proper mapping available.", channelUID);
+                            logger.info(
+                                    "Ignoring update of channel {}, it is date field with no proper mapping available.",
+                                    channelUID);
                         }
                     } else {
                         record.map(measurement -> map(measurement, measurement.getValue()))
@@ -144,5 +152,4 @@ public class TechemMeterHandler<T extends TechemDevice> extends WMBusDeviceHandl
     private static Map<String, Type> fetchMapping(@NonNull ThingTypeUID thingTypeUID) {
         return TechemBindingConstants.RECORD_MAP.get(thingTypeUID);
     }
-
 }

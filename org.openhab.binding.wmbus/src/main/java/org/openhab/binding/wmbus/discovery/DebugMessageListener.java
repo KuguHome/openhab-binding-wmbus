@@ -1,9 +1,21 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.wmbus.discovery;
 
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.EncryptionMode;
@@ -55,7 +67,5 @@ public class DebugMessageListener implements WMBusMessageListener {
                 logger.debug("Could not decode frame ({})", secondaryAddress, e.getMessage());
             }
         }
-
     }
-
 }

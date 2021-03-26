@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.internal;
 
@@ -15,22 +19,26 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
+
 import javax.measure.Unit;
+
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.library.CoreItemFactory;
-import org.eclipse.smarthome.core.thing.type.ChannelKind;
-import org.eclipse.smarthome.core.thing.type.ChannelType;
-import org.eclipse.smarthome.core.thing.type.ChannelTypeProvider;
-import org.eclipse.smarthome.core.thing.type.ChannelTypeUID;
-import org.eclipse.smarthome.core.types.EventDescription;
-import org.eclipse.smarthome.core.types.StateDescription;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.UnitRegistry;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
+import org.openhab.core.library.CoreItemFactory;
+import org.openhab.core.thing.type.ChannelKind;
+import org.openhab.core.thing.type.ChannelType;
+import org.openhab.core.thing.type.ChannelTypeBuilder;
+import org.openhab.core.thing.type.ChannelTypeProvider;
+import org.openhab.core.thing.type.ChannelTypeUID;
+import org.openhab.core.types.EventDescription;
+import org.openhab.core.types.StateDescription;
+import org.openhab.core.types.StateDescriptionFragmentBuilder;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.DataRecord;
 import org.openmuc.jmbus.DataRecord.DataValueType;
 import org.openmuc.jmbus.DataRecord.Description;
@@ -70,7 +78,7 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     @Override
     public @Nullable ChannelType getChannelType(ChannelTypeUID channelTypeUID, @Nullable Locale locale) {
         return wmbusChannelMap.values().stream().filter(channelType -> channelType.getUID().equals(channelTypeUID))
-            .findFirst().orElse(null);
+                .findFirst().orElse(null);
     }
 
     @Override
@@ -112,13 +120,19 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
                     StateDescription state = getStateDescription(record.getDataValueType(), record.getDescription(),
                             unit, dateFieldMode);
                     EventDescription event = null;
-                    ChannelType channelType = new ChannelType(typeUID, false, itemType.get(), kind, label, description,
-                            category, tags, state, event, null);
+                    ChannelTypeBuilder channelTypeBuilder;
+                    ChannelType channelType = ChannelTypeBuilder.state(channelTypeUID.get(), label, itemType.get())
+                            .isAdvanced(false).withDescription(description).withCategory(category)
+                            .build();/*
+                                      * new ChannelType(typeUID, false, itemType.get(), kind, label,
+                                      * description,
+                                      * category, tags, state, null, event, null, null)
+                                      */
+
                     wmbusChannelMap.put(typeUID.getId(), channelType);
                 }
             }
         }
-
     }
 
     private StateDescription getStateDescription(DataValueType type, Description description,
@@ -134,8 +148,11 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
         boolean date = type == DataValueType.DATE;
 
         String pattern = mappedUnit.map(unit -> formatUnit(false, number, date, dateFieldMode))
-            .orElseGet(() -> formatUnit(true, number, date, dateFieldMode));
-        return new StateDescription(null, null, null, pattern, true, null);
+                .orElseGet(() -> formatUnit(true, number, date, dateFieldMode));
+        StateDescriptionFragmentBuilder stateFragment = StateDescriptionFragmentBuilder.create().withPattern(pattern)
+                .withReadOnly(true);
+        return stateFragment.build()
+                .toStateDescription()/* new StateDescription(null, null, null, pattern, true, null) */;
     }
 
     private String formatUnit(boolean unitless, boolean number, boolean date, DateFieldMode dateFieldMode) {
@@ -232,5 +249,4 @@ public class WMBusChannelTypeProvider implements ChannelTypeProvider, WMBusMessa
     public final static Optional<ChannelTypeUID> getChannelType(DataRecord record) {
         return getChannelId(record).map(id -> new ChannelTypeUID(WMBusBindingConstants.BINDING_ID, id));
     }
-
 }

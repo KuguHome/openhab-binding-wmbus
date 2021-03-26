@@ -8,11 +8,10 @@
  */
 package org.openhab.binding.wmbus.tools;
 
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
-import org.openmuc.jmbus.wireless.WMBusMessage;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
+import org.openhab.core.util.HexUtils;
 import org.osgi.service.component.annotations.Component;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -40,5 +39,4 @@ public class LoggingMessageListener implements WMBusMessageListener {
     private void log(WMBusDevice device) {
         logger.debug(HexUtils.bytesToHex(device.getOriginalMessage().asBlob()));
     }
-
 }

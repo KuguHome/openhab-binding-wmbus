@@ -1,6 +1,19 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.wmbus.device.itron;
 
 import java.util.BitSet;
+
 import org.openhab.binding.wmbus.device.techem.decoder.Buffer;
 
 public class ItronConfigStatusDataParser {
@@ -19,7 +32,7 @@ public class ItronConfigStatusDataParser {
 
     ItronConfigStatusDataParser(Buffer buffer) {
         this.billing = buffer.readByte();
-        this.status = BitSet.valueOf(new byte[] {buffer.readByte()});
+        this.status = BitSet.valueOf(new byte[] { buffer.readByte() });
         this.product = buffer.readByte();
         this.battery = buffer.readByte();
         this.sdErrors = buffer.readBytes(2);
@@ -63,5 +76,4 @@ public class ItronConfigStatusDataParser {
     public int getBatteryLifetime() {
         return (battery & 0xFF) >> 1;
     }
-
 }

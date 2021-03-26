@@ -8,14 +8,25 @@
  */
 package org.openhab.binding.wmbus.tools;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.util.*;
+import java.util.stream.Collectors;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+
 import org.apache.commons.io.IOUtils;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingRegistry;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.tools.processor.*;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingRegistry;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
 import org.openmuc.jmbus.wireless.WMBusMessage;
@@ -27,16 +38,6 @@ import org.osgi.service.http.HttpService;
 import org.osgi.service.http.NamespaceException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.PrintWriter;
-import java.util.*;
-import java.util.stream.Collectors;
 
 /**
  * Very basic servlet which allows to send a test frame to deployed binding.
@@ -109,8 +110,8 @@ public class InjectorServlet extends HttpServlet {
         boolean stripCRC = Optional.ofNullable(req.getParameter("stripCRC")).map(value -> Boolean.TRUE).orElse(false);
         boolean calculateLength = Optional.ofNullable(req.getParameter("calculateLength")).map(value -> Boolean.TRUE)
                 .orElse(false);
-        boolean recalculateLength = Optional.ofNullable(req.getParameter("recalculateLength")).map(value -> Boolean.TRUE)
-                .orElse(false);
+        boolean recalculateLength = Optional.ofNullable(req.getParameter("recalculateLength"))
+                .map(value -> Boolean.TRUE).orElse(false);
 
         List<Processor<String>> processors = new ArrayList<>();
         processors.add(new RssiProcessor(rssiIndex, rssiValue));
@@ -184,5 +185,4 @@ public class InjectorServlet extends HttpServlet {
     public void deactivate() {
         httpService.unregister("/wmbus");
     }
-
 }

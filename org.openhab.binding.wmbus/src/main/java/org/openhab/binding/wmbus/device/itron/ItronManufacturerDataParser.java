@@ -1,3 +1,15 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.wmbus.device.itron;
 
 import java.time.DayOfWeek;
@@ -5,12 +17,13 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.Arrays;
+
 import org.openhab.binding.wmbus.device.techem.decoder.Buffer;
 
 public class ItronManufacturerDataParser {
 
-    private final static byte[] EMPTY_SHORT_DATE_1 = new byte[] {0x0, 0x0, 0x1, 0x1};
-    private final static byte[] EMPTY_SHORT_DATE_2 = new byte[] {0x0, 0x0, 0x0, 0x0};
+    private final static byte[] EMPTY_SHORT_DATE_1 = new byte[] { 0x0, 0x0, 0x1, 0x1 };
+    private final static byte[] EMPTY_SHORT_DATE_2 = new byte[] { 0x0, 0x0, 0x0, 0x0 };
     private final Buffer buffer;
 
     ItronManufacturerDataParser(Buffer buffer) {

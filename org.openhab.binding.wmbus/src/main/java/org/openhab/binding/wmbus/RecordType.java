@@ -1,17 +1,21 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 
 package org.openhab.binding.wmbus;
 
 import java.util.Arrays;
 
-import org.eclipse.smarthome.core.util.HexUtils;
+import org.openhab.core.util.HexUtils;
 import org.openmuc.jmbus.DataRecord;
 
 /**
@@ -29,7 +33,8 @@ public class RecordType {
      * Below combination of dib/vib is intentionally invalid. It is a mark for manufacturer specific data which can be
      * appended as part of standard payload in the frame.
      */
-    public final static RecordType MANUFACTURER_DATA  = new RecordType(new byte[] {0x0, 0x0, 0x0, 0x0}, new byte[] {0x0, 0x0, 0x0, 0x0});
+    public final static RecordType MANUFACTURER_DATA = new RecordType(new byte[] { 0x0, 0x0, 0x0, 0x0 },
+            new byte[] { 0x0, 0x0, 0x0, 0x0 });
 
     private final byte[] dib;
     private final byte[] vib;
@@ -97,5 +102,4 @@ public class RecordType {
         }
         return true;
     }
-
 }

@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
- * <p>
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 
 package org.openhab.binding.wmbus.handler;
@@ -14,25 +18,17 @@ import static org.openhab.binding.wmbus.WMBusBindingConstants.*;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
-import org.eclipse.smarthome.config.core.Configuration;
-import org.eclipse.smarthome.config.core.status.ConfigStatusMessage;
-import org.eclipse.smarthome.core.thing.Bridge;
-import org.eclipse.smarthome.core.thing.ThingStatus;
-import org.eclipse.smarthome.core.thing.ThingStatusDetail;
-import org.openhab.binding.wmbus.WMBusBindingConstants;
-import org.openhab.binding.wmbus.config.DateFieldMode;
+
 import org.openhab.binding.wmbus.config.StickModel;
 import org.openhab.binding.wmbus.config.WMBusSerialBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
+import org.openhab.core.config.core.status.ConfigStatusMessage;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.ThingStatus;
+import org.openhab.core.thing.ThingStatusDetail;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.wireless.WMBusConnection;
 import org.openmuc.jmbus.wireless.WMBusConnection.WMBusManufacturer;
@@ -62,15 +58,18 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
 
         // check stick model
         if (config.stickModel == null) {
-            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_STICK_MODEL).withMessageKeySuffix(CONFKEY_STICK_MODEL).build());
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_STICK_MODEL)
+                    .withMessageKeySuffix(CONFKEY_STICK_MODEL).build());
         }
         // check serial device name
         if (config.serialDevice == null) {
-            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_INTERFACE_NAME).withMessageKeySuffix(CONFKEY_INTERFACE_NAME).build());
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_INTERFACE_NAME)
+                    .withMessageKeySuffix(CONFKEY_INTERFACE_NAME).build());
         }
         // check radio mode
         if (config.radioMode == null) {
-            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_RADIO_MODE).withMessageKeySuffix(CONFKEY_RADIO_MODE).build());
+            messages.add(ConfigStatusMessage.Builder.error(CONFKEY_RADIO_MODE).withMessageKeySuffix(CONFKEY_RADIO_MODE)
+                    .build());
         }
 
         return messages;
@@ -79,7 +78,7 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
     /**
      * Connects to the WMBus radio module and updates bridge status.
      *
-     * @see org.eclipse.smarthome.core.thing.binding.BaseThingHandler#initialize()
+     * @see org.openhab.core.thing.binding.BaseThingHandler#initialize()
      */
     @Override
     public void initialize() {
@@ -95,8 +94,7 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
                 WMBusMode radioMode = config.radioMode;
 
                 // connect to the radio module / open WMBus connection
-                logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName,
-                        radioMode);
+                logger.debug("Opening wmbus stick {} serial port {} in mode {}", stickModel, interfaceName, radioMode);
 
                 WMBusManufacturer wmBusManufacturer = parseManufacturer(stickModel.name().toUpperCase());
                 if (wmBusManufacturer == null) {
@@ -207,5 +205,4 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
             initFuture = null;
         }
     }
-
 }

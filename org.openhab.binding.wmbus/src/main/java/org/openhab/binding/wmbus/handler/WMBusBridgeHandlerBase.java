@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
- * <p>
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.handler;
 
@@ -24,22 +28,23 @@ import java.util.concurrent.ScheduledFuture;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
+
 import org.eclipse.jdt.annotation.NonNull;
-import org.eclipse.smarthome.core.common.ThreadPoolManager;
-import org.eclipse.smarthome.core.library.types.StringType;
-import org.eclipse.smarthome.core.thing.Bridge;
-import org.eclipse.smarthome.core.thing.ChannelUID;
-import org.eclipse.smarthome.core.thing.Thing;
-import org.eclipse.smarthome.core.thing.ThingUID;
-import org.eclipse.smarthome.core.thing.binding.ConfigStatusBridgeHandler;
-import org.eclipse.smarthome.core.thing.binding.ThingHandler;
-import org.eclipse.smarthome.core.types.Command;
-import org.eclipse.smarthome.core.util.HexUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.config.DateFieldMode;
 import org.openhab.binding.wmbus.config.WMBusBridgeConfig;
 import org.openhab.binding.wmbus.internal.WMBusReceiver;
+import org.openhab.core.common.ThreadPoolManager;
+import org.openhab.core.library.types.StringType;
+import org.openhab.core.thing.Bridge;
+import org.openhab.core.thing.ChannelUID;
+import org.openhab.core.thing.Thing;
+import org.openhab.core.thing.ThingUID;
+import org.openhab.core.thing.binding.ConfigStatusBridgeHandler;
+import org.openhab.core.thing.binding.ThingHandler;
+import org.openhab.core.types.Command;
+import org.openhab.core.util.HexUtils;
 import org.openhab.io.transport.mbus.wireless.KeyStorage;
 import org.openmuc.jmbus.DecodingException;
 import org.openmuc.jmbus.wireless.VirtualWMBusMessageHelper;
@@ -119,7 +124,7 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         // below we append thing handlers which are configured for given device address
         ArrayList<WMBusMessageListener> listeners = new ArrayList<>(this.wmBusMessageListeners);
         handlers.stream().filter(h -> device.getDeviceAddress().equals(h.getDeviceAddress()))
-            .collect(Collectors.toCollection(() -> listeners));
+                .collect(Collectors.toCollection(() -> listeners));
 
         for (WMBusMessageListener wmBusMessageListener : listeners) {
             try {
@@ -160,20 +165,24 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         } catch (DecodingException parseException) {
             if (parseException.getMessage().startsWith("Unable to decode encrypted payload")) {
                 try {
-                    WMBusMessage message = VirtualWMBusMessageHelper
-                            .decode(device.getOriginalMessage().asBlob(), device.getOriginalMessage().getRssi(),
-                                    keyStorage.toMap());
+                    WMBusMessage message = VirtualWMBusMessageHelper.decode(device.getOriginalMessage().asBlob(),
+                            device.getOriginalMessage().getRssi(), keyStorage.toMap());
                     message.getVariableDataResponse().decode();
                     logger.info("Message from {} successfully decrypted, forwarding it to receivers",
                             device.getDeviceAddress());
                     return new WMBusDevice(message, this);
                 } catch (DecodingException decodingException) {
                     logger.info(
+                            "Could not decode frame, probably we still miss encryption key, forwarding frame in original form. {}, {}, {}",
+                            decodingException.getMessage(), device.getOriginalMessage().toString(),
+                            keyStorage.toMap().toString());
+                } catch (NoClassDefFoundError decodingException) {
+                    logger.info(
                             "Could not decode frame, probably we still miss encryption key, forwarding frame in original form. {}",
                             decodingException.getMessage());
                 }
-            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:") || parseException
-                    .getMessage().startsWith("Unable to decode message with this CI Field")) {
+            } else if (parseException.getMessage().startsWith("Manufacturer specific CI:")
+                    || parseException.getMessage().startsWith("Unable to decode message with this CI Field")) {
                 logger.debug("Found frame with manufacturer specific encoding, forwarding for futher processing.");
             } else {
                 logger.debug("Unexpected error while parsing frame, forwarding frame in original form", parseException);
@@ -230,7 +239,6 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
         }
     }
 
-
     @Override
     public void childHandlerInitialized(@NonNull ThingHandler childHandler, @NonNull Thing childThing) {
         if (childHandler instanceof WMBusDeviceHandler) {
@@ -252,9 +260,8 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
 
     @Override
     public DateFieldMode getDateFieldMode() {
-        return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class))
-            .map(cfg -> cfg.dateFieldMode)
-            .orElse(DateFieldMode.DATE_TIME);
+        return Optional.ofNullable(getConfigAs(WMBusBridgeConfig.class)).map(cfg -> cfg.dateFieldMode)
+                .orElse(DateFieldMode.DATE_TIME);
     }
 
     static class StatusRunnable implements Runnable {
@@ -265,10 +272,9 @@ public abstract class WMBusBridgeHandlerBase extends ConfigStatusBridgeHandler i
             this.handlers = handlers;
         }
 
-        @Override public void run() {
+        @Override
+        public void run() {
             handlers.stream().forEach(WMBusDeviceHandler::checkStatus);
         }
-
     }
-
 }

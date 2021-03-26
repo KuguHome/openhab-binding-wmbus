@@ -1,75 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-    xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
-    <modelVersion>4.0.0</modelVersion>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
 
-    <parent>
-        <groupId>org.openhab.binding</groupId>
-        <artifactId>wmbus</artifactId>
-        <version>2.5.0-SNAPSHOT</version>
-    </parent>
+  <parent>
+    <groupId>org.openhab.addons.bundles</groupId>
+    <artifactId>wmbus</artifactId>
+    <version>3.1.0-SNAPSHOT</version>
+  </parent>
 
-    <groupId>org.openhab.binding</groupId>
-    <artifactId>org.openhab.binding.wmbus.tools</artifactId>
+  <groupId>org.openhab.addons.bundles</groupId>
+  <artifactId>org.openhab.binding.wmbus.tools</artifactId>
 
-    <name>WMBus Binding Tools</name>
-    
-    <properties>
-        <report.fail.on.error>false</report.fail.on.error>
-    </properties>
+  <name>WMBus Binding Tools</name>
 
-    <dependencies>
-        <dependency>
-            <groupId>org.openhab.binding</groupId>
-            <artifactId>org.openhab.binding.wmbus</artifactId>
-            <version>${project.version}</version>
-        </dependency>
+  <properties>
+    <report.fail.on.error>false</report.fail.on.error>
+  </properties>
 
-        <dependency>
-            <groupId>com.google.guava</groupId>
-            <artifactId>guava</artifactId>
-            <version>20.0</version>
-            <scope>provided</scope>
-        </dependency>
+  <dependencies>
+    <dependency>
+      <groupId>org.openhab.addons.bundles</groupId>
+      <artifactId>org.openhab.binding.wmbus</artifactId>
+      <version>${project.version}</version>
+    </dependency>
 
-        <dependency>
-            <groupId>org.openhab.core.bom</groupId>
-            <artifactId>org.openhab.core.bom.compile</artifactId>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.openhab.core.bom</groupId>
-            <artifactId>org.openhab.core.bom.openhab-core</artifactId>
-            <type>pom</type>
-            <scope>provided</scope>
-        </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <version>20.0</version>
+      <scope>provided</scope>
+    </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>4.12</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.assertj</groupId>
-            <artifactId>assertj-core</artifactId>
-            <version>3.11.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-simple</artifactId>
-            <version>1.7.2</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.mockito</groupId>
-            <artifactId>mockito-core</artifactId>
-            <version>2.23.0</version>
-            <scope>test</scope>
-        </dependency>
+    <dependency>
+      <groupId>org.openhab.core.bom</groupId>
+      <artifactId>org.openhab.core.bom.compile</artifactId>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.openhab.core.bom</groupId>
+      <artifactId>org.openhab.core.bom.openhab-core</artifactId>
+      <type>pom</type>
+      <scope>provided</scope>
+    </dependency>
 
-    </dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <version>4.12</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.assertj</groupId>
+      <artifactId>assertj-core</artifactId>
+      <version>3.11.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.slf4j</groupId>
+      <artifactId>slf4j-simple</artifactId>
+      <version>1.7.2</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.mockito</groupId>
+      <artifactId>mockito-core</artifactId>
+      <version>2.23.0</version>
+      <scope>test</scope>
+    </dependency>
+
+  </dependencies>
 
 </project>

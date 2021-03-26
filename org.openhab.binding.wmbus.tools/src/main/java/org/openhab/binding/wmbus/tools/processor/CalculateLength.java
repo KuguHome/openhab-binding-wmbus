@@ -8,17 +8,16 @@
  */
 package org.openhab.binding.wmbus.tools.processor;
 
-import org.openhab.binding.wmbus.tools.Processor;
-
 import java.util.Map;
+
+import org.openhab.binding.wmbus.tools.Processor;
 
 public class CalculateLength implements Processor<String> {
 
-  @Override
-  public String process(String frame, Map<String, Object> context) {
-    // remember of hex notation which doubles length
-    Integer len = frame.length() / 2;
-    return Integer.toHexString(len) + frame;
-  }
-
+    @Override
+    public String process(String frame, Map<String, Object> context) {
+        // remember of hex notation which doubles length
+        Integer len = frame.length() / 2;
+        return Integer.toHexString(len) + frame;
+    }
 }

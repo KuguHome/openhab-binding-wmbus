@@ -2,6 +2,7 @@ package org.openhab.binding.wmbus.device.techem.predicate;
 
 import javax.measure.Quantity;
 import javax.measure.Unit;
+
 import org.assertj.core.api.Assertions;
 import org.openhab.binding.wmbus.device.techem.Record;
 
@@ -19,8 +20,7 @@ public class QuantityPredicate extends FloatPredicate {
         Assertions.assertThat(value).isInstanceOf(Quantity.class);
 
         Quantity<?> quantity = (Quantity<?>) value;
-        Assertions.assertThat(quantity.getValue().floatValue())
-                .isEqualTo(Double.valueOf(expectedValue).floatValue());
+        Assertions.assertThat(quantity.getValue().floatValue()).isEqualTo(Double.valueOf(expectedValue).floatValue());
         Assertions.assertThat(quantity.getUnit()).isEqualTo(unit);
     }
 

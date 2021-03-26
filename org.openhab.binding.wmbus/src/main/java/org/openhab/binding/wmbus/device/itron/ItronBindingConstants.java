@@ -1,15 +1,30 @@
+/**
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
+ *
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
+ */
 package org.openhab.binding.wmbus.device.itron;
 
 import java.util.Set;
-import org.eclipse.smarthome.core.thing.ThingTypeUID;
+
 import org.openhab.binding.wmbus.WMBusBindingConstants;
+import org.openhab.core.thing.ThingTypeUID;
+
 import com.google.common.collect.ImmutableSet;
 
 public interface ItronBindingConstants {
 
     String ITRON_SMOKE_DETECTOR = "itron_smoke_detector";
 
-    ThingTypeUID THING_TYPE_ITRON_SMOKE_DETECTOR = new ThingTypeUID(WMBusBindingConstants.BINDING_ID, ITRON_SMOKE_DETECTOR);
+    ThingTypeUID THING_TYPE_ITRON_SMOKE_DETECTOR = new ThingTypeUID(WMBusBindingConstants.BINDING_ID,
+            ITRON_SMOKE_DETECTOR);
 
     Set<ThingTypeUID> SUPPORTED_THING_TYPES = ImmutableSet.of(THING_TYPE_ITRON_SMOKE_DETECTOR);
 
@@ -28,9 +43,9 @@ public interface ItronBindingConstants {
     String CHANNEL_STATUS_OUT_OF_TEMP_RANGE_OCCURRED = "status_out_of_temp_range_occurred";
     String CHANNEL_STATUS_PRODUCT_CODE = "status_product_code";
     String CHANNEL_STATUS_BATTERY_LIFETIME = "status_battery_lifetime";
-    //String CHANNEL_STATUS_PERIMETER_INTRUSION = "status_perimeter_intrusion";
-    //String CHANNEL_STATUS_REMOVAL_ERROR = "status_removal_error";
-    //String CHANNEL_STATUS_DATA_ENCRYPTED = "status_data_encrypted";
+    // String CHANNEL_STATUS_PERIMETER_INTRUSION = "status_perimeter_intrusion";
+    // String CHANNEL_STATUS_REMOVAL_ERROR = "status_removal_error";
+    // String CHANNEL_STATUS_DATA_ENCRYPTED = "status_data_encrypted";
 
     String CHANNEL_LAST_SMOKE_ALERT_START_DATE = "last_smoke_alert_start_date";
     String CHANNEL_LAST_SMOKE_ALERT_START_DATE_STRING = "last_smoke_alert_start_date_string";
@@ -67,6 +82,4 @@ public interface ItronBindingConstants {
     String CHANNEL_NUMBER_OF_TEST_SWITCHES_OPERATED = "number_of_test_switches_operated";
     String CHANNEL_PERIMETER_INTRUSION_DAY_COUNTER_CUMULATED = "perimeter_intrusion_day_counter_cumulated";
     String CHANNEL_SMOKE_INLET_DAY_COUNTER_CUMULATED = "smoke_inlet_day_counter_cumulated";
-
 }
-

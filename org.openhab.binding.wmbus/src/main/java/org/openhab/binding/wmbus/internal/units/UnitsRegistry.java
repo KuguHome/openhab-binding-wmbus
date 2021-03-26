@@ -1,10 +1,14 @@
 /**
- * Copyright (c) 2010-2018 by the respective copyright holders.
+ * Copyright (c) 2010-2021 Contributors to the openHAB project
  *
- * All rights reserved. This program and the accompanying materials
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at
- * http://www.eclipse.org/legal/epl-v10.html
+ * See the NOTICE file(s) distributed with this work for additional
+ * information.
+ *
+ * This program and the accompanying materials are made available under the
+ * terms of the Eclipse Public License 2.0 which is available at
+ * http://www.eclipse.org/legal/epl-2.0
+ *
+ * SPDX-License-Identifier: EPL-2.0
  */
 package org.openhab.binding.wmbus.internal.units;
 
@@ -35,10 +39,10 @@ import javax.measure.quantity.Time;
 import javax.measure.quantity.Volume;
 
 import org.eclipse.jdt.annotation.Nullable;
-import org.eclipse.smarthome.core.library.unit.ImperialUnits;
-import org.eclipse.smarthome.core.library.unit.SIUnits;
-import org.eclipse.smarthome.core.library.unit.SmartHomeUnits;
 import org.openhab.binding.wmbus.UnitRegistry;
+import org.openhab.core.library.unit.ImperialUnits;
+import org.openhab.core.library.unit.SIUnits;
+import org.openhab.core.library.unit.Units;
 import org.openmuc.jmbus.DlmsUnit;
 
 /**
@@ -49,7 +53,7 @@ import org.openmuc.jmbus.DlmsUnit;
  *
  * @author Łukasz Dywicki - Initial contribution.
  */
-public class SmartHomeUnitsRegistry implements UnitRegistry {
+public class UnitsRegistry implements UnitRegistry {
 
     @Override
     public Optional<Unit<?>> lookup(DlmsUnit wmbusType) {
@@ -59,7 +63,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
 
         switch (wmbusType) {
             case AMPERE:
-                return Optional.of(SmartHomeUnits.AMPERE);
+                return Optional.of(Units.AMPERE);
             case AMPERE_HOUR:
                 break;
             case AMPERE_PER_METRE:
@@ -72,12 +76,12 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
                 break;
             case BAR:
                 // Not present in ESH 0.9 / 0.10.0.oh230
-                // return Optional.of(SmartHomeUnits.BAR);
+                // return Optional.of(Units.BAR);
                 break;
             case CALORIFIC_VALUE:
                 break;
             case COULOMB:
-                return Optional.of(SmartHomeUnits.COULOMB);
+                return Optional.of(Units.COULOMB);
             case COUNT:
                 break;
             case CUBIC_FEET:
@@ -96,7 +100,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case CURRENCY:
                 break;
             case DAY:
-                return Optional.of(SmartHomeUnits.DAY);
+                return Optional.of(Units.DAY);
             case DEGREE:
                 break;
             case DEGREE_CELSIUS:
@@ -106,19 +110,19 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case ENERGY_PER_VOLUME:
                 break;
             case FARAD:
-                return Optional.of(SmartHomeUnits.FARAD);
+                return Optional.of(Units.FARAD);
             case HENRY:
-                return Optional.of(SmartHomeUnits.HENRY);
+                return Optional.of(Units.HENRY);
             case HERTZ:
-                return Optional.of(SmartHomeUnits.HERTZ);
+                return Optional.of(Units.HERTZ);
             case HOUR:
-                return Optional.of(SmartHomeUnits.HOUR);
+                return Optional.of(Units.HOUR);
             case JOULE:
-                return Optional.of(SmartHomeUnits.JOULE);
+                return Optional.of(Units.JOULE);
             case JOULE_PER_HOUR:
                 break;
             case KELVIN:
-                return Optional.of(SmartHomeUnits.KELVIN);
+                return Optional.of(Units.KELVIN);
             case KILOGRAM:
                 return Optional.of(SIUnits.KILOGRAM);
             case KILOGRAM_PER_HOUR:
@@ -126,7 +130,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case KILOGRAM_PER_SECOND:
                 break;
             case LITRE:
-                return Optional.of(SmartHomeUnits.LITRE);
+                return Optional.of(Units.LITRE);
             case MASS_DENSITY:
                 break;
             case METER_CONSTANT_OR_PULSE_VALUE:
@@ -134,19 +138,19 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case METRE:
                 return Optional.of(SIUnits.METRE);
             case METRE_PER_SECOND:
-                return Optional.of(SmartHomeUnits.METRE_PER_SECOND);
+                return Optional.of(Units.METRE_PER_SECOND);
             case MIN:
-                return Optional.of(SmartHomeUnits.MINUTE);
+                return Optional.of(Units.MINUTE);
             case MOLE_PERCENT:
                 break;
             case MONTH:
-                return Optional.of(SmartHomeUnits.FARAD);
+                return Optional.of(Units.FARAD);
             case NEWTON:
-                return Optional.of(SmartHomeUnits.NEWTON);
+                return Optional.of(Units.NEWTON);
             case NEWTONMETER:
                 break;
             case OHM:
-                return Optional.of(SmartHomeUnits.OHM);
+                return Optional.of(Units.OHM);
             case OHM_METRE:
                 break;
             case OTHER_UNIT:
@@ -162,13 +166,13 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case RESERVED:
                 break;
             case SECOND:
-                return Optional.of(SmartHomeUnits.SECOND);
+                return Optional.of(Units.SECOND);
             case SIGNAL_STRENGTH:
                 break;
             case SPECIFIC_ENERGY:
                 break;
             case TESLA:
-                return Optional.of(SmartHomeUnits.TESLA);
+                return Optional.of(Units.TESLA);
             case US_GALLON:
                 break;
             case US_GALLON_PER_HOUR:
@@ -180,7 +184,7 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case VAR_HOUR:
                 break;
             case VOLT:
-                return Optional.of(SmartHomeUnits.VOLT);
+                return Optional.of(Units.VOLT);
             case VOLT_AMPERE:
                 break;
             case VOLT_AMPERE_HOUR:
@@ -192,15 +196,15 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
             case VOLT_SQUARED_HOUR_METER_CONSTANT_OR_PULSE_VALUE:
                 break;
             case WATT:
-                return Optional.of(SmartHomeUnits.WATT);
+                return Optional.of(Units.WATT);
             case WATT_HOUR:
-                return Optional.of(SmartHomeUnits.WATT_HOUR);
+                return Optional.of(Units.WATT_HOUR);
             case WEBER:
-                return Optional.of(SmartHomeUnits.WEBER);
+                return Optional.of(Units.WEBER);
             case WEEK:
-                return Optional.of(SmartHomeUnits.WEEK);
+                return Optional.of(Units.WEEK);
             case YEAR:
-                return Optional.of(SmartHomeUnits.YEAR);
+                return Optional.of(Units.YEAR);
             default:
                 break;
         }
@@ -354,5 +358,4 @@ public class SmartHomeUnitsRegistry implements UnitRegistry {
 
         return Optional.empty();
     }
-
 }
