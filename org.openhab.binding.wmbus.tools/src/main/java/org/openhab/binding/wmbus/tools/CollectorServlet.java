@@ -9,6 +9,7 @@
 package org.openhab.binding.wmbus.tools;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
@@ -25,7 +26,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
 import org.openhab.binding.wmbus.handler.WMBusMessageListener;
@@ -58,7 +58,7 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String table = IOUtils.toString(getClass().getResourceAsStream("/table.html"));
+        String table = new String(getClass().getResourceAsStream("/table.html").readAllBytes(), StandardCharsets.UTF_8);
 
         table = table.replace("__rows__", getRows());
 
@@ -67,13 +67,14 @@ public class CollectorServlet extends HttpServlet implements WMBusMessageListene
         table = table.replace("__devices__", "" + entries.size());
         table = table.replace("__frames__", frameCount.orElse("0"));
 
-        IOUtils.write(table, resp.getOutputStream());
+        resp.getOutputStream().write(table.getBytes(StandardCharsets.UTF_8));
         resp.getOutputStream().flush();
     }
 
     private String getRows() throws IOException {
         String rows = "";
-        String template = IOUtils.toString(getClass().getResourceAsStream("/row.html"));
+        String template = new String(getClass().getResourceAsStream("/row.html").readAllBytes(),
+                StandardCharsets.UTF_8);
 
         Set<SecondaryAddress> addresses = entries.keySet();
         for (SecondaryAddress address : addresses) {

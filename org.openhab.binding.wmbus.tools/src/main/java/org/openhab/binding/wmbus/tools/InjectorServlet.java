@@ -11,6 +11,7 @@ package org.openhab.binding.wmbus.tools;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.stream.Collectors;
 
@@ -19,7 +20,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import org.apache.commons.io.IOUtils;
 import org.openhab.binding.wmbus.WMBusBindingConstants;
 import org.openhab.binding.wmbus.WMBusDevice;
 import org.openhab.binding.wmbus.handler.WMBusAdapter;
@@ -54,12 +54,12 @@ public class InjectorServlet extends HttpServlet {
 
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        String form = IOUtils.toString(getClass().getResourceAsStream("/form.html"));
+        String form = new String(getClass().getResourceAsStream("/form.html").readAllBytes(), StandardCharsets.UTF_8);
 
         form = form.replace("__adapters__", getAdapters());
         form = form.replace("__error__", getError(req));
 
-        IOUtils.write(form, resp.getOutputStream());
+        resp.getOutputStream().write(form.getBytes(StandardCharsets.UTF_8));
         resp.getOutputStream().flush();
     }
 

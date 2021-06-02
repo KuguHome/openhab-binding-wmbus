@@ -24,7 +24,7 @@ import org.openhab.core.library.unit.SIUnits;
 import org.openmuc.jmbus.DeviceType;
 import org.openmuc.jmbus.SecondaryAddress;
 
-import tec.uom.se.quantity.Quantities;
+import tech.units.indriya.quantity.Quantities;
 
 class TechemHKVRoomTempFrameDecoder extends AbstractTechemFrameDecoder<TechemHeatCostAllocator> {
 

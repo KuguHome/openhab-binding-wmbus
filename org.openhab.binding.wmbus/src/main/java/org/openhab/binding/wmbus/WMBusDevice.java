@@ -109,11 +109,6 @@ class ManufacturerData extends DataRecord {
 
     @Override
     public byte[] getDataValue() {
-        return getRawData();
-    }
-
-    @Override
-    public byte[] getRawData() {
         return rawData;
     }
 }

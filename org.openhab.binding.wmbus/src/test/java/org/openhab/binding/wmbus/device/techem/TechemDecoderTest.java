@@ -20,7 +20,7 @@ import org.openhab.binding.wmbus.device.techem.predicate.StringPredicate;
 import org.openhab.core.library.unit.SIUnits;
 import org.openmuc.jmbus.DeviceType;
 
-import tec.uom.se.unit.Units;
+import tech.units.indriya.unit.Units;
 
 public class TechemDecoderTest extends AbstractWMBusTest {
 
