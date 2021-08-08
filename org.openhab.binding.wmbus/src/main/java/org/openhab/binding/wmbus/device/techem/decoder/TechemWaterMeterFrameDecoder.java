@@ -24,8 +24,8 @@ import org.openhab.binding.wmbus.device.techem.TechemWaterMeter;
 import org.openhab.binding.wmbus.device.techem.Variant;
 import org.openmuc.jmbus.SecondaryAddress;
 
-import tec.uom.se.quantity.Quantities;
-import tec.uom.se.unit.Units;
+import tech.units.indriya.quantity.Quantities;
+import tech.units.indriya.unit.Units;
 
 class TechemWaterMeterFrameDecoder extends AbstractTechemFrameDecoder<TechemWaterMeter> {
 
