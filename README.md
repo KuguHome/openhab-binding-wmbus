@@ -49,14 +49,14 @@ There is some more information and discussion [in the forum](https://community.o
 8. Select/enter serial device (e.g. /dev/ttyUSB0, check via `dmesg` when plugging in the stick) as configuration parameter.
 9. Select receiving mode. T is most common, will also receive frames sent in mode C. S is transmitting only rarely.
 10. The Thing should show `ONLINE` as status. If not, edit the Thing, this screen should include some more error details, also check OSGi console and `userdata/logs/openhab.log` or `/var/log/oppenhab2/openhab.log`.
-11. If everything is working correctly, devices should be discovered automatically and turn up as new Things in the Inbox as soon as a message is received from them. Manually adding the devices is not necessary, also the active search function when adding a Thing does nothing. Everything goes throught the discovery.
-12. Search your devices in the Inbox by the ID that is printed outside or shown on the display (e.g. Techem HKVs display the last 4 digits) and add those devices via the checkmark button. Make sure "Item Linking Simple Mode" is activated or link the channels to items yourself.
-13. On the "Control" page, the Thing with it's different channels should display, readings should be updated regularly about every 4 minutes:
+11. If everything is working correctly, devices should be discovered automatically and turn up as new Things in the Inbox as soon as a message is received from them. Manually adding the devices is not necessary, also the active search function when adding a Thing does nothing. Everything goes throught the discovery. HINT: If the devices are not discovered, please check if UHF is activated on your WM-Bus devices. Otherwise you may need to contact the distributor or administrator of your cost allocators to let them activate
+13. Search your devices in the Inbox by the ID that is printed outside or shown on the display (e.g. Techem HKVs display the last 4 digits) and add those devices via the checkmark button. Make sure "Item Linking Simple Mode" is activated or link the channels to items yourself.
+14. On the "Control" page, the Thing with it's different channels should display, readings should be updated regularly about every 4 minutes:
   * Room/radiator temperature etc. are always current (at the time of sending/receiving the message).
   * Some device's "Current Reading" will only update once each day.
-14. If a Persistence Add-on (e.g. InfluxDB) is installed, the readings will also be stored into the database.
-15. In HABmin or HABPanel, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
-16. If any Exceptions or other messages turn up in the logs or console, please let us know and open an issue here.
+15. If a Persistence Add-on (e.g. InfluxDB) is installed, the readings will also be stored into the database.
+16. In HABmin or HABPanel, diagrams/charts/graphs can be configured to have a look at the latest values in comparison. Grafana is a good third party software to get an overview.
+17. If any Exceptions or other messages turn up in the logs or console, please let us know and open an issue here.
 
 ### Encrypted messages
 If your device is encrypted, you will need to get the AES key from the manufacturer, metering company or landlord. Then
