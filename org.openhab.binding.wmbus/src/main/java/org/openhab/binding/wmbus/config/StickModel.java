@@ -23,6 +23,6 @@ public enum StickModel {
 
     amber,
     rc,
-    imst
-
+    imst,
+    cul
 }

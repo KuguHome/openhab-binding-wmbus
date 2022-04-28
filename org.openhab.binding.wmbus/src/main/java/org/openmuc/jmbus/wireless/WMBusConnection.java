@@ -70,6 +70,9 @@ public interface WMBusConnection extends AutoCloseable {
                 case IMST:
                     setBaudrate(57600);
                     break;
+                case CUL:
+                    setBaudrate(38400);
+                    break;
                 default:
                     // should not occur
                     throw new RuntimeException(
@@ -154,6 +157,9 @@ public interface WMBusConnection extends AutoCloseable {
                 case RADIO_CRAFTS:
                     wmBusConnection = new WMBusConnectionRadioCrafts(this.mode, this.listener, transportLayer);
                     break;
+                case CUL:
+                    wmBusConnection = new WMBusConnectionCUL(this.mode, this.listener, transportLayer);
+                    break;
                 default:
                     // should not occur.
                     throw new RuntimeException("Unknown Manufacturer.");
@@ -167,6 +173,7 @@ public interface WMBusConnection extends AutoCloseable {
     public enum WMBusManufacturer {
         AMBER,
         IMST,
-        RADIO_CRAFTS
+        RADIO_CRAFTS,
+        CUL
     }
 }
