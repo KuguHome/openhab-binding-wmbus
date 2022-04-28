@@ -21,6 +21,7 @@
 					<option value="amber">Amber Wireless AMB8465-M</option>
 					<option value="rc">Radiocrafts RC1180-MBUS</option>
 					<option value="imst">IMST iM871A-USB</option>
+					<option value="cul">CUL</option>
 				</options>
 			</parameter>
 			<parameter name="serialDevice" type="text">

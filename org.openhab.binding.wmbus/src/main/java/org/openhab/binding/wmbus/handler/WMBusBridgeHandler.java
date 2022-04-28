@@ -176,6 +176,8 @@ public class WMBusBridgeHandler extends WMBusBridgeHandlerBase {
                 return WMBusManufacturer.RADIO_CRAFTS;
             case MANUFACTURER_IMST:
                 return WMBusManufacturer.IMST;
+            case MANUFACTURER_CUL:
+                return WMBusManufacturer.CUL;
             default:
                 return null;
         }
